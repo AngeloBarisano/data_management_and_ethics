@@ -1,0 +1,83 @@
+\documentclass[a4paper]{article}
+\newtheorem{hyp}{Hypothesis}
+
+
+
+\begin{document}
+
+
+
+
+
+\title{DME Integrative Assignment}
+\author{Angelo Barisano; 508903 }
+\date{September 16th, 2022}
+\maketitle
+
+\newpage
+\section{Task 1: Plan \& Explore: DEfine Questions for project and familiarize with data}
+
+\subsection{Overall nature of the Data}
+Data drives security. The wide spread adoption of data information systems to recognize crime-hotspots patterns to increase policing efficiency and protect people. Thus, creating effective information systems for crime prevention is at the center of policy maker and executive branches of governments. This trend has led to the Chicago PD reaching out to this Data Management Team with the request of creating a Data Management System for crime-data in Chicago.
+
+To this end, the Chicago PD and this Data Management Unit is interested on setting the foundation for a FAIR database; i.e. a Data Base ment to flexible and easy in use of slicing and dicing data to find answers and, contemporaneously, make them available. 
+
+\subsection{research question}
+The overarching goal of this project is to set the foundations to funnel the existing crime-data into a data model to improve its readability (analytics), accessibility (logical structure \& metric-interpretability), and further use in feeding systems for advanced predictive crime prevention. 
+
+
+In an iterative (agile) developmentcylce the following questions have been set up: Chicargo is known for its high homocide rate; this leads to policy makers focusing on this issue the most. 
+
+Upon conducting an initial Exploratory Data Analysis (EDA),  four major categories could be identified in the existing data: 
+
+\begin{itemize}
+  \item Location
+  \item Crime Type
+  \item Arrest(Yes/No)
+  \item Time 
+\end{itemize}
+
+Based on the data types, the EDA, and the aforementioned goal of creating a flexible DB, the following research questions guide the creation of the database increaing in complexity:
+
+
+\begin{hyp}[H\ref{hyp:second}] \label{hyp:first}
+How do certain crime types (homicide) patterns distibute by seasonality patterns, by location, by time of day?
+\end{hyp}
+
+\begin{hyp}[H\ref{hyp:second}] \label{hyp:second}
+Do crime patterns persist? Do homicide patterns persist in eg a certain district; do certain crimtypes persist wrt. location over time ?
+\end{hyp}
+
+\begin{hyp}[H\ref{hyp:second}] \label{hyp:third}
+Effective allocation of policing resources to prevent homicides:
+In order to prevent homocides; which “beats“ are the most prevalent among homcides? During which time of day (for effective allocation of policing resources)? 
+ What type of crimes necessitate the repeated Loging of information? → these cases might need specialists
+\end{hyp}
+
+
+
+\subsection{Design and Organize: Identify and collect the necessary requirements for the databased based on the questions, data and information needs}
+In order to address these questions, the relevant information must be broken down into its underlying entities for easier handling. 
+
+\subsubsection{What entities of importantce to design this database?}
+Consistently thorughout this endeavour, the time component must be available as part of the general log-info. One might deduce that time needs its own entitity. However, this would only be the case if this database was created with the implicit understanding of no new data being added to it at a later date or using datapipelines to introduce new transactional data into this very database. Subsequently, time will be part of the logging system. 
+
+important Entities in the model will include the type of crime; i.e. a cross table of the first and secondary type of crime. This offers the chance to exemplify the benfeits of normalization, but also where it goes too far. It is important to note that the following statement falls under the premise that reasonably few crime types are being added over time. Generally, the primary and secondary crime type represent the general category and then the specificication of the crime, such as murder as category and first class as the specification. 
+
+
+
+ If the secondary crime type ($description$ in the raw data) does not receive its own entitiy, linked to the primary type of crime, we will create a table that contains all possible combinations of crime 
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
