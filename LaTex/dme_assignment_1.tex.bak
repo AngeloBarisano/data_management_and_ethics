@@ -32,6 +32,7 @@ Upon conducting an initial Exploratory Data Analysis (EDA),  four major categori
 
 \begin{itemize}
   \item Location
+  \item Beat or Police unit; assigned for a year
   \item Crime Type
   \item Arrest(Yes/No)
   \item Time 
@@ -40,7 +41,7 @@ Upon conducting an initial Exploratory Data Analysis (EDA),  four major categori
 Based on the data types, the EDA, and the aforementioned goal of creating a flexible DB, the following research questions guide the creation of the database increaing in complexity:
 
 
-\begin{hyp}[H\ref{hyp:second}] \label{hyp:first}
+\begin{hyp}[H\ref{hyp:first}] \label{hyp:first}
 How do certain crime types (homicide) patterns distibute by seasonality patterns, by location, by time of day?
 \end{hyp}
 
@@ -48,21 +49,50 @@ How do certain crime types (homicide) patterns distibute by seasonality patterns
 Do crime patterns persist? Do homicide patterns persist in eg a certain district; do certain crimtypes persist wrt. location over time ?
 \end{hyp}
 
-\begin{hyp}[H\ref{hyp:second}] \label{hyp:third}
+\begin{hyp}[H\ref{hyp:third}] \label{hyp:third}
 Effective allocation of policing resources to prevent homicides:
 In order to prevent homocides; which “beats“ are the most prevalent among homcides? During which time of day (for effective allocation of policing resources)? 
  What type of crimes necessitate the repeated Loging of information? → these cases might need specialists
 \end{hyp}
 
+\begin{hyp}[H\ref{hyp:third}] \label{hyp:third}
+beat unit allocation; on a yearly basis, which beat units have the most success? Triangulate on a yearly basis which beats had reduced crime in major cateogreis in addition to how this relates to arrests etc. Try to run a regression on this: crime type predicted by arrest on yearly basis as beats are changed on a yearly basis (so new police officers in a beat every year)
+\end{hyp}
 
 
 \subsection{Design and Organize: Identify and collect the necessary requirements for the databased based on the questions, data and information needs}
 In order to address these questions, the relevant information must be broken down into its underlying entities for easier handling. 
 
 \subsubsection{What entities of importantce to design this database?}
+Part 1 identified four broad data categories that are of relevance in this endeavour. These categories are the general labels which are defined by different degrees of entities/ complexities. 
+To start, the location category is defined in decreasing order of complexity by coordinates (lat, lon), beat or sub-district, block, and police district. One district contains multiple beat and blocks.  Thus, this category will be centered by District connected to Block, Beat, and Lat/Lon. \textbf{The reason why Blocks are not placed below Beat hierachically is that there might be some overlap between different Beats patroling the same block. If it turns out that this is not the case, then Blocks will be the hirachically the lowest component below beat. } Finally, Lat/Lon will be connected to District specifically, independent of Beat. This is because this information is technically independent from all other location information. However, the choice to include this category hierachically directly below District was made based for the logical structuring of location data; in a sense: where would you look if you search for Lat/Lon. Additionally, including this relation does not increase the complexity of the querries too much due to the connection of District to the center node Case, which we will discuss next.
+\indent The center node of this DB was chosen to be Case. This is because the DB is designed explicitly to only allow recorded crime data, which will improve on the overall data quality; thus, information such as projections or human entered data is minimized as much as possible, so much so that the DB only represents administrative data.\footnote{Synonym for very clean data from a puplic office} The Location category described above is connected to this center node. Every case must have certain location information defined \textbf{(depending on crime; This will be further elaborated upon in part 4 \& 5 when we discuss relation restruictions}. This way, every data entry starts from creating a Case instance, which then can choose the correct Location data. 
+\ Beyond Location, every Case requires a crime to be a valid instance. Any crime has a IUCR, which is a code for a combination of a Primary Category of crime, such as murder, and a Secondary Category of a crime, such as first degree murder. Thus, Crime data is connected to Case via IUCR, and IUCR is a code for a primary and secondary relation, defining the crime in question. This way this category is in 3rd NF by design. One might suggest in this context, that IUCR might not be brought up to 3rd NF, as new crimes are rarely added in the penal code and IUCR only contains a total of \textbf{343} instances, while the secondary description entails \textbf{468} and primary description. The rason to bring this category to the 3rd NF is based on 1) the ease of subgroup analysis in one (e.g.) primary category, disregarding any secondary category; i.e. murder is murder after all. Additionally, 2) explicitness and ease of understanding superceeds ease of use in this case. If a new person to the entire Crime sector simply wants to know what penal codes there are, a subanalysis is easier this way. Finally, but not really important, 3) new secondary descriptions would be easier to be added to primary categories.
+\indent Furthermore, case specific information will be saved in independent relations, such as Arrests or Location Types. While it might appear that IUCR and Arrest are related, this is technically independent of the Crime description; not every crime leads to a lear cut arrest or not and is thus not mandarated by an IUCR itself. Moreover, Location Type does not describe location specific circumstances pertaining to a Block, Beat, or District but rather the circumstance of how the crime happened. 
+\Finally, any Case requires a Datetime object. This information is placed in the Case instance itself, as the log information is one of the most crucial pieces of information. While some crimes might happen at the same time, normalizing this fact does not make sense with Datetime objects. Views are considerably better suited for "slicing and dicing" the time component than normalizing time, as this project does not have the goal of preimposeing an angle of analysis regarding time. 
+
+
+
+
+
+It is notable that time should not receive its own entitiy; rather, this should be represented in a view. The reason for this is continuity. This DB is not only designed for the analysis of the data at hand, but also as a basis for a transactional system to be integrated in a larger framework. Subsequently, "slicing \& dicing" tasks are thus dependent on the researcher and should not confuse future users of the DB.\footnote{This would be an example of setting up tables just for temporary use and then be forgotten or even worse reused for a different purpose: I do not yet know what a future researcher will do. But what I know is how to enable researchers the access to a normed form of data.}
+
+
+
+
+
+
+
+
+
+
 Consistently thorughout this endeavour, the time component must be available as part of the general log-info. One might deduce that time needs its own entitity. However, this would only be the case if this database was created with the implicit understanding of no new data being added to it at a later date or using datapipelines to introduce new transactional data into this very database. Subsequently, time will be part of the logging system. 
 
-important Entities in the model will include the type of crime; i.e. a cross table of the first and secondary type of crime. This offers the chance to exemplify the benfeits of normalization. If the secondary crime type ($description$ in the raw data) does not receive its own entitiy, linked ot 
+important Entities in the model will include the type of crime; i.e. a cross table of the first and secondary type of crime. This offers the chance to exemplify the benfeits of normalization, but also where it goes too far. It is important to note that the following statement falls under the premise that reasonably few crime types are being added over time. Generally, the primary and secondary crime type represent the general category and then the specificication of the crime, such as murder as category and first class as the specification. 
+
+
+
+ If the secondary crime type ($description$ in the raw data) does not receive its own entitiy, linked to the primary type of crime, we will create a table that contains all possible combinations of crime 
 
 
 
