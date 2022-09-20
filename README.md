@@ -1,4 +1,6 @@
 Important:
+Task 1: mention that the FAIR is complied to via GitHub repository 
+
 Task 2: explain why everything is in 3rd NF. 
 --> argue which data you ultimately include due to data minimisation 
 
@@ -88,3 +90,5 @@ Task 6 look at examples from week 4; lecture 4 exercises for window functions ; 
 
 Task 6--- provide a ranking of district and then by frustrier by best which has most crime etc using window function.
 
+
+L4practice hour
