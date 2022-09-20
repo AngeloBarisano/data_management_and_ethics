@@ -19,54 +19,50 @@
 \section{Task 1: Plan \& Explore: DEfine Questions for project and familiarize with data}
 
 \subsection{Origin of Data \& Purpose Introduction}
-\paragraph{Introduction} Data drives security. The wide spread adoption of data information systems to recognize crime-hotspots patterns to increase policing efficiency and protect people. Thus, creating effective information systems for crime prevention is at the center of policy maker and executive branches of governments. This trend has led to the Chicago PD reaching out to this Data Management Team with the request of creating a Data Management System for crime-data in Chicago.
+\paragraph{Introduction} Data drives security. The wide spread adoption of data information systems has been used to recognize crime-hotspots to increase policing efficiency and protect people. Thus, creating effective information systems for crime prevention is at the center of policy makers and executive branches of governments. This trend has led to the Chicago PD reaching out to this Data Management Team with the request of creating a Data Management System for crime-data in Chicago.
 
-To this end, the Chicago PD and this Data Management Unit is interested on setting the foundation for a FAIR database; i.e. a Data Base ment to flexible and easy in use of slicing and dicing data to find answers and, contemporaneously, make them available. 
+To this end, the Chicago PD and this Data Management Unit is interested on setting the foundation for a FAIR database; i.e. a Data Base ment to flexible and easy in use of slicing and dicing data to find answers and, contemporaneously, make them available. Additiionally, any code produced durign this endeavour will be made public on github for transparency purposes. 
 
 \paragraph{Data description in scope, volumne, and format}
-The data was provided by the Chicago PD contains a sample of apprx. 730,000 registered crimes in the administrative districts of Chicago between the years of 2017 and 2021. The initial data source is in csv-format and pertains to specific recroded crimes in the adminsitrative jurisdiction of the Chicago PD in addition to time, location, crime type, and arrested or not. Thus, the data contact is to be found on the Chicago PD website (\textbf{CITE THE CHICAGO WEBSITE FOR THE DATA}).
+The data was provided by the Chicago PD contains a sample of apprx. 730,000 registered crimes in the administrative districts of Chicago between the years of 2017 and 2021. The initial data source is in csv-format and pertains to specific recroded crimes in the adminsitrative jurisdiction of the Chicago PD in addition to time, location, crime type, and arrested or not. Thus, the data contact is to be found on the Chicago PD website (\textbf{CITE THE CHICAGO WEBSITE FOR THE DATA}). Considerations regarding the ethical (\& GDPR compliant) use of the data will be discussed in part 5 of this assignment.
 
 \paragraph{Project timeframe, researchers, and misc information} The set project timeframe is the 27th of August 2022 till 1st of October 2022. Involved in this project is only one student, Angelo Barisano. Additionally, this project is designed to comply with FAIR standards (\textbf{CITE FAIR STUFF HERE}). Thus, no additional 
 
+\subsection{WHAT IS THE PURPOSE OF THIS ASSIGNMENT??}
 
 \subsection{Research Question}
 The overarching goal of this project is to set the foundations to funnel the existing crime-data into a data model to improve its readability (analytics), accessibility (logical structure \& metric-interpretability), and further use in feeding systems for advanced predictive crime prevention. 
 
 
-In an iterative (agile) developmentcylce the following questions have been set up: Chicargo is known for its high homocide rate; this leads to policy makers focusing on this issue the most. 
+\textbf{In an iterative (agile) developmentcylce the following questions have been set up: Chicargo is known for its high homocide rate; this leads to policy makers focusing on this issue the most. }
 
-Upon conducting an initial Exploratory Data Analysis (EDA),  four major categories could be identified in the existing data: 
+Upon conducting an initial Exploratory Data Analysis (EDA), three major categories could be identified in the existing data: 
 
 \begin{itemize}
   \item Location
-  \item Beat or Police unit; assigned for a year
-  \item Crime Type
-  \item Arrest(Yes/No)
-  \item Time 
+  \item Crime type
+  \item Crime record data (time, arrest, etc.)
 \end{itemize}
 
-Based on the data types, the EDA, and the aforementioned goal of creating a flexible DB, the following research questions guide the creation of the database increaing in complexity:
+Based on the data types, the EDA, and the aforementioned goal of creating a flexible DB, the following research questions guide the creation of the database in increasing complexity:
 
-Finding prevalent crime types is usually a starting point in a research endeavour. Thus, this question provides future researches with an easily adjustable query to gain an overview over the general distribution of crime in the city. Subsequently applying a temporal component (i.e. by day of week,  month, year, season, etc.) this initial distribution is further diced for trends and temporal patters. This way, this question helps to answer questions to policy makers regarding general trends; such as how crime developed overall. As such, the first question combines the temporal component with the frequency distribution of crime types:
+\paragraph{Question 1} Finding prevalent crime patterns in the data is a common starting point. Thus, this question provides future research with an adjustable query to gain an overview over the general distribution of crime by type. Subsequently applying a temporal component (i.e. by day of week,  month, year, season, etc.) to this initial distribution further dices for trends and temporal patters. This way, this question helps to answer questions to policy makers regarding general trends; such as how crime developed overall. As such, the first question combines the temporal component with the frequency distribution of crime types:
 
 \begin{hyp}[H\ref{hyp:first}] \label{hyp:first}
 How do crime types (e.g. homocides) patterns distributed by a temporal component? Are trends observable for different crime types?
-
 How do certain crime types (homicide) patterns distibute by seasonality patterns, by location, by time of day?
-
-
-ALTERNATIVE: Simply look which crime types are most prevalent; so by frequency distribution. Then combine crime type by proportion of them leading to arrest. if a crime type leads to an arrest, we have a more important crime.
 \end{hyp}
 
-The aforementioned question(s) enable users to discern trends for crime types in the data. The next logical progression is to add the location dimension to this question. Certain districts and beats tend to be more prevalent in cretain crime types. Additionally, by adding location, crime trends can be analysed in persistence by location. Thus, question two is:
+The aforementioned question(s) enable users to discern trends for crime types in the data. The next logical progression is to add the location dimension to this question. Certain districts and beats tend to be more prevalent in cretain crime types. Additionally, by adding location, crime trends can be analysed in persistence by location. Thus, question two follows:
 
 \begin{hyp}[H\ref{hyp:second}] \label{hyp:second}
-Do certain crime patterns (e.b. for homocides) persist for certain districts/ beats/ blocks wrt. time?
-
-ALTERNATIVE: Based on previous alternative; now add the time component into that question.
+Do certain crime patterns (e.b. for homocides) persist by location such as certain districts/ beats/ blocks wrt. time?
 \end{hyp}
 
-Subsequently, this trend analysis by time enables policy makers to discern localized trends in the data in order to address crime patterns by distributing resources more efficiently. Assuming that crimes that lead to more arrests are more frequent in districts/beats by proportion and in total numbers, these crimes put a disproportionate strain on law enforcement. Thus, by triangulating attrests by location, and time of day by season, this will enable us to show areas that need more attention by law enforcement. As such, the final question is not about a specific query, but rather the conclusion that we draw from the aforementioned questions and their policy implications of a dirlled down basis:
+Subsequently, this trend analysis by time enables policy makers to discern localized trends in the data in order to address crime patterns by distributing resources more efficiently. The final analysis considers an administrative subcategory of polcie districts - beats. Beats pertain to administrative policing areas, which are patrolled by a specific unit of police officers which are yearly rotated
+
+
+Assuming that crimes that lead to more arrests are more frequent in districts/beats by proportion and in total numbers, these crimes put a disproportionate strain on law enforcement. Thus, by triangulating attrests by location, and time of day by season, this will enable us to show areas that need more attention by law enforcement. As such, the final question is not about a specific query, but rather the conclusion that we draw from the aforementioned questions and their policy implications of a dirlled down basis:
 
 
 \begin{hyp}[H\ref{hyp:third}] \label{hyp:third}
@@ -77,6 +73,14 @@ In order to prevent homocides; which “beats“ are the most prevalent among ho
 ALTERNATIVE: Based on previous alternative; now add location to that question and then all big entities are used. 
  
 \end{hyp}
+
+
+ALTERNATIVE: Simply look which crime types are most prevalent; so by frequency distribution. Then combine crime type by proportion of them leading to arrest. if a crime type leads to an arrest, we have a more important crime.
+
+
+
+
+
 
 \begin{hyp}[H\ref{hyp:fourth}] \label{hyp:fourth}
 beat unit allocation; on a yearly basis, which beat units have the most success? Triangulate on a yearly basis which beats had reduced crime in major cateogreis in addition to how this relates to arrests etc. Try to run a regression on this: crime type predicted by arrest on yearly basis as beats are changed on a yearly basis (so new police officers in a beat every year)
@@ -91,9 +95,11 @@ Overall, these project based questions are constructed in such a way that they g
 In order to address these questions, the relevant information must be broken down into its underlying entities for easier handling. 
 
 \subsection{What entities of importantce to design this database?}
-Part 1 identified four borad data categories, which are releveant for this endeavour. At its center, the first information category pertains to the case itself. Connected to cases are the categories of crime type and description in addition to 
-
-These data categories pertain to crime related information such  as crime type and secondary description. 
+Part 1 identified four borad data categories, which are releveant for this endeavour. At its center, the first information category pertains to the case itself. Connected to cases are the categories of crime type and description in addition to the location category. 
+ 
+ 
+ 
+ 
 
 
 Part 1 identified four broad data categories that are of relevance in this endeavour. These categories are the general labels which are defined by different degrees of entities/ complexities. This DB is not only designed for the analysis of the data at hand, but also as a basis for a transactional system to be integrated in a larger framework. Subsequently, "slicing \& dicing" tasks are dependent on the researcher and should not impact future users of the DB.\footnote{This would be an example of setting up tables just for temporary use and then be forgotten or even worse reused for a different purpose: I do not yet know what a future researcher will do. But what I know is how to enable researchers the access to a normed form of data.} As such, the DB is created for general use; Variables are created in views or in scripting languages. 
