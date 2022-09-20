@@ -19,6 +19,12 @@ Gdpr, principle II) purpose limitation
 Write in the Task5 that you you defined the purpose
 In part 1 of the report and this way the data will be used 
 The general purpose is to analyse crime 
+--> important define the time limit during which you use the data
+--> except for research!!!
+--> put the data into cloud to make it save! 
+--> encrypt the data file!! 
+--> in sql lite db browser; when creating the database set a password; go to tools, set enrcptyion, cipher!!!
+--> also mention that you encrypt the local file.
 
 Gdpr, principle III) restrict and limit data (departmentize;
 Use anonymouziqtion/randomization or pseudomizatuon; important document what you do!!!
@@ -41,3 +47,4 @@ The purpose defined in part 1 and upon request by Chicago pd
 
 Gdpr, principle V) data quality principle!!!
 Important: mention versioning!!! Wrt versioning of the data.
+--> STORAGE LIMITATION PRINCIPLE!!
