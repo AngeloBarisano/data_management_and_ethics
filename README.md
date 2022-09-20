@@ -56,3 +56,35 @@ The purpose defined in part 1 and upon request by Chicago pd
 Gdpr, principle V) data quality principle!!!
 Important: mention versioning!!! Wrt versioning of the data.
 --> STORAGE LIMITATION PRINCIPLE!!
+ Task 4: outliers in coordinates 
+
+Task 5: 
+- outliers in the coordinates; beats mixing with wrong districts; date missing; location missing
+
+- important: create an index for certain dates and seasons of relevance
+
+- important: create a trigger for reading in data: the trigger  should look and log information for crime instances that do not have location (and look whether these instances are crimes without a location such a s financial crime)
+
+- use indexes to speed up one of the answers in part 1; a good index might be to index evil crimes (eg homocides) and not index crimes that are not too bad. 
+
+- triggers are used to data integrity; CREATE A MASTER FILE THAT REPORTS ALL CHANGES TO DATABASE!!
+Regarding the master file: also create a log of IMPORTING DATA;
+Additionally: create a trigger that logs a query to identify the user;
+Example of logging when data is added to db - the VALUES define the action such as:(NEW.ProjectID, datetime(), 'INSERT NEW PROJECT'); NEW.ProjectID is used to create a new value
+
+--> remember a delete and add logging is in the exercises 
+Example of trigger logging was when data was changed (such as delete)
+Todo: create a small DB next to the project database with a master table and subsequent tables that have a
+
+Example of logging when query was done 
+
+
+- important for task 5: restrict deletion of instances so that data integrity is warranted;
+
+Create index for missing data being excluded
+
+
+Task 6 look at examples from week 4; lecture 4 exercises for window functions ; don't forget to create views for variables and use indexes to speed up the queries 
+
+Task 6--- provide a ranking of district and then by frustrier by best which has most crime etc using window function.
+
