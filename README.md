@@ -60,6 +60,11 @@ Important: mention versioning!!! Wrt versioning of the data.
 --> STORAGE LIMITATION PRINCIPLE!!
  Task 4: outliers in coordinates 
 
+
+Use triggers that restricts deletions, restrict access, log when someone uses it; set up dashboard  ; also prevent deletions via cascade 
+
+
+
 Task 5: 
 - outliers in the coordinates; beats mixing with wrong districts; date missing; location missing
 
