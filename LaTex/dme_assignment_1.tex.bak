@@ -46,26 +46,31 @@ Upon conducting an initial Exploratory Data Analysis (EDA), three major categori
 
 Based on the data types, the EDA, and the aforementioned goal of creating a flexible DB, the following research questions guide the creation of the database in increasing complexity:
 
-\paragraph{Question 1} Finding prevalent crime patterns in the data is a common starting point. Thus, this question provides future research with an adjustable query to gain an overview over the general distribution of crime by type. Subsequently applying a temporal component (i.e. by day of week,  month, year, season, etc.) to this initial distribution further dices for trends and temporal patters. This way, this question helps to answer questions to policy makers regarding general trends; such as how crime developed overall. As such, the first question combines the temporal component with the frequency distribution of crime types:
+\paragraph{Question 1} Finding prevalent crime patterns in the data is a common starting point. Thus, this question provides future research with an adjustable query to gain an overview over the general distribution of crime by type. Subsequently applying a temporal component (i.e. by day of week,  month, year, season, etc.) to this initial distribution reveals trends and temporal patters. This way, this question helps to answer questions to policy makers regarding general trends; such as how crime developed overall and by type. As such, the first question combines the temporal component with the frequency distribution of crime types:
 
 \begin{hyp}[H\ref{hyp:first}] \label{hyp:first}
 How do crime types (e.g. homocides) patterns distributed by a temporal component? Are trends observable for different crime types?
-How do certain crime types (homicide) patterns distibute by seasonality patterns, by location, by time of day?
+How do certain crime types (homicide) patterns distibute by seasonality patterns, by time of day? A specific focus will be laid on policy relevant crimes such as homocides.
 \end{hyp}
 
-The aforementioned question(s) enable users to discern trends for crime types in the data. The next logical progression is to add the location dimension to this question. Certain districts and beats tend to be more prevalent in cretain crime types. Additionally, by adding location, crime trends can be analysed in persistence by location. Thus, question two follows:
+The aforementioned question(s) enable users to discern trends for crime types in the data. The next logical progression is to add the location dimension to this question. Certain districts and beats tend to be more prevalent in cretain crime types. Thus, question two follows:
 
 \begin{hyp}[H\ref{hyp:second}] \label{hyp:second}
-Do certain crime patterns (e.b. for homocides) persist by location such as certain districts/ beats/ blocks wrt. time?
+Do certain crime patterns (e.b. for homocides) persist by location such as certain districts/ beats/ blocks?
 \end{hyp}
 
-Subsequently, this trend analysis by time enables policy makers to discern localized trends in the data in order to address crime patterns by distributing resources more efficiently. The final analysis considers an administrative subcategory of polcie districts - beats. Beats pertain to administrative policing areas, which are patrolled by a specific unit of police officers which are yearly rotated
+The final step in this analysis is to merge the trend analysis by crime type with the location trends. This analysis by time enables policy makers to discern localized trends in the data in order to address crime patterns by distributing resources more efficiently by alocating resources to necessary districts at certain times of the day. In this context, multiple accessory dimensions will be integrated into the analysis to provide a hollistic description of the situation on the ground. For instance assuming that crimes that lead to more arrests are more frequent in districts/beats by proportion and in total numbers, these crimes put a disproportionate strain on law enforcement. Thus, by triangulating attrests by location, and time of day by season, this will enable us to show areas that need more attention by law enforcement. Another angle would be a specific analysis of beats. Beats are the smallest admininistrative unit of a police district; a beat is patrolled for one year by one unit. Thus, it might be interesting to investigate the connection between a subset of beats that suddenly stop showing problems during one year and then re-appear in terms of crime. The subquestion would, thus, investigate whether beats that usually persisted only persist on a closed yearly basis. This way, effective police units might be identified. 
 
 
-Assuming that crimes that lead to more arrests are more frequent in districts/beats by proportion and in total numbers, these crimes put a disproportionate strain on law enforcement. Thus, by triangulating attrests by location, and time of day by season, this will enable us to show areas that need more attention by law enforcement. As such, the final question is not about a specific query, but rather the conclusion that we draw from the aforementioned questions and their policy implications of a dirlled down basis:
+As such, the final question considers a variety of hypotheses that can be explored. 
+
+Concluding: 
 
 
 \begin{hyp}[H\ref{hyp:third}] \label{hyp:third}
+Triangualting time, crimetype, and location 
+
+
 Effective allocation of policing resources to prevent homicides:
 In order to prevent homocides; which “beats“ are the most prevalent among homcides? During which time of day (for effective allocation of policing resources)? 
  What type of crimes necessitate the repeated Loging of information? → these cases might need specialists
@@ -74,8 +79,9 @@ ALTERNATIVE: Based on previous alternative; now add location to that question an
  
 \end{hyp}
 
+As such, the final question considers a variety of hypotheses that can be explored. 
 
-ALTERNATIVE: Simply look which crime types are most prevalent; so by frequency distribution. Then combine crime type by proportion of them leading to arrest. if a crime type leads to an arrest, we have a more important crime.
+
 
 
 
