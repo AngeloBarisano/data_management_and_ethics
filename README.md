@@ -1,3 +1,11 @@
+Important:
+Task 2: explain why everything is in 3rd NF. 
+--> argue which data you ultimately include due to data minimisation 
+
+Task 4: add the meta data part 
+--> clean the data; note that the quotes in importing a cvs must be the right for characters used; also the separation is relevant!!
+
+Task 5: compliance 
 jsut some descripiteves and the project set up here for data management 
 test test test change
 
