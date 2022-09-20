@@ -40,3 +40,4 @@ The purpose defined in part 1 and upon request by Chicago pd
 
 
 Gdpr, principle V) data quality principle!!!
+Important: mention versioning!!! Wrt versioning of the data.
