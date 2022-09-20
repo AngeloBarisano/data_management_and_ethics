@@ -1,3 +1,5 @@
+For dashboard solution look at what gokay did with git 
+
 Important:
 Task 1: mention that the FAIR is complied to via GitHub repository 
 
