@@ -107,7 +107,7 @@ The reason to exclude block as a entity of analysis is threefold. 1) blocks over
 
 \textbf{IMPORTANT!!!!! DESCRIBE IN THE CONCEPTUAL MODEL ETC WITH TEXT THAT EG CRIME TYPE "HAS MANY" CASES ABOVE THE LINES LIKE ON THE SLIDES}
 
-\includegraphics[scale=.35 ]{ConceptualDiagramFinal.drawio.png}
+\includegraphics[scale=.35 ]{ConceptualDiagramFinal.drawiowdescription.png}
 
 \subsection{Conceptual Model}
 As mentioned in part 2, the individual case instance is central to the database design. Contemporaneously, the case entity resolves all problems regarding normal form and many-to-many relationships. Subsequently, the conceptual model describes the relation of the three entities described in part 2: 
@@ -125,7 +125,7 @@ As mentioned in part 2, the individual case instance is central to the database 
 Following, case is related to crime type. Crime type describes the crime perpetrated. This is why, the IUCR is included as a foreign key in case. Consequently, the cardinality reads as one case only pertaining to one crime type being perpetrated. Contrarily, one crime type can be represented in many cases.
 
 \subsection{Logical Model}
-\includegraphics[scale=.35 ]{LogicalDiagramFinal.drawio.png}
+\includegraphics[scale=.35 ]{LogicalDiagramFinal.drawiowdescription.png}
 
 
 Figure 2 describes the logical model. For location, "beat" is chosen as primary key because if we were to normalize this relation to 3rd NF, beat (as an entity) would be hierarchically below District; one district - many beats. As such, each district is uniquely identifiable by its beat in case we want to aggregate, which is why beat is the most suitable primary key. As argued in part 2, there is no reason to normalize to 3rd NF in this case. More importantly, the primary key beat is in TEXT form. The reason for this is that beats are defined in the first two characters by their district and the latter two describe the beat. Thus, a beat instance may start with a "0". In many scripting languages and some databases, this leads to problems and the removal of the "0", as the underlying software does not interpret the "0". As such, TEXT was chosen for data quality reasons. Please note that the same argument applies to crime type and IUCR. 
@@ -143,9 +143,9 @@ As mentioned in part 2, the inclusion of case as a full entity throught the enti
 
 
 DATA TRIANGLE in lecture!!!
-ALSO THE META DATA AND ETHICAL CONSIDERATIONS!! REGARDING GDPR 
+ALSO THE META DATA AND ETHICAL CONSIDERATIONS!! REGARDING GDPR that data quality is important to be complied by!!! This is also important for fair wrt interpretability and reusablity
 \section{Part 5}
-
+ENCRYPTION OF DATABASE!!!!!!!!
 
 
 
