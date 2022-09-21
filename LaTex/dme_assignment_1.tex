@@ -26,7 +26,7 @@ To this end, the Chicago PD and this Data Management Unit is interested on setti
 \paragraph{Data description in scope, volumne, and format}
 The data was provided by the Chicago PD contains a sample of apprx. 730,000 registered crimes in the administrative districts of Chicago between the years of 2017 and 2021. The initial data source is in csv-format and pertains to specific recroded crimes in the adminsitrative jurisdiction of the Chicago PD in addition to time, location, crime type, and arrested or not. Thus, the data contact is to be found on the Chicago PD website (\textbf{CITE THE CHICAGO WEBSITE FOR THE DATA}). Considerations regarding the ethical (\& GDPR compliant) use of the data will be discussed in part 5 of this assignment.
 
-\paragraph{Project timeframe, researchers, and misc information} The set project timeframe is the 27th of August 2022 till 1st of October 2022. Involved in this project is only one student, Angelo Barisano. Additionally, this project is designed to comply with FAIR standards (\textbf{CITE FAIR STUFF HERE}). Thus, no additional 
+\paragraph{Project timeframe, researchers, and misc information} The set project timeframe is the 27th of August 2022 till 1st of October 2022. Involved in this project is only one student, Angelo Barisano. Additionally, this project is designed to comply with FAIR standards (\textbf{CITE FAIR STUFF HERE}).
 
 \subsection{WHAT IS THE PURPOSE OF THIS ASSIGNMENT??}
 
@@ -44,39 +44,35 @@ Upon conducting an initial Exploratory Data Analysis (EDA), three major categori
   \item Crime record data (time, arrest, etc.)
 \end{itemize}
 
-Based on the data types, the EDA, and the aforementioned goal of creating a flexible DB, the following research questions guide the creation of the database in increasing complexity:
+Based on the data categories, the EDA, and the aforementioned goal of creating a flexible DB the following research questions guide the creation of the database in increasing complexity. However, the goal is to explore possible combinations of the data by rearranging the dimensions at hand and not to follow a specific question.
 
 \paragraph{Question 1} Finding prevalent crime patterns in the data is a common starting point. Thus, this question provides future research with an adjustable query to gain an overview over the general distribution of crime by type. Subsequently applying a temporal component (i.e. by day of week,  month, year, season, etc.) to this initial distribution reveals trends and temporal patters. This way, this question helps to answer questions to policy makers regarding general trends; such as how crime developed overall and by type. As such, the first question combines the temporal component with the frequency distribution of crime types:
 
-\begin{hyp}[H\ref{hyp:first}] \label{hyp:first}
-How do crime types (e.g. homocides) patterns distributed by a temporal component? Are trends observable for different crime types?
+\begin{itemize}
+  \item How do crime types (e.g. homocides) patterns distributed by a temporal component? Are trends observable for different crime types?
 How do certain crime types (homicide) patterns distibute by seasonality patterns, by time of day? A specific focus will be laid on policy relevant crimes such as homocides.
-\end{hyp}
+\end{itemize}
 
-The aforementioned question(s) enable users to discern trends for crime types in the data. The next logical progression is to add the location dimension to this question. Certain districts and beats tend to be more prevalent in cretain crime types. Thus, question two follows:
 
-\begin{hyp}[H\ref{hyp:second}] \label{hyp:second}
-Do certain crime patterns (e.b. for homocides) persist by location such as certain districts/ beats/ blocks?
-\end{hyp}
 
-The final step in this analysis is to merge the trend analysis by crime type with the location trends. This analysis by time enables policy makers to discern localized trends in the data in order to address crime patterns by distributing resources more efficiently by alocating resources to necessary districts at certain times of the day. In this context, multiple accessory dimensions will be integrated into the analysis to provide a hollistic description of the situation on the ground. For instance assuming that crimes that lead to more arrests are more frequent in districts/beats by proportion and in total numbers, these crimes put a disproportionate strain on law enforcement. Thus, by triangulating attrests by location, and time of day by season, this will enable us to show areas that need more attention by law enforcement. Another angle would be a specific analysis of beats. Beats are the smallest admininistrative unit of a police district; a beat is patrolled for one year by one unit. Thus, it might be interesting to investigate the connection between a subset of beats that suddenly stop showing problems during one year and then re-appear in terms of crime. The subquestion would, thus, investigate whether beats that usually persisted only persist on a closed yearly basis. This way, effective police units might be identified. This way, the question of resource allocation can be considered. 
+\paragraph{Question 2} The aforementioned question(s) enable users to discern trends for crime types in the data. The next logical progression is to observe the location and crime dimension together. The assumption is that certain districts and beats tend to be more prevalent in cretain crime types. Thus, question two follows:
 
-As such, the final question considers a variety of hypotheses that can be explored. 
+\begin{itemize}
+  \item Do certain crime patterns (e.b. for homocides) persist by location such as certain districts/ beats/ blocks?
+\end{itemize}
 
-Concluding: 
-\begin{hyp}[H\ref{hyp:third}] \label{hyp:third}
-Triangualting time, crimetype, and location which areas persit in certain crimes wrt. time?
+\paragraph{Question 2} The final step in this analysis is to merge the trend analysis by crime type with the location trends. This analysis by time enables policy makers to discern localized trends in the data in order to address crime patterns by distributing resources more efficiently through the allocation of resources to necessary districts at certain times of the day. In this context, multiple accessory dimensions will be integrated into the analysis to provide a hollistic description of the situation on the ground. For instance assuming that crimes that lead to more arrests are more resoruce intensive, these crimes put a disproportionate strain on law enforcement. Thus, by triangulating arrests by location and e.g. time of day this will enable us to show areas that need more attention by law enforcement. Another angle would be a specific analysis of beats. Beats are the smallest admininistrative unit of a police district; a beat is patrolled for one year by one unit and ten transferred to another beat. Thus, it might be interesting to investigate the connection between a subset of beats that suddenly stop showing problems during one year and then re-appear in terms of crime in antoher year. The subquestion would, thus, investigate whether beats that usually persisted in crime only persist on a closed yearly basis. This way, effective police units might be identified and resources might be allocated more efficiently.
+ 
+\begin{itemize}
+  \item Triangualting time, crimetype, and location which areas persit in certain crimes wrt. time?
 In order to prevent homocides; which “beats“ are the most prevalent among homcides? During which time of day (for effective allocation of policing resources)? 
+\end{itemize}
 
-\end{hyp}
-
-As such, the final question considers a variety of hypotheses that can be explored. 
-
-
-Overall, these project based questions are constructed in such a way that they guide an external user (PD) through the process of finding areas that need successively complex "sliced \ diced" information and culminate in the creation of actionable policy implications regarding prime prevention through resource allocation.
+As such, the final question considers a variety of hypotheses that can be explored. Overall, these project based questions are constructed in such a way that they guide an external user (PD) through the process of finding areas that need successively complex "sliced \ diced" information and culminate in the creation of actionable policy implications regarding prime prevention through resource allocation.
 
 
 \textbf{ADD PLOTS ALREADY HERE!!!}
+
 
 \section{Design and Organize: Identify and collect the necessary requirements for the databased based on the questions, data and information needs}
 In order to address these questions, the relevant information must be broken down into its underlying entities for easier handling. 
