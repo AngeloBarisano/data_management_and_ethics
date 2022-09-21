@@ -149,7 +149,7 @@ Figure 2 describes the logical model. For location, "beat" is chosen as primary 
 \subsection{Physical Model}
 \includegraphics[scale=.35 ]{PhysicalModelFinal.drawio.png}
 
-As mentioned in part 2, the inclusion of case as a full entity throught the entire process automatically removes any many-to-many relationships. Moreover, the usage of the appropriate foreign keys was discussed in section 3.1 in accorddance to the cardinalities. As such, the logical model described in section 3.2 also corresponds to the physical model by definition with the exception of the foreign keys. The choice of foreign keys was made due to the direction of the cardinalities in Figure 3; beat and IUCR are natural keys for their respective entities and ar
+As mentioned in part 2, the inclusion of case as a full entity throught the entire process automatically removes any many-to-many relationships. Moreover, the usage of the appropriate foreign keys was discussed in section 3.1 in accorddance to the cardinalities. As such, the logical model described in section 3.2 also corresponds to the physical model by definition with the exception of the foreign keys. The choice of foreign keys was made due to the direction of the cardinalities in Figure 3; beat and IUCR are natural keys for their respective entities and are, thus, unique.
 
 
 
