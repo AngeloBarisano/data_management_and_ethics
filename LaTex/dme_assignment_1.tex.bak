@@ -150,6 +150,9 @@ Dropping instances
 - remove all instances that do not have a casenumber - resulting in 3 instances removed from the database
 - This returns another 79 porblematic instances where beat and district do not correspond
 -an additional 16 entries do not contain dates; this is pivotal so they have to be removed
+- casenumber will not be used due to privacy reasons in addition to it not being needed. CrimeId, even if not 100\% compliant sitll identifies each instance uniquely; this way, we can savely discard the 7 problematic instances in case number and just ignore this part of the information as it is uninteresting for the analysis.
+- for one instance the lat lon was somewhere in the middle of america. the rest of the informatio nseemed fine; so we only removed the informatio nregarding lat lon. 
+- finally, 15 instances miss their arrest these have been marked. However, their inclusion is not yet problematic
 
 
 \section{Part 5}
