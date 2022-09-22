@@ -152,7 +152,20 @@ Dropping instances
 -an additional 16 entries do not contain dates; this is pivotal so they have to be removed
 - casenumber will not be used due to privacy reasons in addition to it not being needed. CrimeId, even if not 100\% compliant sitll identifies each instance uniquely; this way, we can savely discard the 7 problematic instances in case number and just ignore this part of the information as it is uninteresting for the analysis.
 - for one instance the lat lon was somewhere in the middle of america. the rest of the informatio nseemed fine; so we only removed the informatio nregarding lat lon. 
+- dropping duplicates repoves 149 instances
 - finally, 15 instances miss their arrest these have been marked. However, their inclusion is not yet problematic
+
+
+After the setup of the data management plan in part 1 to 3, the implementation requires data preparation and data quality check. \textbf{In this context, the data triangle was used}. Generally, the data quality of the provided sample is very good; less than 0.01\% of observations display any annormality. This is attribuatble to the origin of the data being of administrative nature by public offices.
+\indent The operations performed specifically relate to the relevant data for this endeavour mentioned in part 3. Firstly, 3 instances contained no casenumbers. These records were broken overall and were, thus, removed. Secondly, 16 instances missed date. As date is a central to the analysis, these records have to be removed. Moreover, 79 instances had non-correspondent beats and districts. While it would have been possible to impute the missing data based on the block or lat-lon information, one must assume that all location related information wrt. these observations is compromised. Similarly as before, location quality is central to answering the questions in this assignemnt; thus, these instances were removed. Finally, 149 perfectly dupilcate items were removed. This results in a total of \textbf{HOW MANY ARE NOW LEFT?!?!?!!?!?!?!}
+
+\indent In terms of data transformations, date was transformed into SQL castable form to run functions on date. Moreover, beat and district instances were repaired wrt. the preceeding "0" filler, creating instances of length four and two respectively. Finally, arrest ("true", "false") was cast into boolean form. 
+
+\indent Regarding non-crucial annormality, 15 instances miss arrest; but this information is only used for one subquery once. Additionally, seven records of casenumbers display noncompliancy. However, CaseID is a perfect reflection for this issue. Considering CaseID, set-tests were made to warrant that no IDs were missing (see appendix) beyond the removed records. Further, one instance of lat-lon showed an extreme outlier which was converted to NaN, due to the beat and district information appearing propperly.\textbf{ All instances with minor porblems were marked, which will} \textbf{be represented in the MasterTable of this project}. It may also be notable that the absence of information is still information; i.e. financial crime might not have a location. 
+
+Overall, the consequences of removing these observations will be minimal. Of a total of 730900 observations, we were left with
+
+
 
 
 \section{Part 5}
