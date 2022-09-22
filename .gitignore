@@ -4,11 +4,12 @@
 *.csv
 /database
 crimes.csv
-*.db.sqlite3
 
-/*database*
+
 database/
-/assignment_db_1
+
+
+
 # User-specific files
 *.suo
 *.user
