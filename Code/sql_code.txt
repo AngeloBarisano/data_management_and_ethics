@@ -1,0 +1,48 @@
+-- Create table 1: Location
+CREATE TABLE Location (
+Beat TEXT PRIMARY KEY NOT NULL UNIQUE,
+District TEXT NOT NULL);
+
+
+
+
+
+-- Create Table 2: crimetype
+CREATE TABLE CrimeType (
+IUCR TEXT PRIMARY KEY NOT NULL UNIQUE,
+PrimaryCategory TEXT,
+SecondaryCategory TEXT);
+
+
+-- create Table 3: CASE
+CREATE TABLE CriminalCase (
+CrimeID INT PRIMARY KEY NOT NULL UNIQUE,
+Date_Time TEXT NOT NULL,
+LatLonLocation TEXT,
+Arrest TEXT, 
+Beat TEXT NOT NULL,
+IUCR TEXT NOT NULL, 
+FOREIGN KEY (Beat) REFERENCES Location (Beat));
+
+
+
+
+
+
+
+
+-- Data insertion into location
+INSERT INTO Location (Beat, District) SELECT DISTINCT 
+beat, district FROM data_crime_transformed;
+
+-- Data insertion into CrimeType
+INSERT INTO CrimeType (IUCR, PrimaryCategory, SecondaryCategory) SELECT DISTINCT 
+iucr, primarytype, description FROM data_crime_transformed;
+
+-- Data Insertion into Criminal Case 
+INSERT INTO CriminalCase (CrimeID, Date_Time, LatLonLocation, Arrest, Beat, IUCR) 
+SELECT DISTINCT CrimeID, 'date', 'location', arrest, beat, iucr 
+FROM data_crime_transformed;
+
+
+
