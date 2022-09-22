@@ -156,13 +156,21 @@ After the setup of the data management plan in part 1 to 3, the implementation r
 Overall, the consequences of removing these observations will be minimal. Of a total of 730900 observations, we were left with 730654 records. 
 
 
-
+\textbf{Considering the IUCR, there are some duplication values. It must be noted that most instances contain typos in the description; as such, the IUCR is always compliant. Thus we use a right join to remove all duplications of IUCR which will not change the data}
 
 \section{Part 5}
 ENCRYPTION OF DATABASE!!!!!!!!
 
 
+CHANGE THE TABLENAMES IN THIS ENTIRE FILE!!! 
 
+Notes:
+- location table: beat and district are both mandatroy as they are important for the analysis
+- CrimeType: We write PrimaryType etc together for ease of use
+- Case table: CaseId is just normal; Date_Time text because this is how it is being done and NOT NULL because it is required for the analysis;Location TEXT no constrian t as some crimes dont have a location;Arrest TEXT becasue SQLLITE DOES NOT SUPPORT BOOLEAN and not mandatory because not the most important;
+
+Notes:
+- reading data
 
 
 \section{Part 6}
