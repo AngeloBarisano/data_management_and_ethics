@@ -6,30 +6,99 @@ FROM CriminalCase;
 
 -- now create a query that says that if in the morning then morning 
 CREATE VIEW view_convenient_time AS
-SELECT CrimeID, year AS Year, month AS Month, day AS Day, hour as Hour,
+SELECT CrimeID, IUCR, year AS Year, month AS Month, day AS Day, hour as Hour,
 CASE WHEN CAST(hour AS INT) >= 6 and CAST(hour AS INT) <= 11  then 'Morning'
 			WHEN CAST(hour AS INT) >= 12 and CAST(hour AS INT) <= 17  then 'Noon'
 			WHEN CAST(hour AS INT) >= 18 and CAST(hour AS INT) <= 23  then 'Evening'
 			WHEN CAST(hour AS INT) >= 0 and CAST(hour AS INT) <= 5  then 'Night'
 		   end TimeofDay
 FROM
-(SELECT CrimeID, STRFTIME("%d", Date_Time) AS day, STRFTIME("%m", Date_Time) AS month, STRFTIME("%Y", Date_Time) AS year, STRFTIME("%H", Date_Time) AS hour
+(SELECT CrimeID, IUCR, STRFTIME("%d", Date_Time) AS day, STRFTIME("%m", Date_Time) AS month, STRFTIME("%Y", Date_Time) AS year, STRFTIME("%H", Date_Time) AS hour
 FROM CriminalCase);
 
 
 
-select
-      case when price >= 0 and price <= 10    then '  0 - 10'
-           when price > 10 and price <= 50   then ' 10+ - 50'
-           when price > 50 and price <= 100  then ' 50+ - 100'
-           else 'over 100'
-      end PriceRange,
-      count(*) as TotalWithinRange
-   from
-      YourTable
-   group by 1;
+-- i) TOTAL CRIME DISTRIBUTION BY YEAR
+
+SELECT Year, COUNT(*) AS "TotalCrimeCommitted"
+FROM view_convenient_time
+GROUP BY Year;
+-- Observation: overall positive trend (so reduced crime overall)
+
+--ii) group by Month
+SELECT Month, COUNT(*) AS "TotalCrimeCommitted"
+FROM view_convenient_time
+GROUP BY Month;
+
+
+--iii) group by year and month
+SELECT Year, Month, COUNT(*) AS "TotalCrimeCommitted"
+FROM view_convenient_time
+GROUP BY Year, Month;
+-- do the same in a window function: Partition 
 
 
 
 
+-- iiii) look at arrest intensive crimes by time of day(so high proportion of arrests)
+-- I AM AWARE THAT THIS IS NOT EFFICIENT; BUT I WANT TO DEMONSTRATE THE ENTIRE LOGIC OF CRAWLING THORUGH A DATABASE (and views^^)
+SELECT TimeofDay, COUNT(*) FROM
+view_convenient_time AS vct 
+JOIN CriminalCase as cc ON vct.CrimeID == cc.CrimeID 
+JOIN CrimeType AS ct ON cc.IUCR == ct.IUCR
+JOIN view_resource_crimes AS vrc ON ct.PrimaryCategory == vrc.PrimaryCategory
+WHERE vrc.ProportionArrested > 50
+GROUP BY TimeofDay;
 
+---iiiii) now also look whether the trend for high arrest crime is also true
+SELECT Year, COUNT(*) AS FROM
+view_convenient_time AS vct 
+JOIN CriminalCase as cc ON vct.CrimeID == cc.CrimeID 
+JOIN CrimeType AS ct ON cc.IUCR == ct.IUCR
+JOIN view_resource_crimes AS vrc ON ct.PrimaryCategory == vrc.PrimaryCategory
+WHERE vrc.ProportionArrested > 50
+GROUP BY Year;
+
+
+
+-- iiiiiii) CREATE A WINDOW FUNCTION THAT CALCULATES LAG PREVIOUS YEAR 
+-- first create a simple ranking of the most resource intenstive crimes
+SELECT PrimaryCategory, DENSE_RANK() OVER( ORDER BY ProportionArrested  DESC) AS PrimRank, ProportionArrested
+FROM view_resource_crimes;
+
+
+
+-- create a rank by year
+SELECT PrimaryCategory, DENSE_RANK() OVER( ORDER BY ProportionArrested  DESC) AS PrimRank, ProportionArrested
+FROM view_resource_crimes;
+
+-- step 1
+SELECT year, COUNT(* ) AS CrimesCommitted, LAG(CrimesCommitted) OVER ( ORDER BY CrimesCommitted ) AS PrevYear
+       --revenue - LAG(revenue) OVER ( ORDER BY year ) AS YOY_Difference
+FROM   view_convenient_time
+GROUP BY Year;
+
+-- step 2
+SELECT Year, CrimesCommitted , LAG(CrimesCommitted) OVER (ORDER BY Year) AS PrevYearCrimes, CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year) AS PrevYearCrimesDIFF
+FROM   
+(SELECT Year, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
+GROUP BY Year);
+
+-- step 3
+SELECT Year, Month, CrimesCommitted , 
+	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PrevYearCrimesCng
+FROM   
+(SELECT Year, Month, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
+GROUP BY Year, Month);
+
+
+
+
+EG compare with preceeding or previous row
+*/
+SELECT DISTINCT movie_title, country, imdb_score,
+	-- essentially this is the lagging row and partition by again creates country
+	LEAD(imdb_score) OVER (PARTITION BY country ORDER BY imdb_score DESC) AS next_movie_score
+FROM movie_metadata
+WHERE country NOT NULL;
+	

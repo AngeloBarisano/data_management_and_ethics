@@ -181,6 +181,9 @@ ADD A TRIGGER FOR LOGGIN INFORMATION IN THE MASTER TABLE "L4_practice hour_donat
 
 
 \section{Part 6}
+
+Note: the goal of this assignment t odo most if not all data transformation in SQL and let python handle only minor conversions such as into the right dtype object (eg GEOPANDAS)
+
 IMPORTANT! READ DATABASE INTO PYTHON HERE LIKE YOU DID AT VYTAL!!!
 
 Note: Sadly in order to create an index, one cannot use subqueries due to SQLLITE(this feature is present in other versions of SQL tho); as such, the index that increases speed for arrest heavy crimes does not work here. 

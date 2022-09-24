@@ -172,11 +172,21 @@ Notes:
 Notes:
 - reading data
 
+ADD A TRIGGER FOR LOGGIN INFORMATION IN THE MASTER TABLE "L4_practice hour_donations_exercises_solutions" page 4
+
+\textbf{IMPORTANT YOU FORGOT TO SET IUCR AS A FOREIGN KEY IN PART 5; FIX THIS!}
+
+\textbf{IMPORTANT: ADD CONSTRINTS SUCH AS NO DATE MISSING OR BETTER: ADD A CONSTRAINT THAT STATES THAT THE DATE IS ACTUALLY IN THE RANGE OF 2017 to 2021 and not beyond or below!!! ADDITIONALLY: CREATE A TRIGGER THAT TRIGGERS WHEN THIS CONSTRAINT IS TRIGGERED!!!}
+
+
 
 \section{Part 6}
+
+Note: the goal of this assignment t odo most if not all data transformation in SQL and let python handle only minor conversions such as into the right dtype object (eg GEOPANDAS)
+
 IMPORTANT! READ DATABASE INTO PYTHON HERE LIKE YOU DID AT VYTAL!!!
 
-
+Note: Sadly in order to create an index, one cannot use subqueries due to SQLLITE(this feature is present in other versions of SQL tho); as such, the index that increases speed for arrest heavy crimes does not work here. 
 
 
 
