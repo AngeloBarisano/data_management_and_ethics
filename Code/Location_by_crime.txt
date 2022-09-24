@@ -1,0 +1,56 @@
+-- Create a VIEW with the time components split up
+
+-- Question 1: Location By time:
+
+
+-- 1) Total Crime count in general by district
+
+--i) Total Crimes by District over total time
+SELECT District, COUNT(*)
+FROM CriminalCase AS CC INNER JOIN Location L ON L.Beat = CC.Beat
+GROUP BY District ;
+
+
+--ii) Total Primary Crimes by District over total time
+SELECT District, PrimaryCategory, COUNT(*) AS TotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY District, PrimaryCategory;
+
+-- try the same with a window function
+SELECT PrimaryCategory, RANK() OVER (PARTITION BY COUNT(*))
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY PrimaryCategory;
+
+
+--iii) Now filter for high arrest crimes 
+SELECT PrimaryCategory, ProportionArrested
+FROM view_resource_crimes
+WHERE ProportionArrested > 50;
+
+SELECT *
+FROM view_resource_crimes;
+
+
+
+-- iiii) rank district by average crime count aggregated
+-- RANK DISTRICT by the proportion of overall proportion by crime type committed of that category
+-- to do that add the overall total numbers of crimes committed via a left join of total crimes committed
+SELECT c_by_district.District, c_by_district.PrimaryCategory , c_by_district.DistrictTotalCrimesRecorded, c_total.TotalCrimesRecorded, ROUND(CAST( CAST(c_by_district.DistrictTotalCrimesRecorded AS REAL) / CAST(c_total.TotalCrimesRecorded AS REAL) AS REAL), 4) * 100 AS PctCrimeTypeByDistrict
+FROM (SELECT District, PrimaryCategory, COUNT(*) AS DistrictTotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY District, PrimaryCategory) AS c_by_district
+LEFT JOIN 
+(SELECT PrimaryCategory, COUNT(*) AS TotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory;
+
+
+
+
+
+
+
+
+
+
+

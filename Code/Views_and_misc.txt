@@ -92,51 +92,8 @@ ALTER TABLE CrimeType DROP COLUMN temp_list;
 
 
 
--- Question 1: Location By time:
-
-
--- 1) Total Crime count in general by district
-
--- Total Crimes by District over total time
-SELECT District, COUNT(*)
-FROM CriminalCase AS CC INNER JOIN Location L ON L.Beat = CC.Beat
-GROUP BY District ;
-
-
--- Total Primary Crimes by District over total time
-SELECT District, PrimaryCategory, COUNT(*)
-FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
-GROUP BY District, PrimaryCategory;
-
-
-
--- rank district by average crime count aggregated
 
 
 
 
 
--- Total Crimes by District over total time
-SELECT * 
-FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat;	
-
--- Total Primary Crimes by District over total time
-
-
-
--- now rank by district 
-SELECT RANK() OVER (PARTITION BY CC.Beat), COUNT(*)
-FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat;
-  
-
-
-
--- 2) Type of Crime count in general by district; based on this you should find which bad crime types are bad
--- rank district by average crime TYPE count aggregated
-
-
-
-
-
--- Create a view with bad crime types (containing the arrest by crime type -- the higher the proportion the more intensive the crime to law enforement -- the more o
--- of these crimes the worse!!!
