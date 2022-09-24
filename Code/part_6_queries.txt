@@ -6,14 +6,15 @@
 -- THEN USE THOSE WITH THE HIGHEST PROPORTION TO INDEX ALL CRIMES THAT FALL UNDER THIS
 -- i) get resource intensive crimes; so calculate: arrest proportion by CrimeType
 -- count all crime types
-
+SELECT PrimaryCategory, COUNT(*) AS ArrestCount
+FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
+GROUP BY PrimaryCategory;
 
 --ii) now count arrests == TRUE by crime type
 SELECT PrimaryCategory, COUNT(*) AS ArrestCount
 FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
 WHERE CC.Arrest == 'True'
 GROUP BY PrimaryCategory;
-
 
 -- iii) merge the two queries above 
 SELECT PrimaryCat_tot.PrimaryCategory, ArrestCount, TotalCommitted, ROUND(CAST(CAST(ArrestCount AS REAL) / CAST(TotalCommitted AS REAL) AS REAL) * 100, 2) AS ProportionArrested
@@ -24,9 +25,70 @@ JOIN
 (SELECT PrimaryCategory, COUNT(*) AS ArrestCount
 FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
 WHERE CC.Arrest == 'True'
-GROUP BY PrimaryCategory) AS PrimaryCat_arr ON PrimaryCat_tot.PrimaryCategory == PrimaryCat_arr.PrimaryCategory ;
--- NOW TRY TO USE A WINDOW FUNCTION FOR THIS
--- ESSENTIALLY RANK by crime 
+GROUP BY PrimaryCategory) AS PrimaryCat_arr ON PrimaryCat_tot.PrimaryCategory == PrimaryCat_arr.PrimaryCategory 
+ORDER BY ProportionArrested DESC;
+
+-- IIII) create the view
+CREATE VIEW view_resource_crimes AS
+SELECT PrimaryCat_tot.PrimaryCategory, ArrestCount, TotalCommitted, ROUND(CAST(CAST(ArrestCount AS REAL) / CAST(TotalCommitted AS REAL) AS REAL) * 100, 2) AS ProportionArrested
+FROM (SELECT PrimaryCategory, COUNT(*) AS TotalCommitted
+FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
+GROUP BY PrimaryCategory) AS PrimaryCat_tot
+JOIN 
+(SELECT PrimaryCategory, COUNT(*) AS ArrestCount
+FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
+WHERE CC.Arrest == 'True'
+GROUP BY PrimaryCategory) AS PrimaryCat_arr ON PrimaryCat_tot.PrimaryCategory == PrimaryCat_arr.PrimaryCategory 
+ORDER BY ProportionArrested DESC;
+
+
+-- this one returns the unique 
+SELECT DISTINCT CT.PrimaryCategory
+FROM CrimeType AS CT JOIN 
+(SELECT PrimaryCategory
+FROM view_resource_crimes
+WHERE ProportionArrested > 50) AS v_intensive ON v_intensive.PrimaryCategory == CT.PrimaryCategory ;
+
+
+-- this one converts to list
+SELECT group_concat(PrimaryCategory) 
+FROM 
+(SELECT DISTINCT CT.PrimaryCategory
+FROM CrimeType AS CT JOIN 
+(SELECT PrimaryCategory
+FROM view_resource_crimes
+WHERE ProportionArrested > 50) AS v_intensive ON v_intensive.PrimaryCategory == CT.PrimaryCategory);
+
+
+-- add the COLUMN
+ALTER TABLE CrimeType
+ADD temp_list TEXT;
+
+-- update with the relevant data
+UPDATE CrimeType SET temp_list = (SELECT group_concat(PrimaryCategory) 
+FROM 
+(SELECT DISTINCT CT.PrimaryCategory
+FROM CrimeType AS CT JOIN 
+(SELECT PrimaryCategory
+FROM view_resource_crimes
+WHERE ProportionArrested > 50) AS v_intensive ON v_intensive.PrimaryCategory == CT.PrimaryCategory));
+
+
+-- Based on this view create an index that labels those crimes that fill up jails  as high intensity by index in Crime type ; all above 50% arrest rate
+CREATE INDEX "index_resource_intensive" ON "CrimeType" (PrimaryCategory)
+WHERE  CrimeType.PrimaryCategory IN (CrimeType.temp_list);
+
+-- make a test 
+SELECT DISTINCT PrimaryCategory
+FROM CrimeType WHERE PrimaryCategory IN (SELECT DISTINCT temp_list FROM CrimeType);
+
+EXPLAIN QUERY PLAN SELECT DISTINCT PrimaryCategory
+FROM CrimeType WHERE PrimaryCategory IN (SELECT DISTINCT temp_list FROM CrimeType);
+
+
+-- remove this column
+ALTER TABLE CrimeType DROP COLUMN temp_list;
+
 
 
 
@@ -38,7 +100,7 @@ GROUP BY PrimaryCategory) AS PrimaryCat_arr ON PrimaryCat_tot.PrimaryCategory ==
 -- Total Crimes by District over total time
 SELECT District, COUNT(*)
 FROM CriminalCase AS CC INNER JOIN Location L ON L.Beat = CC.Beat
-GROUP BY District, ;
+GROUP BY District ;
 
 
 -- Total Primary Crimes by District over total time
@@ -48,12 +110,11 @@ GROUP BY District, PrimaryCategory;
 
 
 
-
-
-
 -- rank district by average crime count aggregated
-SELECT *
-FROM CrimeType;
+
+
+
+
 
 -- Total Crimes by District over total time
 SELECT * 
