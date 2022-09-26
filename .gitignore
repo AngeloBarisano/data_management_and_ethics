@@ -11,7 +11,7 @@ database/
 .gitignore.txt
 assignment_db_1.SQLite3 database (application/vnd.sqlite3)
 
-/database
+
 
 # User-specific files
 *.suo
