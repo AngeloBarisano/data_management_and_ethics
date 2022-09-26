@@ -189,10 +189,150 @@ FROM
 FROM view_convenient_time as vct JOIN CrimeType AS ct
 ON vct.IUCR == ct.IUCR);
 
+/* add resource intensive crimes to it */
+SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4) AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY ct.PrimaryCategory, Year ORDER BY ct.PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_resource_crimes vrc JOIN CrimeType AS ct ON vrc.PrimaryCategory == ct.PrimaryCategory JOIN view_convenient_time as vct ON vct.IUCR == ct.IUCR 
+WHERE vrc.ProportionArrested > 50 AND vrc.TotalCommitted >= 500);
+
+
+
+
+-- calculate the category with the total largest percentage drop over all 5 years by ranking the crime!
+SELECT  DISTINCT PrimaryCategory,PCTChange, Dense_RANK () OVER(ORDER BY PCTChange ASC)
+FROM
+(SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4)
+ AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR
+WHERE Year == '2017' OR Year == '2021'))
+WHERE PCTChange NOT NULL;
+
+
+
+-- calculate the category with the total largest percentage drop over all 5 years by ranking the crime!
+-- biggest 5 INCREAASES 
+SELECT  DISTINCT PrimaryCategory,PCTChange, Dense_RANK () OVER(ORDER BY PCTChange DESC) AS CrimeWithLargestReduction
+FROM
+(SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4)
+ AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR
+WHERE Year == '2017' OR Year == '2021'))
+WHERE PCTChange NOT NULL
+LIMIT 5;
 
 
 
 
 
 
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- q1_part 1 & 2
+-- simple way to get total per year from same query 2017
+SELECT Year, CrimesCommitted , 
+	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PctChangetoPrevYear
+FROM   
+(SELECT Year, Month, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
+GROUP BY Year)
+WHERE  Year =='2017';
+
+-- simple way to get total per year from same query 2021
+SELECT Year, CrimesCommitted , 
+	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PctChangetoPrevYear
+FROM   
+(SELECT Year, Month, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
+GROUP BY Year)
+WHERE Year == '2021';
+
+- -- simple way to get total per year from same query; total change
+SELECT Year, CrimesCommitted , 
+	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PctChangetoPrevYear
+FROM   
+(SELECT Year, Month, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
+
+-- q1 part 3
+-- get overall
+SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4) AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY ct.PrimaryCategory, Year ORDER BY ct.PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_resource_crimes vrc JOIN CrimeType AS ct ON vrc.PrimaryCategory == ct.PrimaryCategory JOIN view_convenient_time as vct ON vct.IUCR == ct.IUCR 
+WHERE vrc.ProportionArrested > 50 AND vrc.TotalCommitted >= 500);
+
+-- justlookign at total changes
+SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4) AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY ct.PrimaryCategory, Year ORDER BY ct.PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_resource_crimes vrc JOIN CrimeType AS ct ON vrc.PrimaryCategory == ct.PrimaryCategory JOIN view_convenient_time as vct ON vct.IUCR == ct.IUCR 
+WHERE vrc.ProportionArrested > 50 AND vrc.TotalCommitted >= 500)
+WHERE Year == '2017' OR Year == '2021';
+
+-- now group all in this category together pct change
+SELECT Year, SUM(CrimeCountCurrentYear), ROUND((SUM(CrimeCountCurrentYear) - CAST(LAG(SUM(CrimeCountCurrentYear)) OVER (ORDER BY Year) AS REAL)) / CAST(LAG(SUM(CrimeCountCurrentYear)) OVER (ORDER BY Year) AS REAL), 4) * 100 AS PCTChange
+ FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY ct.PrimaryCategory, Year ORDER BY ct.PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_resource_crimes vrc JOIN CrimeType AS ct ON vrc.PrimaryCategory == ct.PrimaryCategory JOIN view_convenient_time as vct ON vct.IUCR == ct.IUCR 
+WHERE vrc.ProportionArrested > 50 AND vrc.TotalCommitted >= 500)
+WHERE Year == '2017' OR Year == '2021'
+GROUP BY Year;
+
+-- q1 part 3
+-- biggest 5 INCREAASES 
+SELECT  DISTINCT PrimaryCategory,PCTChange, Dense_RANK () OVER(ORDER BY PCTChange DESC) AS CrimeWithLargestReduction
+FROM
+(SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4)
+ AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR
+WHERE Year == '2017' OR Year == '2021'))
+WHERE PCTChange NOT NULL
+LIMIT 5;
+
+-- biggest 5 decrease 
+SELECT  DISTINCT PrimaryCategory,PCTChange, Dense_RANK () OVER(ORDER BY PCTChange ASC) AS CrimeWithLargestReduction
+FROM
+(SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4)
+ AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR
+WHERE Year == '2017' OR Year == '2021'))
+WHERE PCTChange NOT NULL
+LIMIT 5;

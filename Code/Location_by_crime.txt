@@ -45,9 +45,62 @@ FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JO
 GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory;
 
 
+--- subsect
+SELECT c_by_district.District, c_by_district.PrimaryCategory , c_by_district.DistrictTotalCrimesRecorded, c_total.TotalCrimesRecorded, ROUND(CAST( CAST(c_by_district.DistrictTotalCrimesRecorded AS REAL) / CAST(c_total.TotalCrimesRecorded AS REAL) AS REAL), 4) * 100 AS PctCrimeTypeByDistrict
+FROM (SELECT District, PrimaryCategory, COUNT(*) AS DistrictTotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY District, PrimaryCategory) AS c_by_district
+LEFT JOIN 
+(SELECT PrimaryCategory, COUNT(*) AS TotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory
+WHERE c_total.PrimaryCategory IN ('HOMICIDE', 'Prostitution', 'WEAPONS VIOLATION', 'NARCOTICS');
 
 
 
+-- iiiii) finally: rank those districts with largest percentage for Homicide and Weapons Violations
+-- first do homicide
+SELECT District, DENSE_RANK() OVER (ORDER BY PctCrimeTypeByDistrict DESC) AS RankByCrimeCommitted, DistrictTotalCrimesRecorded, PctCrimeTypeByDistrict
+FROM 
+(SELECT c_by_district.District, c_by_district.PrimaryCategory , c_by_district.DistrictTotalCrimesRecorded, c_total.TotalCrimesRecorded, ROUND(CAST( CAST(c_by_district.DistrictTotalCrimesRecorded AS REAL) / CAST(c_total.TotalCrimesRecorded AS REAL) AS REAL), 4) * 100 AS PctCrimeTypeByDistrict
+FROM (SELECT District, PrimaryCategory, COUNT(*) AS DistrictTotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY District, PrimaryCategory) AS c_by_district
+LEFT JOIN 
+(SELECT PrimaryCategory, COUNT(*) AS TotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory
+WHERE c_total.PrimaryCategory IN ('HOMICIDE'));
+
+
+-- now do the weapons violation
+SELECT District, DENSE_RANK() OVER (ORDER BY PctCrimeTypeByDistrict DESC) AS RankByCrimeCommitted, DistrictTotalCrimesRecorded, PctCrimeTypeByDistrict
+FROM 
+(SELECT c_by_district.District, c_by_district.PrimaryCategory , c_by_district.DistrictTotalCrimesRecorded, c_total.TotalCrimesRecorded, ROUND(CAST( CAST(c_by_district.DistrictTotalCrimesRecorded AS REAL) / CAST(c_total.TotalCrimesRecorded AS REAL) AS REAL), 4) * 100 AS PctCrimeTypeByDistrict
+FROM (SELECT District, PrimaryCategory, COUNT(*) AS DistrictTotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY District, PrimaryCategory) AS c_by_district
+LEFT JOIN 
+(SELECT PrimaryCategory, COUNT(*) AS TotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory
+WHERE c_total.PrimaryCategory IN ('HOMICIDE'));
+
+-- just get all crimes ranked by district limiting to 3 districts
+SELECT * FROM (
+SELECT District, PrimaryCategory, DENSE_RANK() OVER (PARTITION BY PrimaryCategory ORDER BY PctCrimeTypeByDistrict DESC ) AS RankByCrimeCommitted, DistrictTotalCrimesRecorded, PctCrimeTypeByDistrict
+FROM 
+(SELECT c_by_district.District, c_by_district.PrimaryCategory , c_by_district.DistrictTotalCrimesRecorded, c_total.TotalCrimesRecorded, ROUND(CAST( CAST(c_by_district.DistrictTotalCrimesRecorded AS REAL) / CAST(c_total.TotalCrimesRecorded AS REAL) AS REAL), 4) * 100 AS PctCrimeTypeByDistrict
+FROM (SELECT District, PrimaryCategory, COUNT(*) AS DistrictTotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY District, PrimaryCategory) AS c_by_district
+LEFT JOIN 
+(SELECT PrimaryCategory, COUNT(*) AS TotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory
+) ) AS x
+WHERE x.RankByCrimeCommitted <= 3
+;
 
 
 

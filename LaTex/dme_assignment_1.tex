@@ -1,6 +1,39 @@
 \documentclass[a4paper]{article}
-\newtheorem{hyp}{Hypothesis}
 \usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage[a4paper, total={5in, 6.5in}]{geometry}
+\usepackage{color}
+\usepackage{tikz}
+\usepackage{lipsum}
+\usepackage{geometry}
+\geometry{a4paper, left=2.5cm, top=2.5cm, bottom=2.5cm, right=2.5cm}
+\usepackage{changepage}
+\usepackage{booktabs}
+\usepackage[font=small]{caption}
+\DeclareCaptionFormat{mycaptionfont}{\fontsize{12}{13}\selectfont#1#2#3}
+\usepackage{threeparttable}
+\usepackage{ntheorem}
+\usepackage{caption}
+\usepackage{wrapfig,lipsum,booktabs}
+\usepackage{listings}
+\usepackage{pdflscape}
+\captionsetup{format=mycaptionfont}
+\usepackage{subcaption}
+\theoremseparator{:}
+\usepackage{lscape}
+
+\usepackage[utf8]{inputenc}
+\newtheorem{hyp}{Hypothesis}
+\usetikzlibrary{shapes,decorations,arrows,calc,arrows.meta,fit,positioning}
+\tikzset{
+    -Latex,auto,node distance =1 cm and 1 cm,semithick,
+    state/.style ={ellipse, draw, minimum width = 0.7 cm},
+    point/.style = {circle, draw, inner sep=0.04cm,fill,node contents={}},
+    bidirected/.style={Latex-Latex,dashed},
+    el/.style = {inner sep=2pt, align=left, sloped}
+}
+
+
 \graphicspath{ {/home/angelo/Documents/Uni/Courses/Data Managment & Ethics/Integrated Assignment/assignemnet_project_folder/ERDs/} }
 
 
@@ -50,6 +83,7 @@ Based on the data categories and EDA, the following research questions guide the
 
 \begin{itemize}
   \item Do certain crime patterns (e.g. for homicides) persist by location such as certain districts/ beats/ blocks?
+  \textbf{THE MAIN POINT BEHIND THIS QUESTION IS TO ANALYSE THE LOCATIONS OFTHE DISCERNED TRENDS THAT WE OBSERVED IN Q1 wrt. location}
 \end{itemize}
 
 \paragraph{Question 3} Finally, time, location, and crime type is triangulated. This enables policymakers to discern localized trends in the data in order to address crime patterns by distributing resources more efficiently; i.e. allocating more resources to dangerous beats during the night. Additionally, accessory dimensions will be integrated into the analysis to provide a holistic description. For instance assuming that crimes that lead to more arrests are more resource intensive, these crimes put a disproportionate strain on law enforcement. Thus, by triangulating arrests by location and e.g. time of day this will enable us to show areas that need more attention by law enforcement. Another angle would be a specific analysis of beats. \textbf{Beats are the smallest administrative unit of a police district; a beat is patrolled for one year by one unit and ten transferred to another beat. Thus, it might be interesting to investigate the connection between a subset of beats that suddenly stop showing problems during one year and then re-appear in terms of crime in another year. The sub-question would, thus, investigate whether beats that usually persisted in crime only persist on a closed yearly basis. This way, effective police units might be identified and resources might be allocated more efficiently.}
@@ -57,6 +91,8 @@ Based on the data categories and EDA, the following research questions guide the
 \begin{itemize}
   \item Triangulating time, crime-type, and location which areas persists in certain crimes wrt. time?
 In order to prevent homicides; which “beats“ are the most prevalent among homicides? During which time of day (for effective allocation of policing resources)? 
+
+\textbf{BASED ON THE LOCATION AND THE }
 \end{itemize}
 
 As such, the final question considers a variety of hypotheses that can be explored. Overall, these project based questions are constructed in such a way that they guide an external user (PD) through the process of finding areas that need successively complex "sliced \& diced" information and culminate in the creation of actionable policy implications regarding prime prevention through resource allocation.
@@ -164,19 +200,19 @@ ENCRYPTION OF DATABASE!!!!!!!!
 \textbf{NOT: ALSO ADD THE DISTINCT IUCR TO THE CRIME TYPE TABLE!}
 CHANGE THE TABLENAMES IN THIS ENTIRE FILE!!! 
 
-Notes:
-- location table: beat and district are both mandatroy as they are important for the analysis
-- CrimeType: We write PrimaryType etc together for ease of use
-- Case table: CaseId is just normal; Date_Time text because this is how it is being done and NOT NULL because it is required for the analysis;Location TEXT no constrian t as some crimes dont have a location;Arrest TEXT becasue SQLLITE DOES NOT SUPPORT BOOLEAN and not mandatory because not the most important;
+%Notes:
+%- location table: beat and district are both mandatroy as they are important for the analysis
+%- CrimeType: We write PrimaryType etc together for ease of use
+%- Case table: CaseId is just normal; Date_Time text because this is how it is being done and NOT NULL because it is required for the analysis;Location TEXT no constrian t as some crimes dont have a location;Arrest TEXT becasue SQLLITE DOES NOT SUPPORT BOOLEAN and not mandatory because not the most important;
 
 Notes:
 - reading data
-
-ADD A TRIGGER FOR LOGGIN INFORMATION IN THE MASTER TABLE "L4_practice hour_donations_exercises_solutions" page 4
-
-\textbf{IMPORTANT YOU FORGOT TO SET IUCR AS A FOREIGN KEY IN PART 5; FIX THIS!}
-
-\textbf{IMPORTANT: ADD CONSTRINTS SUCH AS NO DATE MISSING OR BETTER: ADD A CONSTRAINT THAT STATES THAT THE DATE IS ACTUALLY IN THE RANGE OF 2017 to 2021 and not beyond or below!!! ADDITIONALLY: CREATE A TRIGGER THAT TRIGGERS WHEN THIS CONSTRAINT IS TRIGGERED!!!}
+%
+%ADD A TRIGGER FOR LOGGIN INFORMATION IN THE MASTER TABLE "L4_practice hour_donations_exercises_solutions" page 4
+%
+%\textbf{IMPORTANT YOU FORGOT TO SET IUCR AS A FOREIGN KEY IN PART 5; FIX THIS!}
+%
+%\textbf{IMPORTANT: ADD CONSTRINTS SUCH AS NO DATE MISSING OR BETTER: ADD A CONSTRAINT THAT STATES THAT THE DATE IS ACTUALLY IN THE RANGE OF 2017 to 2021 and not beyond or below!!! ADDITIONALLY: CREATE A TRIGGER THAT TRIGGERS WHEN THIS CONSTRAINT IS TRIGGERED!!!}
 
 
 
@@ -189,7 +225,7 @@ IMPORTANT! READ DATABASE INTO PYTHON HERE LIKE YOU DID AT VYTAL!!!
 Note: Sadly in order to create an index, one cannot use subqueries due to SQLLITE(this feature is present in other versions of SQL tho); as such, the index that increases speed for arrest heavy crimes does not work here. 
 
 
-Please note that many queries, particularly those meant for visualization were read into python immediately (so they use queries to get the results needed and then lets python do the rest)
+Please note that many queries, particularly those meant for visualization were read into python immediately (so they use queries to get the results needed and then lets python do the rest). Additionally, the database was not saved directly in the repository due to security concerns (.gitignore). Moreover, no virtual environment was ste up to facilitate the project. Finally, it is notable that in order to answer the questions, multiple different approaches in writing the queries were chosen, ranging from joining subqueries to window functions in order to demonstrate knowledge of all functions. Another reason is that I wanted to try the speed of different styles of code (particualrly teh procedually generated optimization behind window functions).
 
 \subsection{Question 1:}
 
@@ -197,18 +233,65 @@ The first question considered how overall crime patterns are distributed with re
 \begin{itemize}
   \item Distribute Total Crimes per year to see the overall trend of crimes committed. This is relevant for policy makers such as atourney generals which are responsible for crime levels in the city and their persecution. 
   \item Further, this analysis is then extended to primary crime-categories by year and month in order to provide a more drilled down perspective to this question regarding overall specific crime. This is relevant as certain crimes are more relevant in the public eye, such as homicides. 
-  \item these crimes are then subsectioned into resoruce intensive crimes compared to non resource intensive crimes; this is decided on whether the crime type overall leads to a more than 50\% arrest quota
+  \item these crimes are then subsectioned into resoruce intensive crimes compared to non resource intensive crimes; this is decided on whether the crime type overall leads to a more than 50\% arrest quota in addition to more than 500 total arrests for this category over the entire timeframe
+  \item bad crimes by time of day are also addressed 
   \item Finally, a window function is used in order to find the yearly change in crime by primary crime type 
 \end{itemize}
 
 
 Moreover, in order to ease the analysis, a view with transformed date attirbutes (i.e. year, month, day, hour of day) for each crime was created.\footnote{Please note that views should only be used for frequently used queries and converted variables}
-
+Additionally, the analysis evolved organically and, thus, is not attached to the questions themselfes. 
 
 \begin{itemize}
   \item How do crime types (e.g. homicides) patterns distributed by a temporal component? How do certain crime types (homicide) patterns distribute by seasonality patterns, by time of day?
 \end{itemize}
 
+Very simple:
+-report how total crimes went down
+- then report the resouce intensive crimes how theybehaved (500 total arrests needed because 100 per year minimum)
+- then mention the crime category that showed the largest reduction among all crimes
+- then report one drill down into homicides for the secondary category to be used (report how each secondary category evolved)
+
+\textbf{Figure 4} contains the overall analysis of the time component by crime. Primarily, these grafics are focused on providing policy makers of Chicago information regarding the overall crime level of the city
+
+\paragraph{Part 1} As can be seen in \textbf{Figure 4 a)} overall crime levels reduced durng the observation time-frame of 2017 to 2021. In 2017, the overall level of crimes recorded was at 161304, which gradually reduced to 124558 crimes committed. Overall, this resulted in a reduction of 22.78\% in total crimes recorded. Thus, on a superficial level, crime tends into the right dirrection. It may be noted, that a view (view_convenient_time) was created in order to facilitate an easier handling of the data and due to this query being performed frequently.\footnote{Aforementioned variable transformations are supposed to be used in such views}
+
+\paragraph{Part 2} However, overall crime levels do not consider the severity of the crime committed. In this context, this analysis focuses on resoruce intensive crimes. These were defined by calculating the proportion of attests in this specific overall (primary) category. It was decided due to berviety concerns that if a crime category displayed more than 50\% arrest rate in addition to more than 500 total arrests over the period of the five recorded years (100 per year), that this crime poses a reasonably higher strain on lawenforcement; this is becasue if such a crime occurs, two lawenforcement officers have to respond only to arrest the suspect in question and bring it to jail while not being able to respond to other calls and if they occur not frequently enough they do not pose a strain on lawenforcement. Overall, of the 34 primary categories defined in the data seven fulfill this classification. \textbf{Figure 4 b)} shows the development over time of these categories. Primarily Narcotics, while increasing initially, Narcotics related crimes dropped by 56.92\%, posing the most frequent category in this category, starting at 6946 in 2017 and dropping to 2992 records. The largest reduction was observed in Prostition related crimes from 438 in 2017 to 53 in 2021, which constitutes a reduction 89.90\%. Finally, the only category that showed an increase in this subcategory was Weapons Violation, which displayed an increase of 93.89\% vom 2814 to 5456 recorded crimes.
+
+Overall, resource intensive crimes showed an overall drop of 29.95\% from 15958 to 11178. Combined with the insight that overall crime levels have dropped, this implies that law enforcement is less strained in 2021 than in 2017. It may be noted that the final drop may be explained by the outbreak of the Corona Virus.
+
+\paragraph{Part 3} When considering all crime categories again, the question which categories, regardless of whether they are resource intensive or not, have shown the largest rise and reduction my be considered. \textbf{Figure 4 c)} displays the top five categories with the largest reduction, while \textbf{Figure 4 d)} shows those categories with the largest increase in records. While the overall trend was positive in terms of over crime levels reducing, crime categories such as Homicide and Human Trafficing show a 19.94\% and 80.0\% increase respectively. This implies, that while the overall trend in the crime is positive, certain subcategories display a severe increase.  
+
+
+\begin{wrapfigure}{L}{9cm}
+\centering
+\begin{subfigure}[b]{0.5\textwidth}
+\includegraphics[scale=.3 ]{/home/angelo/Documents/Uni/Courses/Data Managment & Ethics/Integrated Assignment/assignemnet_project_folder/Code/q1_part1.png}
+   \caption{Total Crimes Recorded}
+   \label{fig:Ng2}
+\end{subfigure}
+
+\begin{subfigure}[b]{0.5\textwidth}
+\includegraphics[scale=.3 ]{/home/angelo/Documents/Uni/Courses/Data Managment & Ethics/Integrated Assignment/assignemnet_project_folder/Code/q1_part2.png}
+   \caption{Resource intensive Crimes Annual Change}
+   \label{fig:Ng2}
+\end{subfigure}
+
+\begin{subfigure}[b]{0.5\textwidth}
+\includegraphics[scale=.3 ]{/home/angelo/Documents/Uni/Courses/Data Managment & Ethics/Integrated Assignment/assignemnet_project_folder/Code/q1_part3a.png}
+   \caption{Crime Categories with the greates Reduction}
+   \label{fig:Ng2}
+\end{subfigure}
+
+\begin{subfigure}[b]{0.5\textwidth}
+\includegraphics[scale=.3 ]{/home/angelo/Documents/Uni/Courses/Data Managment & Ethics/Integrated Assignment/assignemnet_project_folder/Code/q1_part3b.png}
+   \caption{Crime Categories with the greates Increase}
+   \label{fig:Ng2}
+\end{subfigure}
+
+\captionsetup{justification=centering}
+\caption{Temporal Component and Crime by Category}
+\end{wrapfigure}
 
 
 
@@ -220,8 +303,21 @@ Moreover, in order to ease the analysis, a view with transformed date attirbutes
 \end{itemize}
 
 
+When using the insights gained from the first question (regarding overall decrease in intensive crimes but a tragic increas in homicides etc, we can then proceed by examining those locations that are indeed struggeling with these crimes mentioned above
+
+overall points:
+- show a plot that shows that overall levels of total crime levels are simialr in most districts 
+- then proceeed with a slgith drill down into the data by looking at how crime types distribute: meaning that eg there might be a certain district with very high homicide rates based on the percentage of a certain crime type by district -- look specificalyl for those crimes discovered in question 1. 
+
+
+USE AN INDEX ON HOMICIDES AND OVERALL BAD CRIMES 
+
+
+
 \subsection{Question 3:}
 
+
+Finally, based on the trends observed in question 1 and the locations in question 2, we will look at how we can prevent these crimes by allocating resources efficiently to those locations by time of day during time of day (eg morining)
 
 
 \begin{itemize}
