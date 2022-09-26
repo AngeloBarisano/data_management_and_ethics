@@ -92,13 +92,107 @@ FROM
 GROUP BY Year, Month);
 
 
+-- step 4 provide a version of the previous query on a yearly basis based on each primary category split into each category
+SELECT Year, CrimesCommitted , 
+	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PrevYearCrimesCng
+FROM   
+(SELECT Year, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
+GROUP BY Year);
 
 
-EG compare with preceeding or previous row
-*/
-SELECT DISTINCT movie_title, country, imdb_score,
-	-- essentially this is the lagging row and partition by again creates country
-	LEAD(imdb_score) OVER (PARTITION BY country ORDER BY imdb_score DESC) AS next_movie_score
-FROM movie_metadata
-WHERE country NOT NULL;
+-- now get the same per crime
+SELECT Year, CrimesCommitted , 
+	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PrevYearCrimesCng
+FROM   
+(SELECT Year, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
+GROUP BY Year);
+
+
+SELECT vct.IUCR, vct.Year, vct.Month, vct.Day, vct.Hour, ct.PrimaryCategory
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR;
+
+SELECT vct.IUCR, vct.Year, vct.Month, vct.Day, vct.Hour, ct.PrimaryCategory, COUNT(*) CrimeCommittedByPrimaryCategory
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR
+GROUP BY vct.Year, ct.PrimaryCategory;
+
+
+SELECT Year, PrimaryCategory, CrimeCommittedByPrimaryCategory , 
+	ROUND(((CrimeCommittedByPrimaryCategory - LAG(CrimeCommittedByPrimaryCategory) OVER (ORDER BY Year))/ CAST(LAG(CrimeCommittedByPrimaryCategory) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS Change
+FROM   
+(SELECT vct.IUCR, vct.Year, vct.Month, vct.Day, vct.Hour, ct.PrimaryCategory, COUNT(*) CrimeCommittedByPrimaryCategory
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR
+GROUP BY vct.Year, ct.PrimaryCategory)
+ORDER BY PrimaryCategory;
+
+
+
+-- this is better done in a window function: essentially the window function has to 1) group by Primary category, Year and then 2) calculate per PRIMARY
+-- Category calculate the change to the previous year but only for that category
+SELECT vct.IUCR, vct.Year, vct.Month, vct.Day, vct.Hour, ct.PrimaryCategory
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR
+GROUP BY ;
+
+
+
+SELECT DISTINCT Year, PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountYear
+FROM
+(SELECT vct.IUCR, vct.Year, vct.Month, vct.Day, vct.Hour, ct.PrimaryCategory
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR) AS baseq;
+
+
+
+SELECT DISTINCT Year, PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountYear 
+FROM
+(SELECT vct.IUCR, vct.Year, vct.Month, vct.Day, vct.Hour, ct.PrimaryCategory
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR) AS baseq;
+
+
+
+SELECT Year, PrimaryCategory, CrimeCountCurrentYear, LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS CrimeCountPrevYear
+FROM
+(SELECT DISTINCT Year, PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountCurrentYear 
+FROM
+(SELECT vct.IUCR, vct.Year, vct.Month, vct.Day, vct.Hour, ct.PrimaryCategory
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR)) AS baseq;
+
+-- now divide by stuff
+SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4) AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR);
+
+
+
+-- relevant output
+/* IMPORTNAT OUTPUT BELOW*/
+SELECT Year, PrimaryCategory, CrimeCountCurrentYear, LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS CrimeCountPrevYear, CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS diff,
+ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4) AS PCTChange
+FROM
+(SELECT DISTINCT Year, PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountCurrentYear 
+FROM
+(SELECT vct.IUCR, vct.Year, vct.Month, vct.Day, vct.Hour, ct.PrimaryCategory
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR)) AS baseq;
+
+/* SHORTER VERSION */
+SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4) AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR);
+
+
+
+
+
+
+
 	
