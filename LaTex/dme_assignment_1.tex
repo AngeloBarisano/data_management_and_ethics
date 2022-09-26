@@ -161,7 +161,7 @@ Overall, the consequences of removing these observations will be minimal. Of a t
 \section{Part 5}
 ENCRYPTION OF DATABASE!!!!!!!!
 
-
+\textbf{NOT: ALSO ADD THE DISTINCT IUCR TO THE CRIME TYPE TABLE!}
 CHANGE THE TABLENAMES IN THIS ENTIRE FILE!!! 
 
 Notes:
@@ -187,6 +187,70 @@ Note: the goal of this assignment t odo most if not all data transformation in S
 IMPORTANT! READ DATABASE INTO PYTHON HERE LIKE YOU DID AT VYTAL!!!
 
 Note: Sadly in order to create an index, one cannot use subqueries due to SQLLITE(this feature is present in other versions of SQL tho); as such, the index that increases speed for arrest heavy crimes does not work here. 
+
+
+Please note that many queries, particularly those meant for visualization were read into python immediately (so they use queries to get the results needed and then lets python do the rest)
+
+\subsection{Question 1:}
+
+The first question considered how overall crime patterns are distributed with respect to the temporal component. To this end the following queries were constructed 
+\begin{itemize}
+  \item Distribute Total Crimes per year to see the overall trend of crimes committed. This is relevant for policy makers such as atourney generals which are responsible for crime levels in the city and their persecution. 
+  \item Further, this analysis is then extended to primary crime-categories by year and month in order to provide a more drilled down perspective to this question regarding overall specific crime. This is relevant as certain crimes are more relevant in the public eye, such as homicides. 
+  \item these crimes are then subsectioned into resoruce intensive crimes compared to non resource intensive crimes; this is decided on whether the crime type overall leads to a more than 50\% arrest quota
+  \item Finally, a window function is used in order to find the yearly change in crime by primary crime type 
+\end{itemize}
+
+
+Moreover, in order to ease the analysis, a view with transformed date attirbutes (i.e. year, month, day, hour of day) for each crime was created.\footnote{Please note that views should only be used for frequently used queries and converted variables}
+
+
+\begin{itemize}
+  \item How do crime types (e.g. homicides) patterns distributed by a temporal component? How do certain crime types (homicide) patterns distribute by seasonality patterns, by time of day?
+\end{itemize}
+
+
+
+
+\subsection{Question 2:}
+
+
+\begin{itemize}
+  \item Do certain crime patterns (e.g. for homicides) persist by location such as certain districts/ beats/ blocks?
+\end{itemize}
+
+
+\subsection{Question 3:}
+
+
+
+\begin{itemize}
+  \item Triangulating time, crime-type, and location which areas persists in certain crimes wrt. time?
+In order to prevent homicides; which “beats“ are the most prevalent among homicides? During which time of day (for effective allocation of policing resources)? 
+\end{itemize}
+
+
+
+
+
+
+
+
+\subsection{Conclusion}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
