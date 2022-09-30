@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/home/angelo/Documents/Uni/Courses/Data Managment &amp; Ethics/Integrated Assignment/assignemnet_project_folder/database/assignment_db_2" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="4274"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,9:mainCrimeType"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="Load Data">-- Create table 1: Location
+CREATE TABLE Location (
+Beat TEXT PRIMARY KEY NOT NULL UNIQUE,
+District TEXT NOT NULL);
+
+
+
+
+
+-- Create Table 2: crimetype
+CREATE TABLE CrimeType (
+IUCR TEXT PRIMARY KEY NOT NULL UNIQUE,
+PrimaryCategory TEXT,
+SecondaryCategory TEXT);
+
+
+-- create Table 3: CASE
+CREATE TABLE CriminalCase (
+CrimeID INT PRIMARY KEY NOT NULL UNIQUE,
+-- we use 2022 because that is the upper limit excludeing 
+Date_Time TEXT NOT NULL CHECK (Date_Time BETWEEN 2017 AND 2022),
+Arrest TEXT, 
+Beat TEXT NOT NULL,
+IUCR TEXT NOT NULL, 
+FOREIGN KEY (Beat) REFERENCES Location (Beat),
+FOREIGN KEY (IUCR) REFERENCES CrimeType (IUCR)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+);
+
+
+
+
+
+
+
+
+
+-- Data insertion into location
+INSERT INTO Location (Beat, District) SELECT DISTINCT 
+beat, district FROM data_crime_transformed;
+
+-- Data insertion into CrimeType
+INSERT INTO CrimeType (IUCR, PrimaryCategory, SecondaryCategory) SELECT DISTINCT 
+iucr, primarytype, description FROM data_crime_transformed;
+
+-- Data Insertion into Criminal Case 
+INSERT INTO CriminalCase (CrimeID, Date_Time, Arrest, Beat, IUCR) 
+SELECT DISTINCT CrimeID, &quot;date&quot;, &quot;location&quot;, arrest, beat, iucr 
+FROM data_crime_transformed;
+
+
+</sql><sql name="View Tab">
+-- The time view
+CREATE VIEW view_convenient_time AS
+SELECT CrimeID, IUCR, year AS Year, month AS Month, day AS Day, hour as Hour,
+CASE WHEN CAST(hour AS INT) &gt;= 6 and CAST(hour AS INT) &lt;= 11  then 'Morning'
+			WHEN CAST(hour AS INT) &gt;= 12 and CAST(hour AS INT) &lt;= 17  then 'Noon'
+			WHEN CAST(hour AS INT) &gt;= 18 and CAST(hour AS INT) &lt;= 23  then 'Evening'
+			WHEN CAST(hour AS INT) &gt;= 0 and CAST(hour AS INT) &lt;= 5  then 'Night'
+		   end TimeofDay
+FROM
+(SELECT CrimeID, IUCR, STRFTIME(&quot;%d&quot;, Date_Time) AS day, STRFTIME(&quot;%m&quot;, Date_Time) AS month, STRFTIME(&quot;%Y&quot;, Date_Time) AS year, STRFTIME(&quot;%H&quot;, Date_Time) AS hour
+FROM CriminalCase)
+
+
+
+-- The resource intensive crime; this is an experiment
+CREATE VIEW view_resource_crimes AS
+SELECT PrimaryCat_tot.PrimaryCategory, ArrestCount, TotalCommitted, ROUND(CAST(CAST(ArrestCount AS REAL) / CAST(TotalCommitted AS REAL) AS REAL) * 100, 2) AS ProportionArrested
+FROM (SELECT PrimaryCategory, COUNT(*) AS TotalCommitted
+FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
+GROUP BY PrimaryCategory) AS PrimaryCat_tot
+JOIN 
+(SELECT PrimaryCategory, COUNT(*) AS ArrestCount
+FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
+WHERE CC.Arrest == 'True'
+GROUP BY PrimaryCategory) AS PrimaryCat_arr ON PrimaryCat_tot.PrimaryCategory == PrimaryCat_arr.PrimaryCategory 
+ORDER BY ProportionArrested DESC
+</sql><sql name="Question 1 ">-- q1 part 1 
+- -- simple way to get total per year from same query; total change
+SELECT Year, CrimesCommitted , 
+	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PctChangetoPrevYear
+FROM   
+(SELECT Year, Month, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
+GROUP BY Year);
+
+-- caklculate total change over those 5 years 
+SELECT Year, CrimesCommitted , 
+	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PctChangetoPrevYear
+FROM   
+(SELECT Year, Month, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
+GROUP BY Year)
+WHERE Year IN('2017', '2021');
+
+-- alternative with sum
+SELECT Year, SUM(CrimeCountCurrentYear), ROUND((SUM(CrimeCountCurrentYear) - CAST(LAG(SUM(CrimeCountCurrentYear)) OVER (ORDER BY Year) AS REAL)) / CAST(LAG(SUM(CrimeCountCurrentYear)) OVER (ORDER BY Year) AS REAL), 4) * 100 AS PCTChange
+ FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY ct.PrimaryCategory, Year ORDER BY ct.PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_resource_crimes vrc JOIN CrimeType AS ct ON vrc.PrimaryCategory == ct.PrimaryCategory JOIN view_convenient_time as vct ON vct.IUCR == ct.IUCR 
+WHERE vrc.ProportionArrested &gt; 50 AND vrc.TotalCommitted &gt;= 500)
+WHERE Year == '2017' OR Year == '2021'
+GROUP BY Year;
+
+
+
+-- q1 part 2
+SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4) AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY ct.PrimaryCategory, Year ORDER BY ct.PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_resource_crimes vrc JOIN CrimeType AS ct ON vrc.PrimaryCategory == ct.PrimaryCategory JOIN view_convenient_time as vct ON vct.IUCR == ct.IUCR 
+WHERE vrc.ProportionArrested &gt; 50 AND vrc.TotalCommitted &gt;= 500);
+
+
+-- q1 part 3
+-- biggest 5 INCREAASES 
+SELECT  DISTINCT PrimaryCategory,PCTChange, Dense_RANK () OVER(ORDER BY PCTChange DESC) AS CrimeWithLargestReduction
+FROM
+(SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4)
+ AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR
+WHERE Year == '2017' OR Year == '2021'))
+WHERE PCTChange NOT NULL
+LIMIT 5;
+
+-- biggest 5 decrease 
+SELECT  DISTINCT PrimaryCategory,PCTChange, Dense_RANK () OVER(ORDER BY PCTChange ASC) AS CrimeWithLargestReduction
+FROM
+(SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4)
+ AS PCTChange
+FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY PrimaryCategory, Year ORDER BY PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_convenient_time as vct JOIN CrimeType AS ct
+ON vct.IUCR == ct.IUCR
+WHERE Year == '2017' OR Year == '2021'))
+WHERE PCTChange NOT NULL
+LIMIT 5;
+
+
+
+
+
+</sql><sql name="Question 2">-- just get intensice crimes ranked by district limiting to 3 districts
+SELECT * FROM (
+SELECT PrimaryCategory, District, DENSE_RANK() OVER (PARTITION BY PrimaryCategory ORDER BY PctCrimeTypeByDistrict DESC ) AS RankByCrimeCommitted, DistrictTotalCrimesRecorded, PctCrimeTypeByDistrict
+FROM 
+-- get primary crime type count per district total
+(SELECT c_by_district.District, c_by_district.PrimaryCategory , c_by_district.DistrictTotalCrimesRecorded, c_total.TotalCrimesRecorded, ROUND(CAST( CAST(c_by_district.DistrictTotalCrimesRecorded AS REAL) / CAST(c_total.TotalCrimesRecorded AS REAL) AS REAL), 4) * 100 AS PctCrimeTypeByDistrict
+FROM (SELECT District, PrimaryCategory, COUNT(*) AS DistrictTotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY District, PrimaryCategory) AS c_by_district
+LEFT JOIN 
+-- get the crimes recorded in total per category
+(SELECT PrimaryCategory, COUNT(*) AS TotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory
+WHERE c_total.PrimaryCategory IN ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS')) ) AS x
+WHERE x.RankByCrimeCommitted &lt;= 3
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+</sql><sql name="Mayberightfile">-- Put all together
+SELECT l.district, ct.PrimaryCategory, vct.TimeofDay, COUNT(*) AS &quot;Crimes Per TimeofDay&quot;, ROUND(CAST(COUNT(*) AS REAL) / SUM(COUNT(*)) OVER(PARTITION BY ct.PrimaryCategory) * 100, 4) AS Proportion
+FROM
+view_convenient_time as vct 
+	JOIN CrimeType as ct ON vct.IUCR == ct.IUCR 
+		JOIN CriminalCase as cc ON cc.CrimeID == vct.CrimeID 
+			JOIN Location as l ON l.beat == cc.beat
+WHERE ct.PrimaryCategory in ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS') 
+	AND l.district == '11'
+GROUP BY ct.PrimaryCategory, vct.TimeofDay
+;
+
+
+</sql><current_tab id="4"/></tab_sql></sqlb_project>
