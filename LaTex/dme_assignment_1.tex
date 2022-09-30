@@ -45,19 +45,31 @@
 \maketitle
 
 \newpage
+
+
+
+
 \section{Task 1: Plan \& Explore}
+
+
+\textbf{Please note: I try to be precise but sometimes I will not descibe certain features: the fact that a primary key is unique should be given etc. I try to describe everything but sometimes I just have to assume that the correctur knows what this is about. }
 
 \subsection{Origin of Data \& Purpose Introduction}
 \paragraph{Introduction} Data drives security. The wide spread adoption of data information systems has been used to recognize crime hot-spots to increase policing efficiency and protect people. Thus, creating effective information systems for crime prevention is at the center of policy makers and executive branches of governments. This trend has led to the Chicago PD reaching out to this data management team with the request of creating a Data Management System for crime-data in Chicago.
 
-To this end, the Chicago PD and this Data Management Unit is interested on setting the foundation for a FAIR database to answer research questions; i.e. a data base meant to flexible and easy in use of slicing and dicing data to find answers and, contemporaneously, make them available. Additionally, any code produced during this endeavour will be made public on GitHub for transparency purposes. 
+\subsection{Purpose of this assignemnt \& data plan}
+
+To this end, a research database will be created in accordance to the FAIR principles (\textbf{Findability, Accessibility, Interoperability, and Reuse}). The expressed goal of this assignment is to offer a database and some fundamental queries for data exploration; i.e. a database with flexible example queries meant to further analysis of the trends discovered in the data. Additionally, any code produced during this endeavour will be made public on GitHub for transparency purposes. 
 
 \paragraph{Data Description in Scope, Volume, and Format}
-The data was provided by the Chicago PD contains a sample of 730,900 registered crimes in the administrative districts of Chicago between the years of 2017 and 2021. The initial data source is in CVS-format and pertains to specific recorded crimes in the administrative jurisdiction of the Chicago PD in addition to time, location, crime type, and arrested or not. Thus, the data contact is to be found on the Chicago PD website (\textbf{CITE THE CHICAGO WEBSITE FOR THE DATA}). Considerations regarding the ethical (\& GDPR compliant regardless of whether the data comes from the USA) use of the data will be discussed in part 5 of this assignment.
+The data was provided by the Chicago PD contains a sample of 730,900 registered crimes in the administrative districts of Chicago between the years of 2017 and 2021. The initial data source is in CVS-format and pertains to specific recorded crimes in the administrative jurisdiction of the Chicago PD in addition to time, location, crime type, and arrested or not. Thus, the data contact is to be found on the Chicago PD website (\textbf{CITE THE CHICAGO WEBSITE FOR THE DATA}). Considerations regarding the ethical (\& GDPR compliant regardless of whether the data comes from the USA) use of the data will be discussed in part 5 of this assignment. It is notable that, while this data is only a subsample of the total database crime data recorded in this timeframe, the overall trends in the data are still maintained. Thus, the EDA for which this database can be used for further analysing trends uncovered during this assignment. 
 
 \paragraph{Project time frame, researchers, and misc information} The set project time frame is the 27th of August 2022 till 2nd of October 2022. Involved in this project is only one student, Angelo Barisano. Additionally, this project is designed to comply with FAIR standards (\textbf{CITE FAIR STUFF HERE}).
 
-\subsection{WHAT IS THE PURPOSE OF THIS ASSIGNMENT??}
+
+\textbf{ETHICAL CONSIDERATIONS, FAIR, AND GDPR COMPLIANCE?!?!!?}
+
+
 
 \subsection{Research Question}
 
@@ -71,20 +83,30 @@ Upon conducting an initial Exploratory Data Analysis (EDA), three major categori
   \item Crime record data (time, arrest, etc.)
 \end{itemize}
 
-Based on the data categories and EDA, the following research questions guide the creation of the database in increasing complexity. 
+Based on the data categories and EDA, the following research questions guide the creation of the database in increasing complexity. It may be noted, that the questions are ment to not be exact in their nature, but that the purpose of the assignmnet, database, and questions posed are of an explorative nature, evolving while answering said questions. Thus, this assignment is interpreted as an initial exploratory data analysis meant to uncover trends for further analysis in addition offering useful insights to polciy makers. 
 
-\paragraph{Question 1} Finding prevalent crime patterns in the data is a common starting point. Thus, this question provides future research with an adjustable query to gain an overview over the general distribution of crime by type. Subsequently applying a temporal component (i.e. by day of week,  month, year, season, etc.) to this initial distribution reveals trends and temporal patters. This way, this question helps to answer questions to policy makers regarding general trends; such as how crime developed overall and by type. As such:
+\paragraph{Question 1} Finding prevalent crime patterns in the data is a common starting point in exploring crime data. Crime trends take the form of temporal patterns distributed over a defined timeframe of interest. This kind of reporting is commonly used by policy makers (such as atourney generals) who are monitored based on their performance in terms of crime prevention and the overall trend that can be observed. 
 
-\begin{itemize}
-  \item How do crime types (e.g. homicides) patterns distributed by a temporal component? How do certain crime types (homicide) patterns distribute by seasonality patterns, by time of day?
-\end{itemize}
+Thus, this question provides future research with an adjustable query to gain an overview over the general distribution of crime by type. Subsequently applying a temporal component (i.e. by day of week,  month, year, season, etc.) to this initial distribution reveals trends and temporal patters. This way, this question helps to answer questions to policy makers regarding general trends; such as how crime developed overall and by type. 
 
-\paragraph{Question 2} The next logical progression is to observe the location and crime dimension together. The assumption is that certain districts and beats tend to be more prevalent in certain crime types. Thus, question two follows:
+More importantly, however, is that the descriptive analysis of temporal patterns may indicate areas of interest that may be examined more closely by further questions (Q2 \& Q3) through its explorative lense. As such:
 
 \begin{itemize}
-  \item Do certain crime patterns (e.g. for homicides) persist by location such as certain districts/ beats/ blocks?
-  \textbf{THE MAIN POINT BEHIND THIS QUESTION IS TO ANALYSE THE LOCATIONS OFTHE DISCERNED TRENDS THAT WE OBSERVED IN Q1 wrt. location}
+  \item What are the overall crime trends that can be observed in Chicago between 2017 and 2021? What crime types changed a lot? Which crime types increased during the timeframe
+
 \end{itemize}
+
+In order to keep the report in a reasonable frame, a primary focus will be laid on \textbf{WHAT??}
+
+This question will be answered by usding a view which contains the date per crime in a convenient manner, such as year, month, day, hour. This way, the analysis is decreased in complexity; providing future researchers with easy to use time dimensions. Moreover, in this question, a variety of window function will be used to group by the time dimension and return a distribution per time component (eg year).
+
+\paragraph{Question 2} The next logical progression is to observe the location and crime dimension together. Certain crime trends, such as those of homicides, may be more localized; thus, certain neighborhoods and districts may be overrepresented in heavy crimes. The assumption is that certain districts and beats tend to be more prevalent in certain crime types. As such, in order to help the PD and policy makers to identify probelmatic areas with respect to certain crime hotspots, districts and beats are analysed with respect to trends identified by the temporal compornent on a localized level. Thus, question two follows:
+
+\begin{itemize}
+  \item Based on overall trends discerned in question 1, what locations (beats \& districts) are disproportinally represented overall and in selected subcategories of crimes (based on Q1)?
+\end{itemize}
+
+This question will be answered similarly as Q1. However, the main focus here is laid on using standard $GROUP BY$ functions instead of window functions to demonstrate a variation in usage. 
 
 \paragraph{Question 3} Finally, time, location, and crime type is triangulated. This enables policymakers to discern localized trends in the data in order to address crime patterns by distributing resources more efficiently; i.e. allocating more resources to dangerous beats during the night. Additionally, accessory dimensions will be integrated into the analysis to provide a holistic description. For instance assuming that crimes that lead to more arrests are more resource intensive, these crimes put a disproportionate strain on law enforcement. Thus, by triangulating arrests by location and e.g. time of day this will enable us to show areas that need more attention by law enforcement. Another angle would be a specific analysis of beats. \textbf{Beats are the smallest administrative unit of a police district; a beat is patrolled for one year by one unit and ten transferred to another beat. Thus, it might be interesting to investigate the connection between a subset of beats that suddenly stop showing problems during one year and then re-appear in terms of crime in another year. The sub-question would, thus, investigate whether beats that usually persisted in crime only persist on a closed yearly basis. This way, effective police units might be identified and resources might be allocated more efficiently.}
  
@@ -97,56 +119,79 @@ In order to prevent homicides; which “beats“ are the most prevalent among ho
 
 As such, the final question considers a variety of hypotheses that can be explored. Overall, these project based questions are constructed in such a way that they guide an external user (PD) through the process of finding areas that need successively complex "sliced \& diced" information and culminate in the creation of actionable policy implications regarding prime prevention through resource allocation.
 
+AS such, by the descriptive and explorative nature of the questions posed, one can deduce that the entire analysis can be conducted using simple SQL functionalities.
 
 \textbf{ADD PLOTS of EDA ALREADY HERE!!!}
 
 
-\section{Design and Organize}
+\section{Task 2: Design and Organize}
+\textbf{IMPORTANT: DISCUSS what 1st and second normal form means that that all entities are in 2nd normal form by default and due to the structure in 3rd nf!!!}
+
 
 \textbf{IMPORTANT!!!! READ THE DEFINITION FOR 3rd NF AGAIN; MAYBE CRIME AND LOCATION QUALIFY TO BE 3rd NF... but maybe also not. STRESS AGAIN THAT THE INCLUSION OF BLOCK IS NOT NEEDED FOR THIS RESEARCH!!!}
 
-\paragraph{Entity 1: Case} Part 1 identified three relevant data categories.  The first component consist of the individual instances of cases. Conceptually, these are central to this project as they enable the creation of the frequency distributions conditional on time and/or location. The variables that define this entity are as follows:
+The aforementioned questions in task 1 require three relevant datacategories, as identified in the data. These pertain to the 1) time dimension, 2) location dimension, and 3) the crime or case instance itself. Generally, these already display common characteristics of regular entities in a relational database (\textbf{CITE HERE BOOK FROM BACHELOR COURSE}). Generally, the design of the database followed the approach of combining logical structures (e.g. location) with an easy to use query design to explore the data.
+
+We will start out with the case entity, as cases recorded in the original data create the centerpiece for all three posed questions.
+
+
+
+\paragraph{Entity 1: Case} The first component consist of the individual instances of cases. Conceptually, these are central to this project as they enable the creation of the frequency distributions conditional on time and/or location. The variables that define this entity are as follows:
 
 \begin{itemize}
   \item CaseId
   \item DateTime object implicitly containing day, month, year, and time of day 
   \item Arrest Boolean  
-´  \item \textbf{Location Description???????????????????????????????????????????}
 \item \textbf{Location Description???????????????????????????????????????????}
-\item \textbf{Location Description???????????????????????????????????????????}?????????????????????????????????????????????????????
 \end{itemize}
  
-The DateTime object will enable the clustering of crimes by the time dimension. Additionally, arrest information is used to further drill down the analysis and dissect the cases for more resource intensive cases. Finally, the dimensions of Latitude and Longitude will be included on the case level. The reason for this is, while lat-lon information pertains to the location category, this variable(s) is case specific due to its precision. Imagine the database where latitude and longitude would be described as a standalone entity hierarchically below district or beat. To make the relation work each location would have to carry a CaseId as a foreign key in order to identify what type of crime was perpetrated at this location. Assuming that the lat-lon information is sufficiently granular, this would create a one-to-one relationship between case and the lat-lon entity (disregarding district in this case). Any one-to-one relationship is redundant. Thus, it does not make sense to place lat-lon as a standalone entity hierarchically below district. The reason for the inclusion of lat-lon is its usage as geopandas objects in plotting crime in a heat-map in part 6. Please note that while the information of lat-lon technically violates 1st NF requirements, this information is not supposed to be processed via SQL (except for PostGIS applications) but as a datatype in scripting languages; thus it is an atomic item.
+It may be noted that items such as location description and location themselfes, though listed, are not included in the final product in order to comply with the principle of data minimization (\textbf{\textit{CITE GDPR}}. This is also reduces the possibility of mistakes from occuring. 
 
-\textbf{The primary benefit of case as an entity is to make the following two dimensions compliant to the 2nd normal form (and to some extend compliant with 3rd normal form with some caveats) by default. If we were to leave out case as an entity and immediately match crime types and location, the resulting two entities could not comply with 3rd normal form as crime types and location (as categories) would produce a many-to-many relationship. As such, the case entity inadvertently functions as an associative entity, reducing many-to-many relationships to two many-to-one relationships.\footnote{I will not further elaborate on this; this is a logical conclusion; in order to reach 2nd normal form this is a required step which is obvious} As a consequence, case complies to the 3rd NF by definition as no stand alone entities are to be found in this entity, while requiring the other data categories to normalize as well. It is notable, that while such design choices should be reflected by leaving out case as an entity in the conceptual model in part 3 and then include it as part of the logical model, but case is so pivotal to the functioning of the database in its purpose, that we will consider it along the way a a valid entity.}
+The DateTime object will enable the clustering of crimes by the time dimension; which will be done via a view. Additionally, arrest information is used to further drill down the analysis and dissect the cases for more resource intensive cases. This is part of discenring interesting trends and exploring the data. The primary use case of case as an entity, however, is to make the entire database 1) work from a logical perspective (no crime distribution without each individual crime) and 2) to be the logical link between the type of crime committed in every case and where it happens. This way, the case entity is not only a natural entity, but it also fulfills the purpose of making the following two dimensions compliant to the 2nd normal form (and to some extend compliant with 3rd normal form with some caveats) by default. Imagine that if we were to leave out case as an entity and immediately match crime types and location, the resulting two entities could not comply with 3rd normal form as crime types and location (as categories) would produce a many-to-many relationship - thus, not minimizing storage space, increasing query diffuclty, and cause an inefficient relational database. As such, the case entity inadvertently functions as an associative entity, reducing many-to-many relationships to two many-to-one relationships.\footnote{I will not further elaborate on this; this is a logical conclusion; in order to reach 2nd normal form this is a required step which is obvious} As a consequence, case complies to the 3rd NF by definition as no stand alone entities are to be found in this entity (i.e. no transitive dependencies as will be described later), while requiring the other data categories to normalize as well.
 
-
-\paragraph{Entity 2: Crime Type} Every Case requires a crime to be a valid instance. The raw data provides the IUCR, which identifies each unique combination of primary (e.g. homicide) and secondary crime category (e.g. first degree). Generally, most headlines only consider the primary type of crime, such as homicides, and generally disregard the secondary description of the data, such as first, second, or third degree in this case \textbf{CITE SOME EXAMPLE NEWSPAPERS}. However, while this assignment might not need the information regarding secondary description; it is also the task of a FAIR database to enable future users to differentiate between different types of general crimes. Furthermore, it might be the case, that certain subcategories of crimes tend to be more prevalent than others. As such, the crime type entity contains both the primary category and the secondary description of the crime committed. It is notable that it does not make sense to further normalize this category, as the primary type column, though repeating, would be an entity of one dimension; thus, superfluous. \textbf{It is notable that the secondary description, while unique to the IUCR in most cases does not suffice to be the primary key due to some duplication (not unique) in addition to being long for some crime types.}
-
-
-\paragraph{Entity 3 \& 4: Location} The first entity identified in this case pertains to (police) district. Following hierarchically, beats are below district; one district containing multiple beats. Thus, a natural hierarchy is being identified, resolving any issues regarding normalization when connecting case to district and then to beat. 
-
-\textbf{It is notable, that the choice of splitting district from beat is a design choice meant to improve clarity and demonstrate knowledge of the 3rd NF. The existstence of beat as an entity technically removes the need for a district entity due to all information being included in the case and beat entity at the same time. If we were to remove the leation from district to case, the resulting queries would be more complex than needed.
-MAYBE WE SHOULD REMOVE THE CONNECTION OF DISTRICT AND CASE!!!}
-
-The reason to exclude block as a entity of analysis is threefold. 1) blocks overlap to some extend with different districts and beats increasing the level of analysis unnecessarily. 2) Beats and districts are administrative units, while blocks require local knowledge. 3) The information regarding the location of the case happening is already included in the lat-lon information in entitiy one as block only pertains to a reducted version of the address making the lat-lon information more informative when plotted (also: no map regarding blocks in chicago is available). 
-
-\paragraph{Logging \& Master Table} Finally, a small master table will be included which tracks any information regarding formatting the data, data retrieval, and restrictions/ triggers called (not included in part 3 due to relevancy).
+ It is notable, that while such design choices should be reflected by leaving out case as an entity in the conceptual model in part 3 and then include it as part of the logical model, but case is so pivotal to the functioning of the database in its purpose, that we will consider it along the way a a valid entity.
+ 
+Please note that any datetime object should not get its own entity. This would violate rules set for relational databases \textbf{CITE BACHELOR STUFF HERE} as any instance created for case requires an instance to be creased in a datetime relation; this would make the relation a one to one relationship, which are not efficient from a storage perspective. 
+ 
+Consequently, no problems of resolving many-to-many relationships are imposed on the design (i.a. no normalization issues later), while minizmizing storage usage, in addition to adding an intuitive centerpiece to the database being implemented.  
+ 
+%Finally, the dimensions of Latitude and Longitude will be included on the case level. The reason for this is, while lat-lon information pertains to the location category, this variable(s) is case specific due to its precision. Imagine the database where latitude and longitude would be described as a standalone entity hierarchically below district or beat. To make the relation work each location would have to carry a CaseId as a foreign key in order to identify what type of crime was perpetrated at this location. Assuming that the lat-lon information is sufficiently granular, this would create a one-to-one relationship between case and the lat-lon entity (disregarding district in this case). Any one-to-one relationship is redundant. Thus, it does not make sense to place lat-lon as a standalone entity hierarchically below district. The reason for the inclusion of lat-lon is its usage as geopandas objects in plotting crime in a heat-map in part 6. Please note that while the information of lat-lon technically violates 1st NF requirements, this information is not supposed to be processed via SQL (except for PostGIS applications) but as a datatype in scripting languages; thus it is an atomic item.
 
 
-\paragraph{Conclusion} Due to the fundamental nature of the data, with the case itself being fundamental to the entire structure, all issues regarding normalization and inadvertently many-to-many relationships are solved as will be demonstrated in the next section.
 
 
-\textbf{VERY IMPORTNAT: regarding the crime type YOU CAN USE THE PRIMARY TYPE AND SECONDARY TYPE BOTH TOGETHER IN ONE TABLE USING IUCR IN THE CRIME - THEN YOU CAN SIMPLY USE THE DESCRIPTION FOR ONE INTERESTING QUESTION AND ARGUE THAT THIS IS LEFT OVER SO THAT PEOPLE CAN DISTINUGSH FURTHER LATER DOWN}
+\paragraph{Entity 2: Crime Type} Every Case requires a crime to be a valid instance. The raw data provides the IUCR, which identifies each unique combination of primary (e.g. homicide) and secondary crime category (e.g. first degree). Generally, most headlines only consider the primary type of crime, such as homicides, and generally disregard the secondary description of the data, such as first, second, or third degree in this case \textbf{CITE SOME EXAMPLE NEWSPAPERS}. However, for certain crimes, such as homicide, it might be useful to be more differntiated wrt. eg. gang related homicides.it is also the task of a FAIR database to enable future users to differentiate between different types of general crimes. Furthermore, it might be the case, that certain subcategories of crimes tend to be more prevalent than others.
+Subsequently, due to the inclusion of the secondary description of the crime, this necessitates that crime type is an entity on its own. Suppose only the primary category of any crime commited was to be analysed. This would imply that both the IUCR and secondary description would be superflous. Subsequetnly, any entity with only one variable is a superflous entity, taking up unnecessary storage space (similar to one to one relationships). The reason for this is that if a crime occurs, a foreign key would have to relate the primary crime type to the crime type entity. Obviously, the primary crime type foreign key would be the only variable (and primary key) in crime type. As such, it would not make sense from a relational perspective to split crime type into a separate entity. It would make more sense to integrate it directly into the case entity. However, now, due to the inclusion of seconday description as an attribute, crime type has to be its own entity in order to move the case table from 2nd to 3rd normal form (the crime type information would not be transitive). Subsequently, the creation of a crime type entity moves both the case entity and crime type entity into 3rd normal form. Moreover, IUCR then becomes a natural PK (and FK) in this relationship. Subsequently, through the initial design choice, any issues regarding normalization are being taken care of. 
+
+
+\paragraph{Entity 3: Location} Finally, the location information is being considered. Here, a similar logic applies as with the crime type. In order to analyse certain administrative boundaries, such as districts etc., a location entity has to be included. Hypothetically, if we were to only include information in the database pertaining to in which district an instance of a crime was recorded, the aforementioned case entity would be the most optimal place for such a varaible to be stored. However, this research database aims at offering the ability to further analyse certain subsections of particular police districts - their beats in order to offer better descriptive results. 
+Subsequently, any instance of a crime recorded will have its district and beat included. Following hierarchically, beats are below district; one district containing multiple beats. This implies that the most optimal database structure is to use beat as the primary and foreign key in this relationship. This way, any normal form issues are resolved by default, setting both the case and location entity into 3rd normal form. 
+
+The reason to exclude block as a entity of analysis is twofold. 1) blocks overlap to some extend with different districts and beats increasing the level of analysis unnecessarily. 2) Beats and districts are administrative units, while blocks require local knowledge, which is what we try to use to answer for the aforementioned questions. 
+
+
+\paragraph{Logging \& Master Table} Finally, a small master table will be included which tracks any information regarding formatting the data, data retrieval, and restrictions/ triggers called (not included in part 3 due to relevancy). Such relations are not part of the standard relationship model and are, thus, excluded from the ERD development in part 3. 
+
+
+\paragraph{Conclusion} Based on the questions posed during task 1 in addition to the fundamental nature of the data provided, the structure described in this section offers an intuitive optimal solution for any normal form problems that might arise. Particularly the inclusion of the case enitiy as an inttegral part of the relationship model automatically resolves any issues pertaining to the inclusion of location and crime type information on a case by case level. 
+
+
 
 \section{Part 3: ERD}
 
-\textbf{IMPORTANT!!!!! DESCRIBE IN THE CONCEPTUAL MODEL ETC WITH TEXT THAT EG CRIME TYPE "HAS MANY" CASES ABOVE THE LINES LIKE ON THE SLIDES}
+\
 
-\includegraphics[scale=.35 ]{ConceptualDiagramFinal.drawiowdescription.png}
+\begin{figure}[htp]
+		\centering
+		\includegraphics[scale=.40 ]{ConceptualDiagram.drawio.png}
+         \small
+         \caption{Conceptual Diagram}
+\end{figure}
+
+
 
 \subsection{Conceptual Model}
-As mentioned in part 2, the individual case instance is central to the database design. Contemporaneously, the case entity resolves all problems regarding normal form and many-to-many relationships. Subsequently, the conceptual model describes the relation of the three entities described in part 2: 
+As mentioned in part 2, the individual criminal case instance is central to the database design. Contemporaneously, the case entity resolves all problems regarding normal form (all tables are in 3rd NF) and many-to-many relationships. Subsequently, the conceptual model describes the relation of the three entities described in part 2: 
 
 \begin{itemize}
   \item Location
@@ -154,28 +199,61 @@ As mentioned in part 2, the individual case instance is central to the database 
   \item Crime Type
 \end{itemize}
 
-\indent As can be seen in Figure 1, Location contains polygon information regarding where which administrative area the crime instance allocated to. Location is related to case utilizing beat as a foreign key in case (see Figure 3). This necessitates that this relation is directional from location to case; i.e. in one beat one or many cases can be instantiated. However, one case can only relate to one beat and district.
+\indent Disregarding information regarding keys, the structure outline in part 1 \& 2 is described here from left to right. To start with, the location entity describes where any crime instance is taking place in terms of beat and implictily the corresponding district. Consequently, location is related to criminal case with a one (non-mandatory) to many (mandatory) relationship, red from left to right. 
+The reason for this specific choice of cardinality is simple: in order to be included in the data, a district or beat must have had at least one crime happening in it; otherwise it would not show up in the raw data. As we are not creating a true transactional database, but rather a research project database, we do not have to care for the hypothetical case of a district being included just to make sure you can create future crime isntances in this specific location instance. In order to be included in the raw data, a location (be it beat or district) must have experienced at least one crime instance. Thus, for this specific case of a research project driven database, the $model$ is requiring any location to have at least one crime isntance. A similar arugment will be used further down as well. Contrarily, certain crimes do not have a location; think of fincancial crimes. It would be wrong to remove these records. Thus, a criminal case instance does not need a location.
 
-\textbf{INTERMEZZO It may be notable that the model shows mandatory relationships for Crime Type and location. Technically correct would be to use non mandatory relationships for location and crime type. For example a district or crime may not have been perpetrated and, thus, would not have a record. This research does not consider this case as the goal of this data base is to use the existing data for analysis. As such, in order for a district/ crime to be included in the database, a crime instance must have been created for these instances. As such, the choice was made to include a mandatory relationship.}
+\indent As such this is then read as: one location must have experienced at least one or many criminal cases; One crimninal case can occur in one and only one, but not mandatory, location instance.
 
-Following, case is related to crime type. Crime type describes the crime perpetrated. This is why, the IUCR is included as a foreign key in case. Consequently, the cardinality reads as one case only pertaining to one crime type being perpetrated. Contrarily, one crime type can be represented in many cases.
+\indent Subsequently, we need the criminal case entity, which contains all case related information on an individual subject basis. Continuing to the right of it, case and crime type is related via a mandatory one or many and mandatory one and only one relationship. Crime type gives the general description to each criminal case (description is the same as in part 1 and 2). The choice for this cardinality is similar to the aforementioned relationship. A criminal case must have a crime type, otherwise it is invalid as no crime would have been committed. Contrarily, a crime type, in order to be included in the initial raw data, must have been committed once at least. This is actually the case here. Certain IUCRs, which exist in the penal code in Ilinois, were not committed and are thus not included in the raw datafile.
+
+\indent As such this is then read as: one criminal case pertains to one (mandatory) and only one crime type; one crime type can be perpetrated in one or many (mandatory) criminal cases.
+
+
+\paragraph{Intermezzo:} It may be notable that the model shows mandatory relationships for crime type and location. Technically correct would be to use non mandatory relationships for location and crime type. For example a district or crime may not have been perpetrated and, thus, would not have a record. This research does not consider this case as the goal of this data base is to use the existing data for analysis. As such, in order for a district/ crime to be included in the database, a crime instance must have been created for these instances. As such, the choice was made to include a mandatory relationship for these cardinalities.
 
 \subsection{Logical Model}
-\includegraphics[scale=.35 ]{LogicalDiagramFinal.drawiowdescription.png}
 
 
-Figure 2 describes the logical model. For location, "beat" is chosen as primary key because if we were to normalize this relation to 3rd NF, beat (as an entity) would be hierarchically below District; one district - many beats. As such, each district is uniquely identifiable by its beat in case we want to aggregate, which is why beat is the most suitable primary key. As argued in part 2, there is no reason to normalize to 3rd NF in this case. More importantly, the primary key beat is in TEXT form. The reason for this is that beats are defined in the first two characters by their district and the latter two describe the beat. Thus, a beat instance may start with a "0". In many scripting languages and some databases, this leads to problems and the removal of the "0", as the underlying software does not interpret the "0". As such, TEXT was chosen for data quality reasons. Please note that the same argument applies to crime type and IUCR. 
-\indent Following, CrimeID was chosen to be the primary key of case, due to it being a natural primary key. This is a standard auto-incremental integer key and can, thus, be treated as an integer; though care should be applied when reading the data into scripting languages.
-\indent Finally, crime type's primary key is the IUCR key, a natural primary key. It uniquely identifies each crime category plus its secondary description. 
+\begin{figure}[htp]
+		\centering
+		\includegraphics[scale=.40 ]{LogicalDiagram.drawio.png}
+         \small
+         \caption{Logical Diagram}
+\end{figure}
+
+Figure 2 describes the logical model. For location, "beat" is chosen as primary key because beat (as a stand alone entity) would be hierarchically below District; one district - many beats. As such, each district is uniquely identifiable by its beat in case we want to aggregate, which is why beat is the only natural (primary) key in this relation. In realtiy (with more variables in location) this relation is not in 3rd normal form as district is usually an entity on its own. However, due to no more data/ variables being available on beat or district, this relation does not contain any transitive dependencies and is, thus, in 3rd NF. The meaning of each attribute here is selfexplanatory.More importantly, the primary key beat is in TEXT form (also district). The reason for this is that beats are defined in the first two characters by their district and the latter two describe the beat. Thus, a beat instance may start with a "0". In many scripting languages and some databases, this leads to problems and the removal of the "0", as the underlying software does not interpret the "0". As such, TEXT was chosen for data quality reasons. Please note that the same argument applies to crime type and IUCR. 
+
+\indent Following, CrimeID was chosen to be the primary key of case, due to it being a natural primary key. This is a standard auto-incremental integer key and can, thus, be treated as an integer; though care should be applied when reading the data into scripting languages. In addition to each CrimeID identifying each instance of a crime comitted, DateTime and Arrest are included as attributes. DateTime has TEXT as dtype as SQLite does not support a conventional datetime object, which then defaults to a string value. DateTime provides year, month, day, hour, minute, second of the instance 8as any other datetime dtype does by definition). Arrest has the dtype TEXT for a similar reason; SQLite does not support boolean dtypes. A possible alternative would have been to use 1 or 0, but a simple string input TRUE or FALSE has the same functionality in the and while being more explicit. Arrest describes the state of each criminal case whether or not an arrest was made. 
+
+
+\indent Finally, crime type's primary key is the IUCR key, a natural primary key. It uniquely identifies each crime category plus its secondary description. Its dtype is TEXT for the same reason as for why beat's dtype is TEXT. Following, primary category has dtype TEXT and ´describes the overall category of the crime committed. Secondary category then fruther describes each primary category; thus, it also has a TEXT dtype. 
+
+
 
 \subsection{Physical Model}
-\includegraphics[scale=.35 ]{PhysicalModelFinal.drawio.png}
 
-As mentioned in part 2, the inclusion of case as a full entity throught the entire process automatically removes any many-to-many relationships. Moreover, the usage of the appropriate foreign keys was discussed in section 3.1 in accordance to the cardinalities. As such, the logical model described in section 3.2 also corresponds to the physical model by definition with the exception of the foreign keys. The choice of foreign keys was made due to the direction of the cardinalities in Figure 3; beat and IUCR are natural keys for their respective entities and are, thus, unique.
 
+\begin{figure}[htp]
+		\centering
+			\includegraphics[scale=.40 ]{PhyscialDiagram.drawio.png}
+         \small
+         \caption{Physical Diagram}
+\end{figure}
+
+As mentioned in part 2, the inclusion of case as a full entity throught the entire process automatically removes any many-to-many relationships. Additionally, this simplified the choice in appropriate foreign keys to describe the relationships. Remember, foreign keys must be placed in the adjacent entity on the many side (the other way around would be counterproductive). Thus, beat is the foreign key in criminal case for location and IUCR is the foreign key in criminal case for crime type. The reason for this should be selfexplanatory. It may be noted that CrimeID is still the unique identifier in criminal case as it is unique by its own right. 
+
+Thus, planing in part 1 and 2 simpliefied this part considerably by default. 
 
 
 \section{Part 4- Data Quality checks and preparation}
+
+In the process of preparing the data to be loaded into the research DB, python was the scripting language of choice.
+
+In order to conduct the data cleaning, the GDPR's dataminization principle was used (the others, though important, are less applicable here \textbf{CITE GDPR HERE}. Dataminimization states that only data that is actively being used and has a purpose of being stored should be included in a database. While this project is based on a public database from the US (so technically GDPR does not apply; particualrly because no individual is identifiable), GDPR still offers guiding principles/standards on how to fair with data. Additionally, dataminimization has a practical usagepoint: less data means fewer errors.\footnote{Please note that I studied the GDPR at UvA and had to work with it; so I can speak from experience.} Thus, not all data in the raw data is included. This also means that considerations regarding FAIR were made (see part 1). 
+
+In order to prepare the data, the \textbf{data triangle was used} (\textbf{CITE THE LECTURE HERE}. 
+
+
 
 
 DATA TRIANGLE in lecture!!!
@@ -195,6 +273,8 @@ Overall, the consequences of removing these observations will be minimal. Of a t
 \textbf{Considering the IUCR, there are some duplication values. It must be noted that most instances contain typos in the description; as such, the IUCR is always compliant. Thus we use a right join to remove all duplications of IUCR which will not change the data}
 
 \section{Part 5}
+
+DESCRIBE THE RESRTICTION THAT YOU INTEGRATED IN THE DATA!!
 ENCRYPTION OF DATABASE!!!!!!!!
 
 \textbf{NOT: ALSO ADD THE DISTINCT IUCR TO THE CRIME TYPE TABLE!}
@@ -217,6 +297,14 @@ Notes:
 
 
 \section{Part 6}
+
+To do: create master table plus some triggers, add the stuff regarding index and use it, then finish q3.
+
+\textbf{It may be noted that we cannot query all possible outcomes}
+\textbf{It may be noted that we cannot query all possible outcomes}
+\textbf{It may be noted that we cannot query all possible outcomes}
+\textbf{It may be noted that we cannot query all possible outcomes}
+\textbf{It may be noted that we cannot query all possible outcomes}
 
 Note: the goal of this assignment t odo most if not all data transformation in SQL and let python handle only minor conversions such as into the right dtype object (eg GEOPANDAS)
 
@@ -254,7 +342,7 @@ Very simple:
 
 \textbf{Figure 4} contains the overall analysis of the time component by crime. Primarily, these grafics are focused on providing policy makers of Chicago information regarding the overall crime level of the city
 
-\paragraph{Part 1} As can be seen in \textbf{Figure 4 a)} overall crime levels reduced durng the observation time-frame of 2017 to 2021. In 2017, the overall level of crimes recorded was at 161304, which gradually reduced to 124558 crimes committed. Overall, this resulted in a reduction of 22.78\% in total crimes recorded. Thus, on a superficial level, crime tends into the right dirrection. It may be noted, that a view (view_convenient_time) was created in order to facilitate an easier handling of the data and due to this query being performed frequently.\footnote{Aforementioned variable transformations are supposed to be used in such views}
+\paragraph{Part 1} As can be seen in \textbf{Figure 4 a)} overall crime levels reduced durng the observation time-frame of 2017 to 2021. In 2017, the overall level of crimes recorded was at 161304, which gradually reduced to 124558 crimes committed. Overall, this resulted in a reduction of 22.78\% in total crimes recorded. Thus, on a superficial level, crime tends into the right dirrection. It may be noted, that a view ($view_convenient_time$) was created in order to facilitate an easier handling of the data and due to this query being performed frequently.\footnote{Aforementioned variable transformations are supposed to be used in such views}
 
 \paragraph{Part 2} However, overall crime levels do not consider the severity of the crime committed. In this context, this analysis focuses on resoruce intensive crimes. These were defined by calculating the proportion of attests in this specific overall (primary) category. It was decided due to berviety concerns that if a crime category displayed more than 50\% arrest rate in addition to more than 500 total arrests over the period of the five recorded years (100 per year), that this crime poses a reasonably higher strain on lawenforcement; this is becasue if such a crime occurs, two lawenforcement officers have to respond only to arrest the suspect in question and bring it to jail while not being able to respond to other calls and if they occur not frequently enough they do not pose a strain on lawenforcement. Overall, of the 34 primary categories defined in the data seven fulfill this classification. \textbf{Figure 4 b)} shows the development over time of these categories. Primarily Narcotics, while increasing initially, Narcotics related crimes dropped by 56.92\%, posing the most frequent category in this category, starting at 6946 in 2017 and dropping to 2992 records. The largest reduction was observed in Prostition related crimes from 438 in 2017 to 53 in 2021, which constitutes a reduction 89.90\%. Finally, the only category that showed an increase in this subcategory was Weapons Violation, which displayed an increase of 93.89\% vom 2814 to 5456 recorded crimes.
 
