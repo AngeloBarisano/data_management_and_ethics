@@ -1,0 +1,68 @@
+DROP TABLE IF EXISTS product_service_category;
+DROP TABLE IF EXISTS product_action_log;
+DROP TRIGGER IF EXISTS product_service_category_inserted;
+DROP TRIGGER IF EXISTS product_service_category_updated;
+DROP TRIGGER IF EXISTS product_service_category_deleted;
+
+-- The Main/Original Table
+CREATE TABLE IF NOT EXISTS product_service_category 
+    (
+        _id INTEGER PRIMARY KEY, 
+        product_id INTEGER, 
+        title TEXT, 
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP, 
+        updated_at TEXT DEFAULT 0
+        )
+    ;
+-- The Logging table (aka Your Other Table)
+CREATE TABLE product_action_log 
+    (
+        _id INTEGER PRIMARY KEY, 
+        product_service_category_reference INTEGER, 
+        timestamp TEXT DEFAULT CURRENT_TIMESTAMP, 
+        action_taken TEXT
+    )
+;
+
+-- Trigger for logging INSERTS
+CREATE TRIGGER IF NOT EXISTS product_service_category_inserted AFTER INSERT ON product_service_category
+    BEGIN 
+        INSERT INTO product_action_log (product_service_category_reference, action_taken) VALUES(new._id,'INSERTED');
+    END;
+    
+    -- Trigger for logging UPDATES
+CREATE TRIGGER IF NOT EXISTS product_service_category_updated AFTER UPDATE ON product_service_category
+    BEGIN 
+        INSERT INTO product_action_log (product_service_category_reference, action_taken) VALUES(new._id,'UPDATED');
+    END;
+
+-- Trigger for loggin Deletes
+CREATE TRIGGER IF NOT EXISTS product_service_category_deleted AFTER DELETE ON product_service_category
+    BEGIN INSERT INTO product_action_log (product_service_category_reference, action_taken) VALUES(old._id,'DELETED');
+        END;
+
+-- Add some testing data (4 rows into the main table)
+INSERT INTO product_service_category (product_id, title) 
+    VALUES
+        (1,'Title 1'),(2,'Title 2'),(3,'Title 3'),(4,'and so on')
+;
+
+-- Show what the log table looks like (reference data from the main table )
+SELECT * FROM product_action_log
+    JOIN product_service_category ON product_service_category_reference = product_service_category._ID
+;
+
+-- Update some data 
+UPDATE product_service_category SET title = 'changed', updated_at = datetime('now') WHERE _id = 2;
+UPDATE product_service_category SET title = 'changed', updated_at = datetime('now') WHERE _id = 4;
+
+-- Show what the log looks like after the updates
+SELECT * FROM product_action_log
+    JOIN product_service_category ON product_service_category_reference = product_service_category._ID;
+
+-- delete a row from the main table 
+DELETE FROM product_service_category WHERE _id = 1;
+
+-- Show what the data in the log looks like now (note LEFT JOIN)
+SELECT * FROM product_action_log
+    LEFT JOIN product_service_category ON product_service_category_reference = product_service_category._ID;

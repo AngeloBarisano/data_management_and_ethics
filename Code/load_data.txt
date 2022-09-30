@@ -19,12 +19,14 @@ CREATE TABLE CriminalCase (
 CrimeID INT PRIMARY KEY NOT NULL UNIQUE,
 -- we use 2022 because that is the upper limit excludeing 
 Date_Time TEXT NOT NULL CHECK (Date_Time BETWEEN 2017 AND 2022),
-LatLonLocation TEXT,
 Arrest TEXT, 
 Beat TEXT NOT NULL,
 IUCR TEXT NOT NULL, 
 FOREIGN KEY (Beat) REFERENCES Location (Beat),
-FOREIGN KEY (IUCR) REFERENCES CrimeType (IUCR));
+FOREIGN KEY (IUCR) REFERENCES CrimeType (IUCR)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+);
 
 
 
@@ -43,7 +45,7 @@ INSERT INTO CrimeType (IUCR, PrimaryCategory, SecondaryCategory) SELECT DISTINCT
 iucr, primarytype, description FROM data_crime_transformed;
 
 -- Data Insertion into Criminal Case 
-INSERT INTO CriminalCase (CrimeID, Date_Time, LatLonLocation, Arrest, Beat, IUCR) 
+INSERT INTO CriminalCase (CrimeID, Date_Time, Arrest, Beat, IUCR) 
 SELECT DISTINCT CrimeID, "date", "location", arrest, beat, iucr 
 FROM data_crime_transformed;
 

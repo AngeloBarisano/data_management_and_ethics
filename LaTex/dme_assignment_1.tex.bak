@@ -73,6 +73,8 @@ The data was provided by the Chicago PD contains a sample of 730,900 registered 
 
 \subsection{Research Question}
 
+\textbf{MENTION RESOURCE INTENSTIVE CRIMES AS RELEVANT AS WELL IN THE QUESTION (POSSIBLE/ COMMON SUBSECTION STRATEGY USED IN EDA}
+
 \textbf{In an iterative (agile) development cylce the following questions have been set up: Chicago is known for its high homicide rate; this leads to policy makers focusing on this issue the most. }
 
 Upon conducting an initial Exploratory Data Analysis (EDA), three major categories were identified in the data: 
@@ -92,9 +94,13 @@ Thus, this question provides future research with an adjustable query to gain an
 More importantly, however, is that the descriptive analysis of temporal patterns may indicate areas of interest that may be examined more closely by further questions (Q2 \& Q3) through its explorative lense. As such:
 
 \begin{itemize}
-  \item What are the overall crime trends that can be observed in Chicago between 2017 and 2021? What crime types changed a lot? Which crime types increased during the timeframe
-
+  \item What are the overall crime trends that can be observed in Chicago between 2017 and 2021? What crime types changed a lot? 
+    \item Primarily: Find interesting crimes in the data for further analysis in Q2.
 \end{itemize}
+
+
+
+
 
 In order to keep the report in a reasonable frame, a primary focus will be laid on \textbf{WHAT??}
 
@@ -104,6 +110,7 @@ This question will be answered by usding a view which contains the date per crim
 
 \begin{itemize}
   \item Based on overall trends discerned in question 1, what locations (beats \& districts) are disproportinally represented overall and in selected subcategories of crimes (based on Q1)?
+  \item Primarily: Find districts and beats to disect by time of day and also look into categories of murder in Q3
 \end{itemize}
 
 This question will be answered similarly as Q1. However, the main focus here is laid on using standard $GROUP BY$ functions instead of window functions to demonstrate a variation in usage. 
@@ -247,52 +254,53 @@ Thus, planing in part 1 and 2 simpliefied this part considerably by default.
 
 \section{Part 4- Data Quality checks and preparation}
 
-In the process of preparing the data to be loaded into the research DB, python was the scripting language of choice.
+In the process of preparing the data to be loaded into the research DB, python was the scripting language of choice. For transaprency reasons (FAIR) the datapreparation file is contained in an adjacent file. 
 
-In order to conduct the data cleaning, the GDPR's dataminization principle was used (the others, though important, are less applicable here \textbf{CITE GDPR HERE}. 
+In order to conduct the data cleaning, the GDPR's dataminization principle was used (the others, though important, are less applicable here \textbf{CITE GDPR HERE}. Dataminimization states that only data that is actively being used and has a purpose of being stored should be included in a database. While this project is based on a public database from the US (so technically GDPR does not apply; particualrly because no individual is identifiable), GDPR still offers guiding principles/standards on how to fair with data. Additionally, dataminimization has a practical usagepoint: less data means fewer errors.\footnote{Please note that I studied the GDPR at UvA and had to work with it; so I can speak from experience.} Thus, not all data in the raw data is included. This also means that considerations regarding FAIR were made (see part 1).  
 
+In order to prepare the data, the \textbf{data triangle was used} (\textbf{CITE THE LECTURE HERE}. 
 
+\textbf{Now to the data: }Generally, the data quality of the provided  raw sample is very good; less than 0.01\% of observations display any anomalies. This is attribuatble to the origin of the data being of administrative nature by public offices.
 
-
-DATA TRIANGLE in lecture!!!
-ALSO THE META DATA AND ETHICAL CONSIDERATIONS!! REGARDING GDPR that data quality is important to be complied by!!! This is also important for fair wrt interpretability and reusablity
-
-
-After the setup of the data management plan in part 1 to 3, the implementation requires data preparation and data quality check. \textbf{In this context, the data triangle was used}. Generally, the data quality of the provided sample is very good; less than 0.01\% of observations display any annormality. This is attribuatble to the origin of the data being of administrative nature by public offices.
-\indent The operations performed specifically relate to the relevant data for this endeavour mentioned in part 3. Firstly, 3 instances contained no casenumbers. These records were broken overall and were, thus, removed. Secondly, 16 instances missed date. As date is a central to the analysis, these records have to be removed. Moreover, 79 instances had non-correspondent beats and districts. While it would have been possible to impute the missing data based on the block or lat-lon information, one must assume that all location related information wrt. these observations is compromised. Similarly as before, location quality is central to answering the questions in this assignemnt; thus, these instances were removed. Finally, 149 perfectly dupilcate items were removed. 
+\indent The operations performed specifically relate to the relevant data for this endeavour mentioned in part 3. Firstly, 3 instances contained no casenumbers. These records were broken overall and were, thus, removed. Secondly, 16 instances missed date. As date is a central to the analysis, these records have to be removed. Moreover, 79 instances had non-correspondent beats and districts. While it would have been possible to impute the missing data based on the block or lat-lon information, one must assume that all location related information wrt. these observations is compromised. Similarly as before, location quality is central to answering the questions in this assignemnt; thus, these instances were removed. Finally, 149 perfectly dupilcated items were removed. 
 
 \indent In terms of data transformations, date was transformed into SQL castable form to run functions on date. Moreover, beat and district instances were repaired wrt. the preceeding "0" filler, creating instances of length four and two respectively. Finally, arrest ("true", "false") was cast into boolean form. 
 
-\indent Regarding non-crucial annormality, 15 instances miss arrest; but this information is only used for one subquery once. Additionally, seven records of casenumbers display noncompliancy. However, CaseID is a perfect reflection for this issue. Considering CaseID, set-tests were made to warrant that no IDs were missing (see appendix) beyond the removed records. Further, one instance of lat-lon showed an extreme outlier which was converted to NaN, due to the beat and district information appearing propperly.\textbf{ All instances with minor porblems were marked, which will} \textbf{be represented in the MasterTable of this project}. It may also be notable that the absence of information is still information; i.e. financial crime might not have a location. 
+\indent Regarding non-crucial anomalies, 15 instances miss arrest; but this information is only used for one subquery once, which is why it was kept. Additionally, seven records of casenumbers display noncompliance. However, CaseID is a perfect reflection for this issue. Considering CaseID, set-tests \textbf{(looking for duplicates in a set object)} were made to warrant that no IDs were missing (see appendix) beyond the removed records. Further, one instance of lat-lon showed an extreme outlier which was converted to NaN, due to the beat and district information appearing propperly.\textbf{ All instances with minor porblems were marked, which will} \textbf{be represented in the MasterTable of this project}. It may also be notable that the absence of information is still information; i.e. financial crime might not have a location (refer to part 3 discussion of cardinalities). 
 
-Overall, the consequences of removing these observations will be minimal. Of a total of 730900 observations, we were left with 730654 records. 
+Overall, the consequences of removing these observations is minimal. Of a total of 730900 observations, we were left with 730654 records. 
 
+Finally, considering crime type related data, secondary description and through that IUCR, contained typos, resulting in duplciated values. However, the typos did not change the meaning of the secondary descriptions. As such, a simple merge-right-join was performed to drop all duplicates on that dimension without loosing any data.
 
-\textbf{Considering the IUCR, there are some duplication values. It must be noted that most instances contain typos in the description; as such, the IUCR is always compliant. Thus we use a right join to remove all duplications of IUCR which will not change the data}
+\section{Part 5 - Create Tables and Load the Data}
+\textbf{IMPORTANT: ADD CASCADE RESTRCITION TO CASE}
 
-\section{Part 5}
+Upon implementing the physical ERD into SQL, location and crime type (implemented as crimetype for convenience when quering) the $CREATE TABLE$ command was used. Beat and IUCR were defined as PK using the $PRIMARY KEY$ command. The $UNIQUE$ + $NOT NULL$ constraint are technically not needed due to the designation of these attributes as PK. They were, however, included to be explicit and clear. Moreover, $NOT NULL$ was applied to the district attribute and primary category (implemented as PrimaryCategory for convenience in querying) as these should not be empty. However, secondary category (implemented as SecondaryCategory) in crime type did not need these restrictions as certain primary types may not have a secondary category.
 
-DESCRIBE THE RESRTICTION THAT YOU INTEGRATED IN THE DATA!!
-ENCRYPTION OF DATABASE!!!!!!!!
-
-\textbf{NOT: ALSO ADD THE DISTINCT IUCR TO THE CRIME TYPE TABLE!}
-CHANGE THE TABLENAMES IN THIS ENTIRE FILE!!! 
-
-%Notes:
-%- location table: beat and district are both mandatroy as they are important for the analysis
-%- CrimeType: We write PrimaryType etc together for ease of use
-%- Case table: CaseId is just normal; Date_Time text because this is how it is being done and NOT NULL because it is required for the analysis;Location TEXT no constrian t as some crimes dont have a location;Arrest TEXT becasue SQLLITE DOES NOT SUPPORT BOOLEAN and not mandatory because not the most important;
-
-Notes:
-- reading data
-%
-%ADD A TRIGGER FOR LOGGIN INFORMATION IN THE MASTER TABLE "L4_practice hour_donations_exercises_solutions" page 4
-%
-%\textbf{IMPORTANT YOU FORGOT TO SET IUCR AS A FOREIGN KEY IN PART 5; FIX THIS!}
-%
-%\textbf{IMPORTANT: ADD CONSTRINTS SUCH AS NO DATE MISSING OR BETTER: ADD A CONSTRAINT THAT STATES THAT THE DATE IS ACTUALLY IN THE RANGE OF 2017 to 2021 and not beyond or below!!! ADDITIONALLY: CREATE A TRIGGER THAT TRIGGERS WHEN THIS CONSTRAINT IS TRIGGERED!!!}
+Following, the criminal case relation (implemented as CriminalCase) contained the only $FOREIGN KEY$ restrictions as described in part 3. Considering constrains implemented wrt. the relations (through foreign keys), upon update and deletion, all related instances in the parent table should be removed: i.e. $CASCADE$ update and deletion (one only implemnets these on the foreign keys to signal SQL how to conduct such operations). The reason for this is twofold: 1) in a usual transactional database, such operations should be restricted as no human should have writing access to a specific instance \textbf{CITE BACHELOR BOOK ON THIS}. However, we are dealing with a reasearch project database; as such, it might be the case that it turns out that one district instance should not exist (is eroneous). As such, all "supposed" crimes that happened in this district would have to be removed. That is why cascasde deletion was chose. Finally, a small $CHECK$ was implemented in order to check the time.\footnote{No "if exists" table creation was implemented as this is bad practice.}
 
 
+\textbf{DESCRIBE THE MASTER TABLE!!!}
+Regarding triggers and the master table, SQLite does not support a conventional query log; thus, we had to resort to using standard implementations for triggers (delete, insert, update). 
+
+%https://www.sqlshack.com/learn-sql-sql-triggers/
+%https://www.sqlitetutorial.net/sqlite-foreign-key/
+%https://www.crewmachine.com/use-mysql-triggers-recording-history/
+
+
+%CREATE
+%[DEFINER = user]
+%TRIGGER trigger_name
+%trigger_time trigger_event trigger_id
+%ON history_table FOR EACH ROW
+%trigger_body
+%trigger_time { BEFORE | AFTER }
+%trigger_event { INSERT | UPDATE | DELETE }
+
+
+%INSERT INTO history_table SELECT*, ‘update’,
+%CURRENT_USER(), now(), null FROM
+%main_table WHERE id=OLD.id;
 
 \section{Part 6}
 
@@ -310,43 +318,28 @@ IMPORTANT! READ DATABASE INTO PYTHON HERE LIKE YOU DID AT VYTAL!!!
 
 Note: Sadly in order to create an index, one cannot use subqueries due to SQLLITE(this feature is present in other versions of SQL tho); as such, the index that increases speed for arrest heavy crimes does not work here. 
 
+\textbf{FOR THE TRIGGER JUST USE DELETE RESTRICT HERE!!}
 
 Please note that many queries, particularly those meant for visualization were read into python immediately (so they use queries to get the results needed and then lets python do the rest). Additionally, the database was not saved directly in the repository due to security concerns (.gitignore). Moreover, no virtual environment was ste up to facilitate the project. Finally, it is notable that in order to answer the questions, multiple different approaches in writing the queries were chosen, ranging from joining subqueries to window functions in order to demonstrate knowledge of all functions. Another reason is that I wanted to try the speed of different styles of code (particualrly teh procedually generated optimization behind window functions).
 
 \subsection{Question 1:}
 
-The first question considered how overall crime patterns are distributed with respect to the temporal component. To this end the following queries were constructed 
-\begin{itemize}
-  \item Distribute Total Crimes per year to see the overall trend of crimes committed. This is relevant for policy makers such as atourney generals which are responsible for crime levels in the city and their persecution. 
-  \item Further, this analysis is then extended to primary crime-categories by year and month in order to provide a more drilled down perspective to this question regarding overall specific crime. This is relevant as certain crimes are more relevant in the public eye, such as homicides. 
-  \item these crimes are then subsectioned into resoruce intensive crimes compared to non resource intensive crimes; this is decided on whether the crime type overall leads to a more than 50\% arrest quota in addition to more than 500 total arrests for this category over the entire timeframe
-  \item bad crimes by time of day are also addressed 
-  \item Finally, a window function is used in order to find the yearly change in crime by primary crime type 
-\end{itemize}
+
+The first question considered how overall crime patterns are distributed with respect to the temporal component. To this end, a view containing transformed datetime by crime case  outputs was cosntructed as it would be of use throughout this project. This query utilized a subquery which used the $STRFTIME$ string parser to obtain year, month, day, hour from every crime case instance. Subsequently, the $CAST$ function was used to cast hour/ time of day into monring, noon, evening, night buckets per instance, creating a convenient view to analyse different dimensions of time per each crime (see ViewTab).
 
 
-Moreover, in order to ease the analysis, a view with transformed date attirbutes (i.e. year, month, day, hour of day) for each crime was created.\footnote{Please note that views should only be used for frequently used queries and converted variables}
-Additionally, the analysis evolved organically and, thus, is not attached to the questions themselfes. 
+\paragraph{Part 1} Consequently, the first sub-question considered what the overall trend in crime was per year; i.e. are total crime levels increasing or decreasing? This question is relevant for public officials, which are helt responsible for overall crime levels. 
 
-\begin{itemize}
-  \item How do crime types (e.g. homicides) patterns distributed by a temporal component? How do certain crime types (homicide) patterns distribute by seasonality patterns, by time of day?
-\end{itemize}
+In order to answer most questions in question 1, a multitude of windowfunctions was used. For this question two queries were produced: 1) Based on the aforementioned view on time, a $GROUP BY$ was performed on year to $COUNT$ all crime instances per year. This query was used as a subquery in a query using a lagging window function in combination with some casting to calculate the change to the previous year. 2) Utilized the same query, but extended it with a $WHERE$ clause to calculate the total change in crimes over the years (see Question 1 tab part 1).
 
-Very simple:
--report how total crimes went down
-- then report the resouce intensive crimes how theybehaved (500 total arrests needed because 100 per year minimum)
-- then mention the crime category that showed the largest reduction among all crimes
-- then report one drill down into homicides for the secondary category to be used (report how each secondary category evolved)
+As can be seen in \textbf{Figure 4 a)} overall crime levels reduced durng the observation time-frame of 2017 to 2021. In 2017, the overall level of crimes recorded was at 161304, which gradually reduced to 124558 crimes committed. Overall, this resulted in a reduction of 22.78\% in total crimes recorded. Thus, on a superficial level, crime tends into the right direction. 
 
-\textbf{Figure 4} contains the overall analysis of the time component by crime. Primarily, these grafics are focused on providing policy makers of Chicago information regarding the overall crime level of the city
 
-\paragraph{Part 1} As can be seen in \textbf{Figure 4 a)} overall crime levels reduced durng the observation time-frame of 2017 to 2021. In 2017, the overall level of crimes recorded was at 161304, which gradually reduced to 124558 crimes committed. Overall, this resulted in a reduction of 22.78\% in total crimes recorded. Thus, on a superficial level, crime tends into the right dirrection. It may be noted, that a view ($view_convenient_time$) was created in order to facilitate an easier handling of the data and due to this query being performed frequently.\footnote{Aforementioned variable transformations are supposed to be used in such views}
+\paragraph{Part 2} However, overall crime levels do not consider the severity of the crime committed. In this context, this analysis focuses on resoruce intensive crimes as a subset. This subset was defined by calculating the proportion of attests in this specific overall (primary) category. It was decided due to berviety concerns that if a crime category displayed more than 50\% arrest rate in addition to more than 500 total arrests over the period of the five recorded years (100 per year), that this crime poses a reasonably higher strain on lawenforcement; this is becasue if such a crime occurs, two lawenforcement officers have to respond only to arrest the suspect in question and bring it to jail while not being able to respond to other calls and if they occur not frequently enough they do not pose a strain on lawenforcement. 
 
-\paragraph{Part 2} However, overall crime levels do not consider the severity of the crime committed. In this context, this analysis focuses on resoruce intensive crimes. These were defined by calculating the proportion of attests in this specific overall (primary) category. It was decided due to berviety concerns that if a crime category displayed more than 50\% arrest rate in addition to more than 500 total arrests over the period of the five recorded years (100 per year), that this crime poses a reasonably higher strain on lawenforcement; this is becasue if such a crime occurs, two lawenforcement officers have to respond only to arrest the suspect in question and bring it to jail while not being able to respond to other calls and if they occur not frequently enough they do not pose a strain on lawenforcement. Overall, of the 34 primary categories defined in the data seven fulfill this classification. \textbf{Figure 4 b)} shows the development over time of these categories. Primarily Narcotics, while increasing initially, Narcotics related crimes dropped by 56.92\%, posing the most frequent category in this category, starting at 6946 in 2017 and dropping to 2992 records. The largest reduction was observed in Prostition related crimes from 438 in 2017 to 53 in 2021, which constitutes a reduction 89.90\%. Finally, the only category that showed an increase in this subcategory was Weapons Violation, which displayed an increase of 93.89\% vom 2814 to 5456 recorded crimes.
+In order to achive this, another view was created (resource intense). This view used multiple $JOIN$ statements joining two queries and multiple tables in those subqueries with a $ROUND$ function to calculate the proportion of arrest to total crimes committed per primary category of crime (see view tab). Secondly, this view was used in the primary query for this part, which joined in a subquery on this view in order to subsect the data by the the specification above and then again applied a lag window function over two partitions (primary category and year) to obtain the total crimes committed and percentage change to previous year per primary crime category ordered by year. Overall, of the 34 primary categories defined in the data seven fulfill this classification. \textbf{Figure 4 b)} shows the development over time of these categories. Primarily Narcotics, while increasing initially, Narcotics related crimes dropped by 56.92\%, posing the most frequent category in this category, starting at 6946 in 2017 and dropping to 2992 records. The largest reduction was observed in Prostition related crimes from 438 in 2017 to 53 in 2021, which constitutes a reduction 89.90\%. Finally, the only category that showed an increase in this subcategory was Weapons Violation, which displayed an increase of 93.89\% vom 2814 to 5456 recorded crimes. Overall, resource intensive crimes showed an overall drop of 29.95\% from 15958 to 11178. Combined with the insight that overall crime levels have dropped, this implies that law enforcement is less strained in 2021 than in 2017. It may be noted that the final drop may be explained by the outbreak of the Corona Virus.
 
-Overall, resource intensive crimes showed an overall drop of 29.95\% from 15958 to 11178. Combined with the insight that overall crime levels have dropped, this implies that law enforcement is less strained in 2021 than in 2017. It may be noted that the final drop may be explained by the outbreak of the Corona Virus.
-
-\paragraph{Part 3} When considering all crime categories again, the question which categories, regardless of whether they are resource intensive or not, have shown the largest rise and reduction my be considered. \textbf{Figure 4 c)} displays the top five categories with the largest reduction, while \textbf{Figure 4 d)} shows those categories with the largest increase in records. While the overall trend was positive in terms of over crime levels reducing, crime categories such as Homicide and Human Trafficing show a 19.94\% and 80.0\% increase respectively. This implies, that while the overall trend in the crime is positive, certain subcategories display a severe increase.  
+\paragraph{Part 3} When considering all crime categories again, the question which categories, regardless of whether they are resource intensive or not, have shown the largest rise and reduction my be considered. This was achived by utilizing all aforementioned queries and time view in two large queries which used a window function to $DENSE_RANK()$ crimes by the total change over the entire timeframe $LIMIT$(ing) the output once to the five crimes with the largest decrease and once to the five crimes with the largest increase (see tab Question 1 part 3). \textbf{Figure 4 c)} displays the top five categories with the largest reduction, while \textbf{Figure 4 d)} shows those categories with the largest increase in records. While the overall trend was positive in terms of over crime levels reducing, crime categories such as Homicide and Human Trafficing show a 19.94\% and 80.0\% increase respectively. This implies, that while the overall trend in the crime is positive, certain subcategories display a severe increase.  
 
 
 \begin{wrapfigure}{L}{9cm}
@@ -383,20 +376,74 @@ Overall, resource intensive crimes showed an overall drop of 29.95\% from 15958 
 
 \subsection{Question 2:}
 
+%\begin{itemize}
+%  \item Based on overall trends discerned in question 1, what locations (beats \& districts) are disproportinally represented overall and in selected subcategories of crimes (based on Q1)?
+%\end{itemize}
 
-\begin{itemize}
-  \item Do certain crime patterns (e.g. for homicides) persist by location such as certain districts/ beats/ blocks?
-\end{itemize}
+When considering the following primary crimetypes 'homicide', 'prostituion', 'weapons violation', 'narcotics' from question 1, these crimes show interestingly large changes to be used as further subsections. Subsequently, question 2 considers which locations are predominant in these crime types. 
+
+After identifying interesting primary types of crimes by time aspect, it is now relevant to subsect the data further by district in order to identify problem districts. To this end, a (large) query was used which uses multiple scalar functions, nested queries and window functions, and a left join plus multiple inner joins and cast functions (this query is too difficult to describe)
+
+The goal was to create a ranking based on the total proportion of the primary category crimes identified ('homicide', 'prostituion', 'weapons violation', 'narcotics') in question 1 per district, limiting the results to the top three districts per crime category. To this end, a (large) query was used which uses multiple scalar functions, nested queries and window functions, and a left join plus multiple inner joins and cast functions (this query is too difficult to describe). It started out in a subquery which calculates the total crimes commited per primary category using two join statements. Next, a subquery was created which also used conventional group statements to calculate the primary crimes committed per district. The first query was then left joined onto the second query, as the first subquery contained only the overall totals per category, which then had to be cast to the dimensions of the second query using a LEFT JOIN. Finally, a $DENSE RANK()$ ranked each priamry category by its proportion in total crimes committed and limited the output to three districts per primary crime category.
+
+Table 1 reports these results.
+
+\begin{table}[!htbp] \centering 
+\begin{adjustwidth}{1.25cm}{-0cm}
+\begin{threeparttable}
+\small
+\captionsetup{font=small, justification=raggedright,singlelinecheck=false}
+\caption{\textsc{White-Robust Regression Results QOB numeric only}}
+\centering 
+  \label{}
+\small 
+\begin{tabular}{@{\extracolsep{-2pt}}llrrr} 
+\\[-5.8ex]\hline 
+\hline \\[-1.8ex] 
+\toprule
+  Prim.Cat. & District &  Rank &  Tot.Crimes District &  PCT of total crimes \\
+\midrule
+         HOMICIDE &       11 &                     1 &                          211 &                   11.32 \\
+         HOMICIDE &       06 &                     2 &                          178 &                    9.55 \\
+         HOMICIDE &       05 &                     3 &                          153 &                    8.21 \\
+        NARCOTICS &       11 &                     1 &                        10157 &                   32.20 \\
+        NARCOTICS &       10 &                     2 &                         3540 &                   11.22 \\
+        NARCOTICS &       15 &                     3 &                         2194 &                    6.95 \\
+WEAPONS VIOLATION &       07 &                     1 &                         2190 &                   10.76 \\
+WEAPONS VIOLATION &       11 &                     2 &                         2185 &                   10.73 \\
+WEAPONS VIOLATION &       06 &                     3 &                         2023 &                    9.94 \\
+\bottomrule
+\hline 
+\hline \\[-3.5ex] 
+\end{tabular} 
+\begin{tablenotes}[para,flushleft]
+      \small
+      \item\textit{ }
+    \end{tablenotes}
+\end{threeparttable}
+\end{adjustwidth}
+%
+\end{table}
 
 
-When using the insights gained from the first question (regarding overall decrease in intensive crimes but a tragic increas in homicides etc, we can then proceed by examining those locations that are indeed struggeling with these crimes mentioned above
+%-- just get intensice crimes ranked by district limiting to 3 districts
+%SELECT * FROM (
+%SELECT District, PrimaryCategory, DENSE_RANK() OVER (PARTITION BY PrimaryCategory ORDER BY PctCrimeTypeByDistrict DESC ) AS RankByCrimeCommitted, DistrictTotalCrimesRecorded, PctCrimeTypeByDistrict
+%FROM 
+%(SELECT c_by_district.District, c_by_district.PrimaryCategory , c_by_district.DistrictTotalCrimesRecorded, c_total.TotalCrimesRecorded, ROUND(CAST( CAST(c_by_district.DistrictTotalCrimesRecorded AS REAL) / CAST(c_total.TotalCrimesRecorded AS REAL) AS REAL), 4) * 100 AS PctCrimeTypeByDistrict
+%FROM (SELECT District, PrimaryCategory, COUNT(*) AS DistrictTotalCrimesRecorded
+%FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+%GROUP BY District, PrimaryCategory) AS c_by_district
+%LEFT JOIN 
+%(SELECT PrimaryCategory, COUNT(*) AS TotalCrimesRecorded
+%FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+%GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory
+%WHERE c_total.PrimaryCategory IN ('HOMICIDE', 'Prostitution', 'WEAPONS VIOLATION', 'NARCOTICS')) ) AS x
+%WHERE x.RankByCrimeCommitted <= 3
+%;
 
-overall points:
-- show a plot that shows that overall levels of total crime levels are simialr in most districts 
-- then proceeed with a slgith drill down into the data by looking at how crime types distribute: meaning that eg there might be a certain district with very high homicide rates based on the percentage of a certain crime type by district -- look specificalyl for those crimes discovered in question 1. 
 
 
-USE AN INDEX ON HOMICIDES AND OVERALL BAD CRIMES 
 
 
 
@@ -412,7 +459,9 @@ In order to prevent homicides; which “beats“ are the most prevalent among ho
 \end{itemize}
 
 
-
+%\begin{itemize}
+%  \item Triangulating time, crime-type, and location which areas persists in certain crimes wrt. time?
+%In order to prevent homicides; which “beats“ are the most prevalent among homicides? During which time of day (for effective allocation of policing resources)? 
 
 
 
