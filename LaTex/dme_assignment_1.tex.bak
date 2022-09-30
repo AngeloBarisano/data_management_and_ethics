@@ -384,36 +384,38 @@ When considering the following primary crimetypes 'homicide', 'prostituion', 'we
 
 After identifying interesting primary types of crimes by time aspect, it is now relevant to subsect the data further by district in order to identify problem districts. To this end, a (large) query was used which uses multiple scalar functions, nested queries and window functions, and a left join plus multiple inner joins and cast functions (this query is too difficult to describe)
 
-The goal was to create a ranking based on the total proportion of the primary category crimes identified ('homicide', 'prostituion', 'weapons violation', 'narcotics') in question 1 per district, limiting the results to the top three districts per crime category. To this end, a (large) query was used which uses multiple scalar functions, nested queries and window functions, and a left join plus multiple inner joins and cast functions (this query is too difficult to describe). It started out in a subquery which calculates the total crimes commited per primary category using two join statements. Next, a subquery was created which also used conventional group statements to calculate the primary crimes committed per district. The first query was then left joined onto the second query, as the first subquery contained only the overall totals per category, which then had to be cast to the dimensions of the second query using a LEFT JOIN. Finally, a $DENSE RANK()$ ranked each priamry category by its proportion in total crimes committed and limited the output to three districts per primary crime category.
+The goal was to create a ranking based on the total proportion of the primary category crimes identified ('homicide', 'prostituion', 'weapons violation', 'narcotics') in question 1 per district, limiting the results to the top three districts per crime category. To this end, a (large) query was used which uses multiple scalar functions, nested queries and window functions, and a left join plus multiple inner joins and cast functions (this query is too difficult to describe). It started out in a subquery which calculates the total crimes commited per primary category using two join statements. Next, a subquery was created which also used conventional group statements to calculate the primary crimes committed per district. The first query was then left joined onto the second query, as the first subquery contained only the overall totals per category, which then had to be cast to the dimensions of the second query using a LEFT JOIN. Finally, a $DENSE RANK()$ ranked each priamry category by its proportion in total crimes committed and limited the output to three districts per primary crime category (see Question 2 tab).
 
-Table 1 reports these results.
+Table 1 reports the result of this query.\footnote{see attached python file for stagazer output generation} What is striking (I was surprised myself): in all crime categories that saw the largest movement over the years, district 11 is in at least the top three for each crime category. Consequently, district 11 must be monitored more closely. 
 
 \begin{table}[!htbp] \centering 
 \begin{adjustwidth}{1.25cm}{-0cm}
 \begin{threeparttable}
 \small
 \captionsetup{font=small, justification=raggedright,singlelinecheck=false}
-\caption{\textsc{White-Robust Regression Results QOB numeric only}}
+\caption{\textsc{Districts Ranked by Proportion of Crimes Committed}}
 \centering 
   \label{}
 \small 
-\begin{tabular}{@{\extracolsep{-2pt}}llrrr} 
+\begin{tabular}{@{\extracolsep{10pt}}llrrr} 
 \\[-5.8ex]\hline 
-\hline \\[-1.8ex] 
+
 \toprule
-  Prim.Cat. & District &  Rank &  Tot.Crimes District &  PCT of total crimes \\
+  Prim.Cat. & District &  Rank &  Tot.Crimes District &  PCT of Crimes committed in Category \\
 \midrule
-         HOMICIDE &       11 &                     1 &                          211 &                   11.32 \\
-         HOMICIDE &       06 &                     2 &                          178 &                    9.55 \\
-         HOMICIDE &       05 &                     3 &                          153 &                    8.21 \\
-        NARCOTICS &       11 &                     1 &                        10157 &                   32.20 \\
-        NARCOTICS &       10 &                     2 &                         3540 &                   11.22 \\
-        NARCOTICS &       15 &                     3 &                         2194 &                    6.95 \\
-WEAPONS VIOLATION &       07 &                     1 &                         2190 &                   10.76 \\
-WEAPONS VIOLATION &       11 &                     2 &                         2185 &                   10.73 \\
-WEAPONS VIOLATION &       06 &                     3 &                         2023 &                    9.94 \\
+         HOMICIDE &       11 &                     1 &                          211 &                   11.32\% \\
+         HOMICIDE &       06 &                     2 &                          178 &                    9.55\% \\
+         HOMICIDE &       05 &                     3 &                          153 &                    8.21\% \\
+        NARCOTICS &       11 &                     1 &                        10157 &                   32.20\% \\
+        NARCOTICS &       10 &                     2 &                         3540 &                   11.22\% \\
+        NARCOTICS &       15 &                     3 &                         2194 &                    6.95\% \\
+     PROSTITUTION &       11 &                     1 &                          856 &                   57.37\% \\
+     PROSTITUTION &       07 &                     2 &                          179 &                   12.00\% \\
+     PROSTITUTION &       05 &                     3 &                          132 &                    8.85\% \\
+WEAPONS VIOLATION &       07 &                     1 &                         2190 &                   10.76\% \\
+WEAPONS VIOLATION &       11 &                     2 &                         2185 &                   10.73\% \\
+WEAPONS VIOLATION &       06 &                     3 &                         2023 &                    9.94\% \\
 \bottomrule
-\hline 
 \hline \\[-3.5ex] 
 \end{tabular} 
 \begin{tablenotes}[para,flushleft]
@@ -426,22 +428,6 @@ WEAPONS VIOLATION &       06 &                     3 &                         2
 \end{table}
 
 
-%-- just get intensice crimes ranked by district limiting to 3 districts
-%SELECT * FROM (
-%SELECT District, PrimaryCategory, DENSE_RANK() OVER (PARTITION BY PrimaryCategory ORDER BY PctCrimeTypeByDistrict DESC ) AS RankByCrimeCommitted, DistrictTotalCrimesRecorded, PctCrimeTypeByDistrict
-%FROM 
-%(SELECT c_by_district.District, c_by_district.PrimaryCategory , c_by_district.DistrictTotalCrimesRecorded, c_total.TotalCrimesRecorded, ROUND(CAST( CAST(c_by_district.DistrictTotalCrimesRecorded AS REAL) / CAST(c_total.TotalCrimesRecorded AS REAL) AS REAL), 4) * 100 AS PctCrimeTypeByDistrict
-%FROM (SELECT District, PrimaryCategory, COUNT(*) AS DistrictTotalCrimesRecorded
-%FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
-%GROUP BY District, PrimaryCategory) AS c_by_district
-%LEFT JOIN 
-%(SELECT PrimaryCategory, COUNT(*) AS TotalCrimesRecorded
-%FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
-%GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory
-%WHERE c_total.PrimaryCategory IN ('HOMICIDE', 'Prostitution', 'WEAPONS VIOLATION', 'NARCOTICS')) ) AS x
-%WHERE x.RankByCrimeCommitted <= 3
-%;
-
 
 
 
@@ -449,8 +435,7 @@ WEAPONS VIOLATION &       06 &                     3 &                         2
 
 \subsection{Question 3:}
 
-
-Finally, based on the trends observed in question 1 and the locations in question 2, we will look at how we can prevent these crimes by allocating resources efficiently to those locations by time of day during time of day (eg morining)
+based
 
 
 \begin{itemize}
