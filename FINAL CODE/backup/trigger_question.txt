@@ -1,0 +1,23 @@
+-- create the master table 
+CREATE TABLE IF NOT EXISTS MasterTableLog (
+"ID" INTEGER PRIMARY KEY,
+"DateTime" TEXT,
+"TransactionRep" TEXT
+);
+
+-- Craete a trigger logging deletes
+CREATE TRIGGER IF NOT EXISTS DeleteFromCriminalCaseTrigger
+BEFORE DELETE ON CriminalCase
+BEGIN 
+INSERT INTO  MasterTableLog VALUES(old.CrimeID, datetime(), 'Delete');
+END;
+
+-- create a trigger loggin the information when data is put into the tables
+CREATE TRIGGER IF NOT EXISTS InsertIntoCriminalCaseTrigger
+BEFORE INSERT ON CriminalCase
+BEGIN 
+INSERT INTO  MasterTableLog VALUES(new.CrimeID, datetime(), 'Insert');
+END;
+
+
+ 

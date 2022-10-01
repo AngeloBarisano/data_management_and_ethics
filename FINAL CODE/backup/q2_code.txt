@@ -1,0 +1,27 @@
+--question 2
+-- Another select level becuase we want to limit to 3 outputs
+SELECT * FROM (
+SELECT PrimaryCategory, District, DENSE_RANK() OVER (PARTITION BY PrimaryCategory ORDER BY PctCrimeTypeByDistrict DESC ) AS RankByCrimeCommitted, DistrictTotalCrimesRecorded, PctCrimeTypeByDistrict
+FROM 
+-- get primary crime type count per district total
+(SELECT c_by_district.District, c_by_district.PrimaryCategory , c_by_district.DistrictTotalCrimesRecorded, c_total.TotalCrimesRecorded, ROUND(CAST( CAST(c_by_district.DistrictTotalCrimesRecorded AS REAL) / CAST(c_total.TotalCrimesRecorded AS REAL) AS REAL), 4) * 100 AS PctCrimeTypeByDistrict
+FROM (SELECT District, PrimaryCategory, COUNT(*) AS DistrictTotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY District, PrimaryCategory) AS c_by_district
+LEFT JOIN 
+-- get the crimes recorded in total per category
+(SELECT PrimaryCategory, COUNT(*) AS TotalCrimesRecorded
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory
+WHERE c_total.PrimaryCategory IN ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS')) ) AS x
+WHERE x.RankByCrimeCommitted <= 3
+;
+
+
+-- are beats a factor to be considered? use homicide again
+SELECT l.Beat, Count(*) 
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = ct.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+WHERE l.district == '11' AND CT.PrimaryCategory == 'HOMICIDE'
+GROUP BY l.beat
+;
+

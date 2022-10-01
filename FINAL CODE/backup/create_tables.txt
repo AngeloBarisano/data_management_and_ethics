@@ -1,0 +1,26 @@
+-- Create table 1: Location
+CREATE TABLE Location (
+Beat TEXT PRIMARY KEY NOT NULL UNIQUE,
+District TEXT NOT NULL);
+
+-- Create Table 2: crimetype
+CREATE TABLE CrimeType (
+IUCR TEXT PRIMARY KEY NOT NULL UNIQUE,
+PrimaryCategory TEXT,
+SecondaryCategory TEXT);
+
+-- create Table 3: CASE
+CREATE TABLE CriminalCase (
+CrimeID INT PRIMARY KEY NOT NULL UNIQUE,
+-- we use 2022 because that is the upper limit excludeing 
+Date_Time TEXT NOT NULL CHECK (Date_Time BETWEEN 2017 AND 2022),
+Arrest TEXT, 
+Beat TEXT NOT NULL,
+IUCR TEXT NOT NULL, 
+FOREIGN KEY (Beat) REFERENCES Location (Beat),
+FOREIGN KEY (IUCR) REFERENCES CrimeType (IUCR)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+);
+
+

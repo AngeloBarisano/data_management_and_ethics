@@ -1,0 +1,16 @@
+-- Data insertion into location
+INSERT INTO Location (Beat, District) SELECT DISTINCT 
+beat, district FROM data_crime_transformed;
+
+-- Data insertion into CrimeType
+INSERT INTO CrimeType (IUCR, PrimaryCategory, SecondaryCategory) SELECT DISTINCT 
+iucr, primarytype, description FROM data_crime_transformed;
+
+-- Data Insertion into Criminal Case 
+INSERT INTO CriminalCase (CrimeID, Date_Time, Arrest, Beat, IUCR) 
+SELECT DISTINCT CrimeID, "date", arrest, beat, iucr 
+FROM data_crime_transformed;
+
+-- just a quick test
+SELECT *
+FROM MasterTableLog;

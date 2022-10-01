@@ -1,0 +1,27 @@
+-- create an index on district 11
+CREATE INDEX IF NOT EXISTS  "idx_district_11" ON "location" ( "beat","district" ) WHERE district == '11';
+
+-- create an index on district 
+CREATE INDEX IF NOT EXISTS  "idx_district" ON "location" ("beat", "district" );
+ 
+-- create an index on the categories we wanted to further analyse in Q3 and Q2
+CREATE INDEX IF NOT EXISTS  "idx_primtype" 
+ON "CrimeType" ("IUCR", "PrimaryCategory", "SecondaryCategory" ) 
+WHERE PrimaryCategory IN ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS');
+ 
+ 
+-- quick test (this is q3)
+ EXPLAIN QUERY PLAN  SELECT l.district, ct.PrimaryCategory, vct.TimeofDay, COUNT(*) AS "Crimes Per TimeofDay", 
+	ROUND(CAST(COUNT(*) AS REAL) / SUM(COUNT(*)) OVER(PARTITION BY ct.PrimaryCategory) * 100, 4) AS Proportion
+FROM
+view_convenient_time as vct 
+	JOIN CrimeType as ct ON vct.IUCR == ct.IUCR 
+		JOIN CriminalCase as cc ON cc.CrimeID == vct.CrimeID 
+			JOIN Location as l ON l.beat == cc.beat
+WHERE ct.PrimaryCategory in ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS') 
+	AND l.district == '11'
+GROUP BY ct.PrimaryCategory, vct.TimeofDay;
+
+
+
+

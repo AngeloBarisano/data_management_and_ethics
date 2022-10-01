@@ -63,6 +63,7 @@ SELECT *
 FROM MasterTableLog;</sql><sql name="View Tab">
 -- The time view
 CREATE VIEW view_convenient_time AS
+-- this is selfexplanatory
 SELECT CrimeID, IUCR, year AS Year, month AS Month, day AS Day, hour as Hour,
 CASE WHEN CAST(hour AS INT) &gt;= 6 and CAST(hour AS INT) &lt;= 11  then 'Morning'
 			WHEN CAST(hour AS INT) &gt;= 12 and CAST(hour AS INT) &lt;= 17  then 'Noon'
@@ -77,11 +78,13 @@ FROM CriminalCase);
 
 -- The resource intensive crime; this is an experiment
 CREATE VIEW view_resource_crimes AS
+-- calculate the overall proportion of arrest per crime category 
 SELECT PrimaryCat_tot.PrimaryCategory, ArrestCount, TotalCommitted, ROUND(CAST(CAST(ArrestCount AS REAL) / CAST(TotalCommitted AS REAL) AS REAL) * 100, 2) AS ProportionArrested
 FROM (SELECT PrimaryCategory, COUNT(*) AS TotalCommitted
 FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
 GROUP BY PrimaryCategory) AS PrimaryCat_tot
 JOIN 
+-- obtain the arrest count per crime 
 (SELECT PrimaryCategory, COUNT(*) AS ArrestCount
 FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
 WHERE CC.Arrest == 'True'
@@ -95,8 +98,9 @@ CREATE INDEX IF NOT EXISTS  &quot;idx_district&quot; ON &quot;location&quot; (&q
  
 -- create an index on the categories we wanted to further analyse in Q3 and Q2
 CREATE INDEX IF NOT EXISTS  &quot;idx_primtype&quot; 
-ON &quot;&quot; (&quot;IUCR&quot;, &quot;PrimaryCategory&quot;, &quot;SecondaryCategory&quot; ) 
+ON &quot;CrimeType&quot; (&quot;IUCR&quot;, &quot;PrimaryCategory&quot;, &quot;SecondaryCategory&quot; ) 
 WHERE PrimaryCategory IN ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS');
+ 
  
  
 -- quick test (this is q3)
@@ -113,7 +117,7 @@ GROUP BY ct.PrimaryCategory, vct.TimeofDay;
 
 
 
-</sql><sql name="Question 1 ">-- q1 part 1 
+</sql><sql name="Question 1 part 1">-- q1 part 1 
 -- simple way to get total per year from same query; total change
 SELECT Year, CrimesCommitted , 
 	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PctChangetoPrevYear
@@ -121,7 +125,7 @@ FROM
 (SELECT Year, Month, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
 GROUP BY Year);
 
--- caklculate total change over those 5 years 
+-- calculate total change over those 5 years 
 SELECT Year, CrimesCommitted , 
 	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PctChangetoPrevYear
 FROM   
@@ -140,13 +144,13 @@ GROUP BY Year;
 
 
 
--- q1 part 2
+</sql><sql name="Question 1 part 2">-- q1 part 2
 SELECT Year, PrimaryCategory, CrimeCountCurrentYear, ROUND(CAST((CrimeCountCurrentYear - LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory)) AS REAL) / CAST(LAG(CrimeCountCurrentYear) OVER (PARTITION BY PrimaryCategory) AS REAL) * 100, 4) AS PCTChange
 FROM
 (SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY ct.PrimaryCategory, Year ORDER BY ct.PrimaryCategory) AS CrimeCountCurrentYear 
 FROM view_resource_crimes vrc JOIN CrimeType AS ct ON vrc.PrimaryCategory == ct.PrimaryCategory JOIN view_convenient_time as vct ON vct.IUCR == ct.IUCR 
 WHERE vrc.ProportionArrested &gt; 50 AND vrc.TotalCommitted &gt;= 500);
-
+</sql><sql name="Question 1 part 3">
 
 -- q1 part 3
 -- biggest 5 INCREAASES 
@@ -181,8 +185,6 @@ FROM CriminalCase cc JOIN CrimeType ct ON cc.IUCR == ct.IUCR JOIN view_convenien
 WHERE PrimaryCategory == 'HOMICIDE'
 GROUP BY Year, SecondaryCategory
 ;
-
-
 </sql><sql name="Question 2">--question 2
 -- Another select level becuase we want to limit to 3 outputs
 SELECT * FROM (
@@ -204,7 +206,7 @@ WHERE x.RankByCrimeCommitted &lt;= 3
 
 
 -- are beats a factor to be considered? use homicide again as in Q1 to exempliefy
-SELECT l.Beat, Count(*) 
+SELECT l.Beat, Count(*) Crimecount
 FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = ct.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
 WHERE l.district == '11' AND CT.PrimaryCategory == 'HOMICIDE'
 GROUP BY l.beat
@@ -223,4 +225,4 @@ GROUP BY ct.PrimaryCategory, vct.TimeofDay
 ;
 
 
-</sql><current_tab id="6"/></tab_sql></sqlb_project>
+</sql><current_tab id="9"/></tab_sql></sqlb_project>

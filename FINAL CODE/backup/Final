@@ -1,0 +1,27 @@
+-- q1 part 1 
+-- simple way to get total per year from same query; total change
+SELECT Year, CrimesCommitted , 
+	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PctChangetoPrevYear
+FROM   
+(SELECT Year, Month, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
+GROUP BY Year);
+
+-- caklculate total change over those 5 years 
+SELECT Year, CrimesCommitted , 
+	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PctChangetoPrevYear
+FROM   
+(SELECT Year, Month, COUNT(* ) AS CrimesCommitted FROM  view_convenient_time
+GROUP BY Year)
+WHERE Year IN('2017', '2021');
+
+-- alternative with sum
+SELECT Year, SUM(CrimeCountCurrentYear), ROUND((SUM(CrimeCountCurrentYear) - CAST(LAG(SUM(CrimeCountCurrentYear)) OVER (ORDER BY Year) AS REAL)) / CAST(LAG(SUM(CrimeCountCurrentYear)) OVER (ORDER BY Year) AS REAL), 4) * 100 AS PCTChange
+ FROM
+(SELECT DISTINCT vct.Year, ct.PrimaryCategory, COUNT (*) OVER( PARTITION BY ct.PrimaryCategory, Year ORDER BY ct.PrimaryCategory) AS CrimeCountCurrentYear 
+FROM view_resource_crimes vrc JOIN CrimeType AS ct ON vrc.PrimaryCategory == ct.PrimaryCategory JOIN view_convenient_time as vct ON vct.IUCR == ct.IUCR 
+WHERE vrc.ProportionArrested > 50 AND vrc.TotalCommitted >= 500)
+WHERE Year == '2017' OR Year == '2021'
+GROUP BY Year;
+
+
+

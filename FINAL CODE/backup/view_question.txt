@@ -1,0 +1,28 @@
+
+-- The time view
+CREATE VIEW view_convenient_time AS
+SELECT CrimeID, IUCR, year AS Year, month AS Month, day AS Day, hour as Hour,
+CASE WHEN CAST(hour AS INT) >= 6 and CAST(hour AS INT) <= 11  then 'Morning'
+			WHEN CAST(hour AS INT) >= 12 and CAST(hour AS INT) <= 17  then 'Noon'
+			WHEN CAST(hour AS INT) >= 18 and CAST(hour AS INT) <= 23  then 'Evening'
+			WHEN CAST(hour AS INT) >= 0 and CAST(hour AS INT) <= 5  then 'Night'
+		   end TimeofDay
+FROM
+(SELECT CrimeID, IUCR, STRFTIME("%d", Date_Time) AS day, STRFTIME("%m", Date_Time) AS month, STRFTIME("%Y", Date_Time) AS year, STRFTIME("%H", Date_Time) AS hour
+FROM CriminalCase);
+
+
+
+-- The resource intensive crime; this is an experiment
+CREATE VIEW view_resource_crimes AS
+SELECT PrimaryCat_tot.PrimaryCategory, ArrestCount, TotalCommitted, ROUND(CAST(CAST(ArrestCount AS REAL) / CAST(TotalCommitted AS REAL) AS REAL) * 100, 2) AS ProportionArrested
+FROM (SELECT PrimaryCategory, COUNT(*) AS TotalCommitted
+FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
+GROUP BY PrimaryCategory) AS PrimaryCat_tot
+JOIN 
+(SELECT PrimaryCategory, COUNT(*) AS ArrestCount
+FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
+WHERE CC.Arrest == 'True'
+GROUP BY PrimaryCategory) AS PrimaryCat_arr ON PrimaryCat_tot.PrimaryCategory == PrimaryCat_arr.PrimaryCategory 
+ORDER BY ProportionArrested DESC;
+
