@@ -1,5 +1,5 @@
 --question 2
-
+-- Another select level becuase we want to limit to 3 outputs
 SELECT * FROM (
 SELECT PrimaryCategory, District, DENSE_RANK() OVER (PARTITION BY PrimaryCategory ORDER BY PctCrimeTypeByDistrict DESC ) AS RankByCrimeCommitted, DistrictTotalCrimesRecorded, PctCrimeTypeByDistrict
 FROM 
@@ -16,3 +16,12 @@ GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total
 WHERE c_total.PrimaryCategory IN ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS')) ) AS x
 WHERE x.RankByCrimeCommitted <= 3
 ;
+
+
+-- are beats a factor to be considered? use homicide again
+SELECT l.Beat, Count(*) 
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = ct.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+WHERE l.district == '11' AND CT.PrimaryCategory == 'HOMICIDE'
+GROUP BY l.beat
+;
+

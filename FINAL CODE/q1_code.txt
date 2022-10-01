@@ -60,8 +60,12 @@ WHERE Year == '2017' OR Year == '2021'))
 WHERE PCTChange NOT NULL
 LIMIT 5;
 
-
-
+-- analyse homicides
+SELECT Year, SecondaryCategory, COUNT(*)
+FROM CriminalCase cc JOIN CrimeType ct ON cc.IUCR == ct.IUCR JOIN view_convenient_time vct ON vct.CrimeID == cc.CrimeID
+WHERE PrimaryCategory == 'HOMICIDE'
+GROUP BY Year, SecondaryCategory
+;
 
 
 

@@ -95,7 +95,7 @@ CREATE INDEX IF NOT EXISTS  &quot;idx_district&quot; ON &quot;location&quot; (&q
  
 -- create an index on the categories we wanted to further analyse in Q3 and Q2
 CREATE INDEX IF NOT EXISTS  &quot;idx_primtype&quot; 
-ON &quot;CrimeType&quot; (&quot;IUCR&quot;, &quot;PrimaryCategory&quot;, &quot;SecondaryCategory&quot; ) 
+ON &quot;&quot; (&quot;IUCR&quot;, &quot;PrimaryCategory&quot;, &quot;SecondaryCategory&quot; ) 
 WHERE PrimaryCategory IN ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS');
  
  
@@ -175,8 +175,12 @@ WHERE Year == '2017' OR Year == '2021'))
 WHERE PCTChange NOT NULL
 LIMIT 5;
 
-
-
+-- analyse homicides
+SELECT Year, SecondaryCategory, COUNT(*)
+FROM CriminalCase cc JOIN CrimeType ct ON cc.IUCR == ct.IUCR JOIN view_convenient_time vct ON vct.CrimeID == cc.CrimeID
+WHERE PrimaryCategory == 'HOMICIDE'
+GROUP BY Year, SecondaryCategory
+;
 
 
 </sql><sql name="Question 2">--question 2
@@ -196,7 +200,16 @@ FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JO
 GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory
 WHERE c_total.PrimaryCategory IN ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS')) ) AS x
 WHERE x.RankByCrimeCommitted &lt;= 3
-;</sql><sql name="Question3">-- Question 3
+;
+
+
+-- are beats a factor to be considered? use homicide again as in Q1 to exempliefy
+SELECT l.Beat, Count(*) 
+FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = ct.IUCR INNER JOIN Location AS L ON L.Beat = CC.Beat
+WHERE l.district == '11' AND CT.PrimaryCategory == 'HOMICIDE'
+GROUP BY l.beat
+;
+</sql><sql name="Question3">-- Question 3
 SELECT l.district, ct.PrimaryCategory, vct.TimeofDay, COUNT(*) AS &quot;Crimes Per TimeofDay&quot;, 
 	ROUND(CAST(COUNT(*) AS REAL) / SUM(COUNT(*)) OVER(PARTITION BY ct.PrimaryCategory) * 100, 4) AS Proportion
 FROM
@@ -210,4 +223,4 @@ GROUP BY ct.PrimaryCategory, vct.TimeofDay
 ;
 
 
-</sql><current_tab id="7"/></tab_sql></sqlb_project>
+</sql><current_tab id="6"/></tab_sql></sqlb_project>

@@ -52,19 +52,17 @@
 \section{Task 1: Plan \& Explore}
 
 
-\textbf{Please note: I try to be precise but sometimes I will not descibe certain features: the fact that a primary key is unique should be given etc. I try to describe everything but sometimes I just have to assume that the correctur knows what this is about. }
-
 \subsection{Origin of Data \& Purpose Introduction}
-\paragraph{Introduction} Data drives security. The wide spread adoption of data information systems has been used to recognize crime hot-spots to increase policing efficiency and protect people. Thus, creating effective information systems for crime prevention is at the center of policy makers and executive branches of governments. This trend has led to the Chicago PD reaching out to this data management team with the request of creating a Data Management System for crime-data in Chicago.
+\paragraph{Introduction} Data drives security (Harrington, 2016). The wide spread adoption of data information systems has been used to recognize crime hot-spots to increase policing efficiency and protect people. Thus, creating effective information systems for crime prevention is at the center of policy makers and executive branches of governments. This trend has led to the Chicago PD reaching out to this data management team with the request of creating a Data Management System for crime-data in Chicago.
 
 \subsection{Purpose of this assignemnt \& data plan}
 
-To this end, a research database will be created in accordance to the FAIR principles (\textbf{Findability, Accessibility, Interoperability, and Reuse}). The expressed goal of this assignment is to offer a database and some fundamental queries for data exploration; i.e. a database with flexible example queries meant to further analysis of the trends discovered in the data. Additionally, any code produced during this endeavour will be made public on GitHub for transparency purposes. 
+To this end, a research database will be created in accordance to the FAIR principles (Findability, Accessibility, Interoperability, and Reuse) (Wilkinson, 2016). The expressed goal of this assignment is to offer a database and some fundamental queries for data exploration; i.e. a database with flexible example queries meant to further analysis of the trends discovered in the data. Additionally, any code produced during this endeavour will be made public on GitHub for transparency purposes. 
 
 \paragraph{Data Description in Scope, Volume, and Format}
-The data was provided by the Chicago PD contains a sample of 730,900 registered crimes in the administrative districts of Chicago between the years of 2017 and 2021. The initial data source is in CVS-format and pertains to specific recorded crimes in the administrative jurisdiction of the Chicago PD in addition to time, location, crime type, and arrested or not. Thus, the data contact is to be found on the Chicago PD website (\textbf{CITE THE CHICAGO WEBSITE FOR THE DATA}). Considerations regarding the ethical (\& GDPR compliant regardless of whether the data comes from the USA) use of the data will be discussed in part 5 of this assignment. It is notable that, while this data is only a subsample of the total database crime data recorded in this timeframe, the overall trends in the data are still maintained. Thus, the EDA for which this database can be used for further analysing trends uncovered during this assignment. 
+The data was provided by the Chicago PD contains a sample of 730,900 registered crimes in the administrative districts of Chicago between the years of 2017 and 2021. The initial data source is in CVS-format and pertains to specific recorded crimes in the administrative jurisdiction of the Chicago PD in addition to time, location, crime type, and arrested or not. Thus, the data contact is to be found on the Chicago PD website (Chicago PD, n.d.). Considerations regarding the ethical (\& GDPR compliant regardless of whether the data comes from the USA) use of the data will be discussed in part 5 of this assignment. It is notable that, while this data is only a subsample of the total database crime data recorded in this timeframe, the overall trends in the data are still maintained. Thus, the EDA for which this database can be used for further analysing trends uncovered during this assignment. 
 
-\paragraph{Project time frame, researchers, and misc information} The set project time frame is the 27th of August 2022 till 2nd of October 2022. Involved in this project is only one student, Angelo Barisano. Additionally, this project is designed to comply with FAIR standards (\textbf{CITE FAIR STUFF HERE}).
+\paragraph{Project Timeframe, Researchears and overall Information} The set project time frame is the 27th of August 2022 till 2nd of October 2022. Involved in this project is only one student, Angelo Barisano. Additionally, this project is designed to comply with FAIR standards (Wilkinson et. al., 2016).
 
 
 \textbf{ETHICAL CONSIDERATIONS, FAIR, AND GDPR COMPLIANCE?!?!!?}
@@ -72,12 +70,7 @@ The data was provided by the Chicago PD contains a sample of 730,900 registered 
 
 
 \subsection{Research Question}
-
-\textbf{MENTION RESOURCE INTENSTIVE CRIMES AS RELEVANT AS WELL IN THE QUESTION (POSSIBLE/ COMMON SUBSECTION STRATEGY USED IN EDA}
-
-\textbf{In an iterative (agile) development cylce the following questions have been set up: Chicago is known for its high homicide rate; this leads to policy makers focusing on this issue the most. }
-
-Upon conducting an initial Exploratory Data Analysis (EDA), three major categories were identified in the data: 
+Upon conducting an initial Exploratory Data Analysis (EDA), three major data categories were identified in the raw data: 
 
 \begin{itemize}
   \item Location
@@ -85,66 +78,46 @@ Upon conducting an initial Exploratory Data Analysis (EDA), three major categori
   \item Crime record data (time, arrest, etc.)
 \end{itemize}
 
-Based on the data categories and EDA, the following research questions guide the creation of the database in increasing complexity. It may be noted, that the questions are ment to not be exact in their nature, but that the purpose of the assignmnet, database, and questions posed are of an explorative nature, evolving while answering said questions. Thus, this assignment is interpreted as an initial exploratory data analysis meant to uncover trends for further analysis in addition offering useful insights to polciy makers. 
+Based on the data categories and EDA, the following research questions guide the creation of the research database in increasing complexity. It may be noted, that the questions are ment to not be exact in their nature, but that the purpose of the assignmnet, database, and questions posed are of an explorative nature, evolving while answering said questions. Thus, this assignment is interpreted as an initial exploratory data analysis meant to uncover trends for further analysis in addition offering useful insights to polciy makers. 
 
 \paragraph{Question 1} Finding prevalent crime patterns in the data is a common starting point in exploring crime data. Crime trends take the form of temporal patterns distributed over a defined timeframe of interest. This kind of reporting is commonly used by policy makers (such as atourney generals) who are monitored based on their performance in terms of crime prevention and the overall trend that can be observed. 
 
-Thus, this question provides future research with an adjustable query to gain an overview over the general distribution of crime by type. Subsequently applying a temporal component (i.e. by day of week,  month, year, season, etc.) to this initial distribution reveals trends and temporal patters. This way, this question helps to answer questions to policy makers regarding general trends; such as how crime developed overall and by type. 
+Thus, this question provides future research with an adjustable query to gain an overview over the general distribution of crime by type. Subsequently applying a temporal component (i.e. by day of week, month, year, season, etc.) to this initial distribution reveals trends and temporal patters. This way, this question helps to answer questions to policy makers regarding general trends; such as how crime developed overall and by type (Harrington, 2016; Hickey, 2022). 
 
-More importantly, however, is that the descriptive analysis of temporal patterns may indicate areas of interest that may be examined more closely by further questions (Q2 \& Q3) through its explorative lense. As such:
+More importantly, however, the descriptive analysis of temporal patterns may uncover trends in the type of crime by time, which may be further examined in Q2 and Q3, using different dimensions. To this end, accessory dimensions will be integrated into the analysis to provide a holistic description. For instance assuming that crimes that lead to more arrests are more resource intensive, these crimes put a disproportionate strain on law enforcement. As such question 1 is supposed to be a broad exploration of the crime type by time:
 
-\textbf{The purpose of the first question is to discern interesting trends in crime type by the temporal component for further analysis}
 \begin{itemize}
-
-  \item What are the overall crime trends that can be observed in Chicago between 2017 and 2021? What crime types changed a lot? 
-    \item Primarily: Find interesting crimes in the data for further analysis in Q2.
+	\item What trends in by crime type can be observed in Chicago between 2017 and 2021? What are interesting categories of crime to be analysed further in Q2 and Q3?
 \end{itemize}
 
+This question will be answered by usding a view which contains the date per crime in a convenient manner, such as year, month, day, hour. This way, the analysis is decreased in complexity; providing future researchers with easy to use time dimensions. Moreover, in this question, a variety of window function will be used to group by the time dimension and return a distribution per time component (eg year). 
 
+\paragraph{Question 2} The next logical progression is to observe the location and crime dimension together. Certain crime trends, such as those uncovered in Q1, may be more localized; thus, certain neighborhoods and districts may be overrepresented in certain categories. As such, in order to help the PD and policy makers to identify probelmatic areas with respect to certain crime hotspots, districts and beats are analysed with respect to trends identified by the temporal compornent on a localized level. Thus, question two follows (again explorative):
 
-
-
-In order to keep the report in a reasonable frame, a primary focus will be laid on \textbf{WHAT??}
-
-This question will be answered by usding a view which contains the date per crime in a convenient manner, such as year, month, day, hour. This way, the analysis is decreased in complexity; providing future researchers with easy to use time dimensions. Moreover, in this question, a variety of window function will be used to group by the time dimension and return a distribution per time component (eg year).
-
-\paragraph{Question 2} The next logical progression is to observe the location and crime dimension together. Certain crime trends, such as those of homicides, may be more localized; thus, certain neighborhoods and districts may be overrepresented in heavy crimes. The assumption is that certain districts and beats tend to be more prevalent in certain crime types. As such, in order to help the PD and policy makers to identify probelmatic areas with respect to certain crime hotspots, districts and beats are analysed with respect to trends identified by the temporal compornent on a localized level. Thus, question two follows:
-
-
-\textbf{considering the intersting findings during the inital EDA in question 1, we now consider the trends uncovered on a location basis}
 \begin{itemize}
-  \item Based on overall trends discerned in question 1, what locations (beats \& districts) are disproportinally represented overall and in selected subcategories of crimes (based on Q1)?
-  \item Primarily: Find districts and beats to disect by time of day and also look into categories of murder in Q3
+    \item Considering findings from Q1; how do the crime patterns wrt. crime type distribute by district? Is there a specific district which requires more attention?
 \end{itemize}
 
-This question will be answered similarly as Q1. However, the main focus here is laid on using standard $GROUP BY$ functions instead of window functions to demonstrate a variation in usage. 
+This question will be answered similarly as Q1. However, the main focus here is laid on using standard $GROUP BY$ functions instead of window functions to demonstrate a variation in usage of SQL commands. 
 
-\paragraph{Question 3} Finally, time, location, and crime type is triangulated. This enables policymakers to discern localized trends in the data in order to address crime patterns by distributing resources more efficiently; i.e. allocating more resources to dangerous beats during the night. Additionally, accessory dimensions will be integrated into the analysis to provide a holistic description. For instance assuming that crimes that lead to more arrests are more resource intensive, these crimes put a disproportionate strain on law enforcement. Thus, by triangulating arrests by location and e.g. time of day this will enable us to show areas that need more attention by law enforcement. Another angle would be a specific analysis of beats. \textbf{Beats are the smallest administrative unit of a police district; a beat is patrolled for one year by one unit and ten transferred to another beat. Thus, it might be interesting to investigate the connection between a subset of beats that suddenly stop showing problems during one year and then re-appear in terms of crime in another year. The sub-question would, thus, investigate whether beats that usually persisted in crime only persist on a closed yearly basis. This way, effective police units might be identified and resources might be allocated more efficiently.}
- 
- \textbf{Finally, the aforementioned trends + district rtends cann be triangualted for more effective policiing}
- 
- 
+\paragraph{Question 3} Finally, time, location, and crime type is triangulated. This enables policymakers to discern localized trends in the data in order to address crime patterns by distributing resources more efficiently; i.e. allocating more resources to dangerous beats during the night. Thus, by triangulating arrests by location and e.g. time of day this will enable us to show areas that need more attention by law enforcement.
+
 \begin{itemize}
-  \item Triangulating time, crime-type, and location which areas persists in certain crimes wrt. time?
-In order to prevent homicides; which “beats“ are the most prevalent among homicides? During which time of day (for effective allocation of policing resources)? 
-
-\textbf{BASED ON THE LOCATION AND THE }
+  \item Based on the subsample of trends uncovered in crime types in Q1 and their distribution by location in Q2; In order to deter crime, at what time of day might law enforement allocate more resources to this location?
 \end{itemize}
 
-As such, the final question considers a variety of hypotheses that can be explored. Overall, these project based questions are constructed in such a way that they guide an external user (PD) through the process of finding areas that need successively complex "sliced \& diced" information and culminate in the creation of actionable policy implications regarding prime prevention through resource allocation.
+Overall, these project based questions are constructed in such a way that they guide an external user (PD) through the process of finding areas that need successively complex "sliced \& diced" information and culminate in the creation of actionable policy implications regarding prime prevention through resource allocation.
 
-AS such, by the descriptive and explorative nature of the questions posed, one can deduce that the entire analysis can be conducted using simple SQL functionalities.
+AS such, by the descriptive and explorative nature of the questions posed, one can deduce that the entire analysis can be conducted using simple SQL functionalities in addtition to using Python for visualization purposes only.
 
-\textbf{ADD PLOTS of EDA ALREADY HERE!!!}
+
 
 
 \section{Task 2: Design and Organize}
 \textbf{IMPORTANT: DISCUSS what 1st and second normal form means that that all entities are in 2nd normal form by default and due to the structure in 3rd nf!!!}
 
 
-\textbf{IMPORTANT!!!! READ THE DEFINITION FOR 3rd NF AGAIN; MAYBE CRIME AND LOCATION QUALIFY TO BE 3rd NF... but maybe also not. STRESS AGAIN THAT THE INCLUSION OF BLOCK IS NOT NEEDED FOR THIS RESEARCH!!!}
-
-The aforementioned questions in task 1 require three relevant datacategories, as identified in the data. These pertain to the 1) time dimension, 2) location dimension, and 3) the crime or case instance itself. Generally, these already display common characteristics of regular entities in a relational database (\textbf{CITE HERE BOOK FROM BACHELOR COURSE}). Generally, the design of the database followed the approach of combining logical structures (e.g. location) with an easy to use query design to explore the data.
+The aforementioned questions in task 1 require three relevant datacategories, as identified in the data. These pertain to the 1) time dimension, 2) location dimension, and 3) the crime or case instance itself. Generally, these already display common characteristics of regular entities in a relational database (Harrington, 2016). Generally, the design of the database followed the approach of combining logical structures (e.g. location) with an easy to use query design to explore the data.
 
 We will start out with the case entity, as cases recorded in the original data create the centerpiece for all three posed questions.
 
@@ -156,25 +129,22 @@ We will start out with the case entity, as cases recorded in the original data c
   \item CaseId
   \item DateTime object implicitly containing day, month, year, and time of day 
   \item Arrest Boolean  
-\item \textbf{Location Description???????????????????????????????????????????}
 \end{itemize}
  
-It may be noted that items such as location description and location themselfes, though listed, are not included in the final product in order to comply with the principle of data minimization (\textbf{\textit{CITE GDPR}}. This is also reduces the possibility of mistakes from occuring. 
+It may be noted that items such as location description and location themselfes, though listed, are not included in the final product in order to comply with the principle of data minimization (GDPR, 2018). This is also reduces the possibility of mistakes from occuring. 
 
 The DateTime object will enable the clustering of crimes by the time dimension; which will be done via a view. Additionally, arrest information is used to further drill down the analysis and dissect the cases for more resource intensive cases. This is part of discenring interesting trends and exploring the data. The primary use case of case as an entity, however, is to make the entire database 1) work from a logical perspective (no crime distribution without each individual crime) and 2) to be the logical link between the type of crime committed in every case and where it happens. This way, the case entity is not only a natural entity, but it also fulfills the purpose of making the following two dimensions compliant to the 2nd normal form (and to some extend compliant with 3rd normal form with some caveats) by default. Imagine that if we were to leave out case as an entity and immediately match crime types and location, the resulting two entities could not comply with 3rd normal form as crime types and location (as categories) would produce a many-to-many relationship - thus, not minimizing storage space, increasing query diffuclty, and cause an inefficient relational database. As such, the case entity inadvertently functions as an associative entity, reducing many-to-many relationships to two many-to-one relationships.\footnote{I will not further elaborate on this; this is a logical conclusion; in order to reach 2nd normal form this is a required step which is obvious} As a consequence, case complies to the 3rd NF by definition as no stand alone entities are to be found in this entity (i.e. no transitive dependencies as will be described later), while requiring the other data categories to normalize as well.
 
  It is notable, that while such design choices should be reflected by leaving out case as an entity in the conceptual model in part 3 and then include it as part of the logical model, but case is so pivotal to the functioning of the database in its purpose, that we will consider it along the way a a valid entity.
  
-Please note that any datetime object should not get its own entity. This would violate rules set for relational databases \textbf{CITE BACHELOR STUFF HERE} as any instance created for case requires an instance to be creased in a datetime relation; this would make the relation a one to one relationship, which are not efficient from a storage perspective. 
+Please note that any datetime object should not get its own entity. This would violate rules set for relational databases as any instance created for case requires an instance to be creased in a datetime relation (Harrington, 2016); this would make the relation a one to one relationship, which are not efficient from a storage perspective. 
  
 Consequently, no problems of resolving many-to-many relationships are imposed on the design (i.a. no normalization issues later), while minizmizing storage usage, in addition to adding an intuitive centerpiece to the database being implemented.  
  
-%Finally, the dimensions of Latitude and Longitude will be included on the case level. The reason for this is, while lat-lon information pertains to the location category, this variable(s) is case specific due to its precision. Imagine the database where latitude and longitude would be described as a standalone entity hierarchically below district or beat. To make the relation work each location would have to carry a CaseId as a foreign key in order to identify what type of crime was perpetrated at this location. Assuming that the lat-lon information is sufficiently granular, this would create a one-to-one relationship between case and the lat-lon entity (disregarding district in this case). Any one-to-one relationship is redundant. Thus, it does not make sense to place lat-lon as a standalone entity hierarchically below district. The reason for the inclusion of lat-lon is its usage as geopandas objects in plotting crime in a heat-map in part 6. Please note that while the information of lat-lon technically violates 1st NF requirements, this information is not supposed to be processed via SQL (except for PostGIS applications) but as a datatype in scripting languages; thus it is an atomic item.
 
 
-
-
-\paragraph{Entity 2: Crime Type} Every Case requires a crime to be a valid instance. The raw data provides the IUCR, which identifies each unique combination of primary (e.g. homicide) and secondary crime category (e.g. first degree). Generally, most headlines only consider the primary type of crime, such as homicides, and generally disregard the secondary description of the data, such as first, second, or third degree in this case \textbf{CITE SOME EXAMPLE NEWSPAPERS}. However, for certain crimes, such as homicide, it might be useful to be more differntiated wrt. eg. gang related homicides.it is also the task of a FAIR database to enable future users to differentiate between different types of general crimes. Furthermore, it might be the case, that certain subcategories of crimes tend to be more prevalent than others.
+\paragraph{Entity 2: Crime Type} Every Case requires a crime to be a valid instance. The raw data provides the IUCR, which identifies each unique combination of primary (e.g. homicide) and secondary crime category (e.g. first degree). Generally, most headlines only consider the primary type of crime, such as homicides, and generally disregard the secondary description of the data, such as first, second, or third degree in this case 
+(Masterson, 2022). However, for certain crimes, such as homicide, it might be useful to be more differntiated wrt. eg. gang related homicides.it is also the task of a FAIR database to enable future users to differentiate between different types of general crimes. Furthermore, it might be the case, that certain subcategories of crimes tend to be more prevalent than others.
 Subsequently, due to the inclusion of the secondary description of the crime, this necessitates that crime type is an entity on its own. Suppose only the primary category of any crime commited was to be analysed. This would imply that both the IUCR and secondary description would be superflous. Subsequetnly, any entity with only one variable is a superflous entity, taking up unnecessary storage space (similar to one to one relationships). The reason for this is that if a crime occurs, a foreign key would have to relate the primary crime type to the crime type entity. Obviously, the primary crime type foreign key would be the only variable (and primary key) in crime type. As such, it would not make sense from a relational perspective to split crime type into a separate entity. It would make more sense to integrate it directly into the case entity. However, now, due to the inclusion of seconday description as an attribute, crime type has to be its own entity in order to move the case table from 2nd to 3rd normal form (the crime type information would not be transitive). Subsequently, the creation of a crime type entity moves both the case entity and crime type entity into 3rd normal form. Moreover, IUCR then becomes a natural PK (and FK) in this relationship. Subsequently, through the initial design choice, any issues regarding normalization are being taken care of. 
 
 
@@ -263,7 +233,7 @@ Thus, planing in part 1 and 2 simpliefied this part considerably by default.
 
 In the process of preparing the data to be loaded into the research DB, python was the scripting language of choice. For transaprency reasons (FAIR) the datapreparation file is contained in an adjacent file. 
 
-In order to conduct the data cleaning, the GDPR's dataminization principle was used (the others, though important, are less applicable here \textbf{CITE GDPR HERE}. Dataminimization states that only data that is actively being used and has a purpose of being stored should be included in a database. While this project is based on a public database from the US (so technically GDPR does not apply; particualrly because no individual is identifiable), GDPR still offers guiding principles/standards on how to fair with data. Additionally, dataminimization has a practical usagepoint: less data means fewer errors.\footnote{Please note that I studied the GDPR at UvA and had to work with it; so I can speak from experience.} Thus, not all data in the raw data is included. This also means that considerations regarding FAIR were made (see part 1).  
+In order to conduct the data cleaning, the GDPR's dataminization principle was used (the others, though important, are less applicable here (GDPR, 2018). Dataminimization states that only data that is actively being used and has a purpose of being stored should be included in a database. While this project is based on a public database from the US (so technically GDPR does not apply; particualrly because no individual is identifiable), GDPR still offers guiding principles/standards on how to fair with data. Additionally, dataminimization has a practical usagepoint: less data means fewer errors.\footnote{Please note that I studied the GDPR at UvA and had to work with it; so I can speak from experience.} Thus, not all data in the raw data is included. This also means that considerations regarding FAIR were made (see part 1).  
 
 In order to prepare the data, the \textbf{data triangle was used} (\textbf{CITE THE LECTURE HERE}. 
 
@@ -284,7 +254,7 @@ Finally, considering crime type related data, secondary description and through 
 
 Upon implementing the physical ERD into SQL, location and crime type (implemented as crimetype for convenience when quering) the $CREATE TABLE$ command was used. Beat and IUCR were defined as PK using the $PRIMARY KEY$ command. The $UNIQUE$ + $NOT NULL$ constraint are technically not needed due to the designation of these attributes as PK. They were, however, included to be explicit and clear. Moreover, $NOT NULL$ was applied to the district attribute and primary category (implemented as PrimaryCategory for convenience in querying) as these should not be empty. However, secondary category (implemented as SecondaryCategory) in crime type did not need these restrictions as certain primary types may not have a secondary category.
 
-Following, the criminal case relation (implemented as CriminalCase) contained the only $FOREIGN KEY$ restrictions as described in part 3. Considering constrains implemented wrt. the relations (through foreign keys), upon update and deletion, all related instances in the parent table should be removed: i.e. $CASCADE$ update and deletion (one only implemnets these on the foreign keys to signal SQL how to conduct such operations). The reason for this is twofold: 1) in a usual transactional database, such operations should be restricted as no human should have writing access to a specific instance \textbf{CITE BACHELOR BOOK ON THIS}. However, we are dealing with a reasearch project database; as such, it might be the case that it turns out that one district instance should not exist (is eroneous). As such, all "supposed" crimes that happened in this district would have to be removed. That is why cascasde deletion was chose. Finally, a small $CHECK$ was implemented in order to check the time.\footnote{No "if exists" table creation was implemented as this is bad practice.}
+Following, the criminal case relation (implemented as CriminalCase) contained the only $FOREIGN KEY$ restrictions as described in part 3. Considering constrains implemented wrt. the relations (through foreign keys), upon update and deletion, all related instances in the parent table should be removed: i.e. $CASCADE$ update and deletion (one only implemnets these on the foreign keys to signal SQL how to conduct such operations). The reason for this is twofold: 1) in a usual transactional database, such operations should be restricted as no human should have writing access to a specific instance (Harrington, 2016). However, we are dealing with a reasearch project database; as such, it might be the case that it turns out that one district instance should not exist (is eroneous). As such, all "supposed" crimes that happened in this district would have to be removed. That is why cascasde deletion was chose. Finally, a small $CHECK$ was implemented in order to check the time.\footnote{No "if exists" table creation was implemented as this is bad practice.}
 
 Regarding the mastertable and logs, a master table was creates containing the ID attibute to record the IDs of the instances mutated, in addition to a datetime class and a transaction report (what has been done). This table is not related to the model as a whole.
 
@@ -304,7 +274,7 @@ Additionally, the database was not saved directly in the repository due to secur
 \subsection{Question 1:}
 
 
-The first question considered how overall crime patterns are distributed with respect to the temporal component. To this end, a view containing transformed datetime by crime case  outputs was cosntructed as it would be of use throughout this project. This query utilized a subquery which used the $STRFTIME$ string parser to obtain year, month, day, hour from every crime case instance. Subsequently, the $CAST$ function was used to cast hour/ time of day into monring, noon, evening, night buckets per instance, creating a convenient view to analyse different dimensions of time per each crime (see ViewTab).
+The first question considered how overall crime patterns are distributed with respect to the temporal component. To this end, a view containing transformed datetime by crime case  outputs was cosntructed as it would be of use throughout this project. This query utilized a subquery which used the $STRFTIME$ string parser to obtain year, month, day, hour from every crime case instance. Subsequently, the $CAST$ function was used to cast hour/ time of day into morning, noon, evening, night buckets per instance, creating a convenient view to analyse different dimensions of time per each crime (see ViewTab).
 
 
 \paragraph{Part 1} Consequently, the first sub-question considered what the overall trend in crime was per year; i.e. are total crime levels increasing or decreasing? This question is relevant for public officials, which are helt responsible for overall crime levels. 
@@ -316,9 +286,11 @@ As can be seen in \textbf{Figure 4 a)} overall crime levels reduced durng the ob
 
 \paragraph{Part 2} However, overall crime levels do not consider the severity of the crime committed. In this context, this analysis focuses on resoruce intensive crimes as a subset. This subset was defined by calculating the proportion of attests in this specific overall (primary) category. It was decided due to berviety concerns that if a crime category displayed more than 50\% arrest rate in addition to more than 500 total arrests over the period of the five recorded years (100 per year), that this crime poses a reasonably higher strain on lawenforcement; this is becasue if such a crime occurs, two lawenforcement officers have to respond only to arrest the suspect in question and bring it to jail while not being able to respond to other calls and if they occur not frequently enough they do not pose a strain on lawenforcement. 
 
-In order to achive this, another view was created (resource intense). This view used multiple $JOIN$ statements joining two queries and multiple tables in those subqueries with a $ROUND$ function to calculate the proportion of arrest to total crimes committed per primary category of crime (see view tab). Secondly, this view was used in the primary query for this part, which joined in a subquery on this view in order to subsect the data by the the specification above and then again applied a lag window function over two partitions (primary category and year) to obtain the total crimes committed and percentage change to previous year per primary crime category ordered by year. Overall, of the 34 primary categories defined in the data seven fulfill this classification. \textbf{Figure 4 b)} shows the development over time of these categories. Primarily Narcotics, while increasing initially, Narcotics related crimes dropped by 56.92\%, posing the most frequent category in this category, starting at 6946 in 2017 and dropping to 2992 records. The largest reduction was observed in Prostition related crimes from 438 in 2017 to 53 in 2021, which constitutes a reduction 89.90\%. Finally, the only category that showed an increase in this subcategory was Weapons Violation, which displayed an increase of 93.89\% vom 2814 to 5456 recorded crimes. Overall, resource intensive crimes showed an overall drop of 29.95\% from 15958 to 11178. Combined with the insight that overall crime levels have dropped, this implies that law enforcement is less strained in 2021 than in 2017. It may be noted that the final drop may be explained by the outbreak of the Corona Virus.
+In order to achive this, another view was created (resource intense). This view used multiple $JOIN$ statements joining two queries and multiple tables in those subqueries with a $ROUND$ function to calculate the proportion of arrest to total crimes committed per primary category of crime (see view tab). Secondly, this view was used in the primary query for this part, which joined in a subquery on this view in order to subsect the data by the the specification above and then again applied a lag window function over two partitions (primary category and year) to obtain the total crimes committed and percentage change to previous year per primary crime category ordered by year. Overall, of the 34 primary categories defined in the data seven fulfill this classification. \textbf{Figure 4 b)} shows the development over time of these categories. Primarily Narcotics, while increasing initially, Narcotics related crimes dropped by 56.92\%, posing the most frequent category in this category, starting at 6946 in 2017 and dropping to 2992 records. The largest reduction was observed in Prostition related crimes from 438 in 2017 to 53 in 2021, which constitutes a reduction 89.90\%. Finally, the only category that showed an increase in this subcategory was Weapons Violation, which displayed an increase of 93.89\% vom 2814 to 5456 recorded crimes. Overall, resource intensive crimes showed an overall drop of 29.95\% from 15958 to 11178. Combined with the insight that overall crime levels have dropped, this implies that law enforcement is less strained in 2021 than in 2017. 
 
-\paragraph{Part 3} When considering all crime categories again, the question which categories, regardless of whether they are resource intensive or not, have shown the largest rise and reduction my be considered. This was achived by utilizing all aforementioned queries and time view in two large queries which used a window function to $DENSE_RANK()$ crimes by the total change over the entire timeframe $LIMIT$(ing) the output once to the five crimes with the largest decrease and once to the five crimes with the largest increase (see tab Question 1 part 3). \textbf{Figure 4 c)} displays the top five categories with the largest reduction, while \textbf{Figure 4 d)} shows those categories with the largest increase in records. While the overall trend was positive in terms of over crime levels reducing, crime categories such as Homicide and Human Trafficing show a 19.94\% and 80.0\% increase respectively. This implies, that while the overall trend in the crime is positive, certain subcategories display a severe increase.  
+
+
+\paragraph{Part 3} When considering all crime categories again, the question which categories, regardless of whether they are resource intensive or not, have shown the largest rise and reduction my be considered. This was achived by utilizing all aforementioned queries and time view in two large queries which used a window function to $DENSE_RANK()$ crimes by the total change over the entire timeframe $LIMIT$(ing) the output once to the five crimes with the largest decrease and once to the five crimes with the largest increase (see tab Question 1 part 3). \textbf{Figure 4 c)} displays the top five categories with the largest reduction, while \textbf{Figure 4 d)} shows those categories with the largest increase in records. While the overall trend was positive in terms of over crime levels reducing, crime categories such as Homicide and Human Trafficing show a 19.94\% and 80.0\% increase respectively. When analyzing homicides related crimes, it may be interesting to subsection by secondary type in order to obtain an understanding what constitutes this crime type. Considering for isntance homicide, one can see that of the two existing categories (recless homicide, first degree homicide), first degree homicides clearly dominated (by a ratio of at least 100 to 1) and that first degree homicides increased by 20.68\%. This implies, that while the overall trend in the crime is positive, certain subcategories display a severe increase.  
 
 
 \begin{figure}%{L}{9cm}
@@ -362,7 +334,7 @@ After identifying interesting primary types of crimes by time aspect, it is now 
 
 The goal was to create a ranking based on the total proportion of the primary category crimes identified ('homicide', 'prostituion', 'weapons violation', 'narcotics') in question 1 per district, limiting the results to the top three districts per crime category. To this end, a (large) query was used which uses multiple scalar functions, nested queries and window functions, and a left join plus multiple inner joins and cast functions (this query is too difficult to describe). It started out in a subquery which calculates the total crimes commited per primary category using two join statements. Next, a subquery was created which also used conventional group statements to calculate the primary crimes committed per district. The first query was then left joined onto the second query, as the first subquery contained only the overall totals per category, which then had to be cast to the dimensions of the second query using a LEFT JOIN (see question 3 answer for a shorter approach). Finally, a $DENSE RANK()$ ranked each priamry category by its proportion in total crimes committed and limited the output to three districts per primary crime category (see Question 2 tab).
 
-Table 1 reports the result of this query.\footnote{see attached python file for stagazer output generation} What is striking (I was surprised myself): in all crime categories that saw the largest movement over the years, district 11 is in at least the top three for each crime category. Consequently, district 11 must be monitored more closely. 
+Table 1 reports the result of this query.\footnote{see attached python file for stagazer output generation} What is striking (I was surprised myself): in all crime categories that saw the largest movement over the years, district 11 is in at least the top three for each crime category. Consequently, district 11 must be monitored more closely. When performing a similar subset analysis as in Q1 wrt. homicide but now by beat, one can see that there is little difference in homicide and other categories by beat, which is why district 11 will be used as the level of analysis in Q3. 
 
 \begin{table}[!htbp] \centering 
 \begin{adjustwidth}{0cm}{-0cm}
@@ -426,21 +398,68 @@ Figure 5 displays a stacked barplot to visoualize the distribution of crimes wit
 
 
 \subsection{Use of Triggers and Indexes}
-\paragraph{Triggers:} Two triggers were created. 1) an insertion log trigger on the criminal case entity, which logs the IDs of new crime cases. This trigger has a practical purpose of ensuring data integrity (\textbf{CITE GDPR HERE}). I have personally used such triangulation tables to ensure that no instance was wrongfully included or is missing. The way such a log is used is that whenever any transformations are being done outside of the database, one can always verify the integrity by checking on a set of IDs (here CrimeIDs) which is the fastest way of controling for missing data after a transformation. This way, during certain analyses, missing records can be funneled back through special automated tests (\textbf{CITE TESTS HERE}). However, this goes beyond the scope of this assignment.
+\paragraph{Triggers:} Two triggers were created. 1) an insertion log trigger on the criminal case entity, which logs the IDs of new crime cases. This trigger has a practical purpose of ensuring data integrity (GDPR, 2018). I have personally used such triangulation tables to ensure that no instance was wrongfully included or is missing. The way such a log is used is that whenever any transformations are being done outside of the database, one can always verify the integrity by checking on a set of IDs (here CrimeIDs) which is the fastest way of controling for missing data after a transformation. This way, during certain analyses, missing records can be funneled back through special automated tests (Harrington, 2016). However, this goes beyond the scope of this assignment.
 2) based on the CASCADE deletion restirction on Criminal Case, it might happen that upon a deletion of a certain district (hypothetically), any criminal case related to this district is dropped as well. Assume, a district was added by mistake. You want to delete this district (which should be possible in a research DB). However, you make a mistake and delete another district, which then removes a cascade of other data in Criminal Case. By logging all deletions in the master table, these drops can be easily recoveded from a backup and inserted back into the database.
 \paragraph{Index:} In total, three indexes were created. Of these, two are of particular importance as they are continously used in Q2 and Q3. 1) index on district 11, indexing on location and on distirct 11 for demonstration purposes mostly. It was created using the CREATE INDEX command, followed by the specification of the location table and a WHERE clause on district == 11. 2) the second index on the primary category subtypes discussed in Q2 speeds up the query speed in Q2 and Q3. It was created using the CREATE INDEX command, followed by the specification of the crime type table and a WHERE clause on the primary category, containing homicide, prostituion, narcotics, and weapons violation only. Figure 6 in the appendix displays that the Q3 query actually uses the indexes (also see Index tab in SQL).  
 
 
 \subsection{Conclusion}
-All data contained in the database has been used during the analysis. 
+In conclusion, this assignment utilizized a research database and SQL to produce initial insights into how crime types distribute by Q1) time, Q2) location, and then culminated in a analysis of propensity by time of day for district 11 - a crime hotspot defined in Q1 and Q2.
+
+\indent Considering the time dimension, one could see that while overall crime levels (in total crimes committed) and also those crimes that tend to strain law enforcement resources the most reduced considerably by 22.78\% and 29.75\% respectively. This is a positive sign for policy makers and the PD. However, upon examining which categories showed the largest variation over the entire timeframe of 2017 to 2021, it became clear that crime categories such as homicides and weapons violations were increasing considerably by 20.68\% and 93.89\% respectively.\footnote{Narcotics and prostitution fell} in homicides, for instance, (intentional) first degree murder clearly dominated. This prompted a further analysis of these crime categories by location in Q2.
+
+\indent Consequently, upon analysing the districts, district 11 turned out to be dominating (almost) all four categories of interest from Q1 (see Table 1). Additionally, crime levels cosnidering the aforementioned primary categories did not vary in in the beats of district 11. Subsequently, question 3 examined this district by time of day in order to make a possible recommendation regarding law enforcement resource allocation.
+
+\indent As could be observed, for instance prostiution clustered primarily during the evening.
+
+Concluding, this EDA research provided the fundament for further EDA by creating a reaserch database in addition to structuring a possible apporach to structuring such an analysis. Additionally, some interesting trends could be discerned in addition to a possible recommendation technique.
 
 
 
 
 
 
+\section{Bibliography}
 
 
+
+\begin{thebibliography}{100} % 100 is a random guess of the total number of
+%references
+\bibitem{harrington} Harrington, J. L. (2016). Relational database design and implementation. Morgan Kaufmann.
+
+\bibitem{gdpr} GDPR Portal. 2018. EU GDPR Information Portal. $https://www.eugdpr.org/$. Accessed on 2022-10-01.
+
+\bibitem{crimedata} Chicago PD (n.d.). Retrieved October 1, 2022, from https://home.chicagopolice.org/statistics-data/crime-statistics/
+
+\bibitem{FAIR} Wilkinson, M. D., Dumontier, M., Aalbersberg, I. J., Appleton, G., Axton, M., Baak, A., Blomberg, N., Boiten, J.-W., da Silva Santos, L. B., Bourne, P. E. \& others (2016). The FAIR Guiding Principles for scientific data management and stewardship. Scientific data, 3.
+
+\bibitem{Masterson} Masterson, M. (2022, September 6). 448 People Killed in Chicago This Year, But Homicide Rate Remains Down From Last Year. WTTW News. Retrieved October 1, 2022, from $https://news.wttw.com/2022/09/01/448-people-killed-chicago-year-homicide-rate-remains-down-last-year$
+
+\bibitem{hickey} Hickey, M. (2022, September 7). Violent crime in Chicago was down in summer 2022 compared with 2021 -- did police safety plans help? CBS News. Retrieved October 1, 2022, from https://www.cbsnews.com/chicago/news/violent-crime-in-chicago-was-down-in-summer-2022-compared-with-2021-did-police-safety-plans-help/
+
+
+\end{thebibliography}
+
+%%
+%%
+%%@book{harrington2016relational,
+%%  title={Relational database design and implementation},
+%%  author={Harrington, Jan L},
+%%  year={2016},
+%%  publisher={Morgan Kaufmann}
+%%}
+%%
+%%
+%%
+%%\begin{filecontents*}{sample.bib}
+%%@online{EUdataregulations2018,
+%%    title = {2018 reform of EU data protection rules},
+%%    url = {https://ec.europa.eu/commission/sites/beta-political/files/data-protection-factsheet-changes_en.pdf},
+%%    organization = {European Commission},
+%%    date = {2018-05-25},
+%%    urldate = {2019-06-17}
+%%}
+%%\end{filecontents*}
 
 
 
