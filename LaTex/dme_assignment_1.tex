@@ -93,7 +93,9 @@ Thus, this question provides future research with an adjustable query to gain an
 
 More importantly, however, is that the descriptive analysis of temporal patterns may indicate areas of interest that may be examined more closely by further questions (Q2 \& Q3) through its explorative lense. As such:
 
+\textbf{The purpose of the first question is to discern interesting trends in crime type by the temporal component for further analysis}
 \begin{itemize}
+
   \item What are the overall crime trends that can be observed in Chicago between 2017 and 2021? What crime types changed a lot? 
     \item Primarily: Find interesting crimes in the data for further analysis in Q2.
 \end{itemize}
@@ -108,6 +110,8 @@ This question will be answered by usding a view which contains the date per crim
 
 \paragraph{Question 2} The next logical progression is to observe the location and crime dimension together. Certain crime trends, such as those of homicides, may be more localized; thus, certain neighborhoods and districts may be overrepresented in heavy crimes. The assumption is that certain districts and beats tend to be more prevalent in certain crime types. As such, in order to help the PD and policy makers to identify probelmatic areas with respect to certain crime hotspots, districts and beats are analysed with respect to trends identified by the temporal compornent on a localized level. Thus, question two follows:
 
+
+\textbf{considering the intersting findings during the inital EDA in question 1, we now consider the trends uncovered on a location basis}
 \begin{itemize}
   \item Based on overall trends discerned in question 1, what locations (beats \& districts) are disproportinally represented overall and in selected subcategories of crimes (based on Q1)?
   \item Primarily: Find districts and beats to disect by time of day and also look into categories of murder in Q3
@@ -116,6 +120,9 @@ This question will be answered by usding a view which contains the date per crim
 This question will be answered similarly as Q1. However, the main focus here is laid on using standard $GROUP BY$ functions instead of window functions to demonstrate a variation in usage. 
 
 \paragraph{Question 3} Finally, time, location, and crime type is triangulated. This enables policymakers to discern localized trends in the data in order to address crime patterns by distributing resources more efficiently; i.e. allocating more resources to dangerous beats during the night. Additionally, accessory dimensions will be integrated into the analysis to provide a holistic description. For instance assuming that crimes that lead to more arrests are more resource intensive, these crimes put a disproportionate strain on law enforcement. Thus, by triangulating arrests by location and e.g. time of day this will enable us to show areas that need more attention by law enforcement. Another angle would be a specific analysis of beats. \textbf{Beats are the smallest administrative unit of a police district; a beat is patrolled for one year by one unit and ten transferred to another beat. Thus, it might be interesting to investigate the connection between a subset of beats that suddenly stop showing problems during one year and then re-appear in terms of crime in another year. The sub-question would, thus, investigate whether beats that usually persisted in crime only persist on a closed yearly basis. This way, effective police units might be identified and resources might be allocated more efficiently.}
+ 
+ \textbf{Finally, the aforementioned trends + district rtends cann be triangualted for more effective policiing}
+ 
  
 \begin{itemize}
   \item Triangulating time, crime-type, and location which areas persists in certain crimes wrt. time?
@@ -230,7 +237,7 @@ The reason for this specific choice of cardinality is simple: in order to be inc
 
 Figure 2 describes the logical model. For location, "beat" is chosen as primary key because beat (as a stand alone entity) would be hierarchically below District; one district - many beats. As such, each district is uniquely identifiable by its beat in case we want to aggregate, which is why beat is the only natural (primary) key in this relation. In realtiy (with more variables in location) this relation is not in 3rd normal form as district is usually an entity on its own. However, due to no more data/ variables being available on beat or district, this relation does not contain any transitive dependencies and is, thus, in 3rd NF. The meaning of each attribute here is selfexplanatory.More importantly, the primary key beat is in TEXT form (also district). The reason for this is that beats are defined in the first two characters by their district and the latter two describe the beat. Thus, a beat instance may start with a "0". In many scripting languages and some databases, this leads to problems and the removal of the "0", as the underlying software does not interpret the "0". As such, TEXT was chosen for data quality reasons. Please note that the same argument applies to crime type and IUCR. 
 
-\indent Following, CrimeID was chosen to be the primary key of case, due to it being a natural primary key. This is a standard auto-incremental integer key and can, thus, be treated as an integer; though care should be applied when reading the data into scripting languages. In addition to each CrimeID identifying each instance of a crime comitted, DateTime and Arrest are included as attributes. DateTime has TEXT as dtype as SQLite does not support a conventional datetime object, which then defaults to a string value. DateTime provides year, month, day, hour, minute, second of the instance 8as any other datetime dtype does by definition). Arrest has the dtype TEXT for a similar reason; SQLite does not support boolean dtypes. A possible alternative would have been to use 1 or 0, but a simple string input TRUE or FALSE has the same functionality in the and while being more explicit. Arrest describes the state of each criminal case whether or not an arrest was made. 
+\indent Following, CrimeID was chosen to be the primary key of case, due to it being a natural primary key. This is a standard auto-incremental integer key and can, thus, be treated as an integer; though care should be applied when reading the data into scripting languages. In addition to each CrimeID identifying each instance of a crime comitted, DateTime and Arrest are included as attributes. DateTime has TEXT as dtype as SQLite does not support a conventional datetime object, which then defaults to a string value. DateTime provides year, month, day, hour, minute, second of the instance 8as any other datetime dtype does by definition). Arrest has the dtype TEXT for a similar reason (savety); SQLite does not support boolean dtypes. A possible alternative would have been to use 1 or 0, but a simple string input TRUE or FALSE has the same functionality in the and while being more explicit. Arrest describes the state of each criminal case whether or not an arrest was made. 
 
 
 \indent Finally, crime type's primary key is the IUCR key, a natural primary key. It uniquely identifies each crime category plus its secondary description. Its dtype is TEXT for the same reason as for why beat's dtype is TEXT. Following, primary category has dtype TEXT and ´describes the overall category of the crime committed. Secondary category then fruther describes each primary category; thus, it also has a TEXT dtype. 
@@ -279,48 +286,20 @@ Upon implementing the physical ERD into SQL, location and crime type (implemente
 
 Following, the criminal case relation (implemented as CriminalCase) contained the only $FOREIGN KEY$ restrictions as described in part 3. Considering constrains implemented wrt. the relations (through foreign keys), upon update and deletion, all related instances in the parent table should be removed: i.e. $CASCADE$ update and deletion (one only implemnets these on the foreign keys to signal SQL how to conduct such operations). The reason for this is twofold: 1) in a usual transactional database, such operations should be restricted as no human should have writing access to a specific instance \textbf{CITE BACHELOR BOOK ON THIS}. However, we are dealing with a reasearch project database; as such, it might be the case that it turns out that one district instance should not exist (is eroneous). As such, all "supposed" crimes that happened in this district would have to be removed. That is why cascasde deletion was chose. Finally, a small $CHECK$ was implemented in order to check the time.\footnote{No "if exists" table creation was implemented as this is bad practice.}
 
+Regarding the mastertable and logs, a master table was creates containing the ID attibute to record the IDs of the instances mutated, in addition to a datetime class and a transaction report (what has been done). This table is not related to the model as a whole.
 
-\textbf{DESCRIBE THE MASTER TABLE!!!}
-Regarding triggers and the master table, SQLite does not support a conventional query log; thus, we had to resort to using standard implementations for triggers (delete, insert, update). 
+
 
 %https://www.sqlshack.com/learn-sql-sql-triggers/
 %https://www.sqlitetutorial.net/sqlite-foreign-key/
 %https://www.crewmachine.com/use-mysql-triggers-recording-history/
 
 
-%CREATE
-%[DEFINER = user]
-%TRIGGER trigger_name
-%trigger_time trigger_event trigger_id
-%ON history_table FOR EACH ROW
-%trigger_body
-%trigger_time { BEFORE | AFTER }
-%trigger_event { INSERT | UPDATE | DELETE }
-
-
-%INSERT INTO history_table SELECT*, ‘update’,
-%CURRENT_USER(), now(), null FROM
-%main_table WHERE id=OLD.id;
 
 \section{Part 6}
 
-To do: create master table plus some triggers, add the stuff regarding index and use it, then finish q3.
-
-\textbf{It may be noted that we cannot query all possible outcomes}
-\textbf{It may be noted that we cannot query all possible outcomes}
-\textbf{It may be noted that we cannot query all possible outcomes}
-\textbf{It may be noted that we cannot query all possible outcomes}
-\textbf{It may be noted that we cannot query all possible outcomes}
-
-Note: the goal of this assignment t odo most if not all data transformation in SQL and let python handle only minor conversions such as into the right dtype object (eg GEOPANDAS)
-
-IMPORTANT! READ DATABASE INTO PYTHON HERE LIKE YOU DID AT VYTAL!!!
-
-Note: Sadly in order to create an index, one cannot use subqueries due to SQLLITE(this feature is present in other versions of SQL tho); as such, the index that increases speed for arrest heavy crimes does not work here. 
-
-\textbf{FOR THE TRIGGER JUST USE DELETE RESTRICT HERE!!}
-
-Please note that many queries, particularly those meant for visualization were read into python immediately (so they use queries to get the results needed and then lets python do the rest). Additionally, the database was not saved directly in the repository due to security concerns (.gitignore). Moreover, no virtual environment was ste up to facilitate the project. Finally, it is notable that in order to answer the questions, multiple different approaches in writing the queries were chosen, ranging from joining subqueries to window functions in order to demonstrate knowledge of all functions. Another reason is that I wanted to try the speed of different styles of code (particualrly teh procedually generated optimization behind window functions).
+Please note that I cannot describe all queries to the fullest detail. Scalar functions, analytical functions, window functions, and joins are used in abundance throughout the analysis. Moreover, the attached pythonfile shows the process of visualization using SQL to feed into a scripting language. 
+Additionally, the database was not saved directly in the repository due to security concerns (.gitignore). Moreover, no virtual environment was ste up to facilitate the project. Finally, it is notable that in order to answer the questions, multiple different approaches in writing the queries were chosen, ranging from joining subqueries to window functions in order to demonstrate knowledge of all functions. Additionally, I wanted to try the speed of different styles of code (particualrly teh procedually generated optimization behind window functions).
 
 \subsection{Question 1:}
 
@@ -342,7 +321,7 @@ In order to achive this, another view was created (resource intense). This view 
 \paragraph{Part 3} When considering all crime categories again, the question which categories, regardless of whether they are resource intensive or not, have shown the largest rise and reduction my be considered. This was achived by utilizing all aforementioned queries and time view in two large queries which used a window function to $DENSE_RANK()$ crimes by the total change over the entire timeframe $LIMIT$(ing) the output once to the five crimes with the largest decrease and once to the five crimes with the largest increase (see tab Question 1 part 3). \textbf{Figure 4 c)} displays the top five categories with the largest reduction, while \textbf{Figure 4 d)} shows those categories with the largest increase in records. While the overall trend was positive in terms of over crime levels reducing, crime categories such as Homicide and Human Trafficing show a 19.94\% and 80.0\% increase respectively. This implies, that while the overall trend in the crime is positive, certain subcategories display a severe increase.  
 
 
-\begin{wrapfigure}{L}{9cm}
+\begin{figure}%{L}{9cm}
 \centering
 \begin{subfigure}[b]{0.5\textwidth}
 \includegraphics[scale=.3 ]{/home/angelo/Documents/Uni/Courses/Data Managment & Ethics/Integrated Assignment/assignemnet_project_folder/Code/q1_part1.png}
@@ -370,26 +349,23 @@ In order to achive this, another view was created (resource intense). This view 
 
 \captionsetup{justification=centering}
 \caption{Temporal Component and Crime by Category}
-\end{wrapfigure}
+\end{figure}
 
 
 
 \subsection{Question 2:}
 
-%\begin{itemize}
-%  \item Based on overall trends discerned in question 1, what locations (beats \& districts) are disproportinally represented overall and in selected subcategories of crimes (based on Q1)?
-%\end{itemize}
 
 When considering the following primary crimetypes 'homicide', 'prostituion', 'weapons violation', 'narcotics' from question 1, these crimes show interestingly large changes to be used as further subsections. Subsequently, question 2 considers which locations are predominant in these crime types. 
 
 After identifying interesting primary types of crimes by time aspect, it is now relevant to subsect the data further by district in order to identify problem districts. To this end, a (large) query was used which uses multiple scalar functions, nested queries and window functions, and a left join plus multiple inner joins and cast functions (this query is too difficult to describe)
 
-The goal was to create a ranking based on the total proportion of the primary category crimes identified ('homicide', 'prostituion', 'weapons violation', 'narcotics') in question 1 per district, limiting the results to the top three districts per crime category. To this end, a (large) query was used which uses multiple scalar functions, nested queries and window functions, and a left join plus multiple inner joins and cast functions (this query is too difficult to describe). It started out in a subquery which calculates the total crimes commited per primary category using two join statements. Next, a subquery was created which also used conventional group statements to calculate the primary crimes committed per district. The first query was then left joined onto the second query, as the first subquery contained only the overall totals per category, which then had to be cast to the dimensions of the second query using a LEFT JOIN. Finally, a $DENSE RANK()$ ranked each priamry category by its proportion in total crimes committed and limited the output to three districts per primary crime category (see Question 2 tab).
+The goal was to create a ranking based on the total proportion of the primary category crimes identified ('homicide', 'prostituion', 'weapons violation', 'narcotics') in question 1 per district, limiting the results to the top three districts per crime category. To this end, a (large) query was used which uses multiple scalar functions, nested queries and window functions, and a left join plus multiple inner joins and cast functions (this query is too difficult to describe). It started out in a subquery which calculates the total crimes commited per primary category using two join statements. Next, a subquery was created which also used conventional group statements to calculate the primary crimes committed per district. The first query was then left joined onto the second query, as the first subquery contained only the overall totals per category, which then had to be cast to the dimensions of the second query using a LEFT JOIN (see question 3 answer for a shorter approach). Finally, a $DENSE RANK()$ ranked each priamry category by its proportion in total crimes committed and limited the output to three districts per primary crime category (see Question 2 tab).
 
 Table 1 reports the result of this query.\footnote{see attached python file for stagazer output generation} What is striking (I was surprised myself): in all crime categories that saw the largest movement over the years, district 11 is in at least the top three for each crime category. Consequently, district 11 must be monitored more closely. 
 
 \begin{table}[!htbp] \centering 
-\begin{adjustwidth}{1.25cm}{-0cm}
+\begin{adjustwidth}{0cm}{-0cm}
 \begin{threeparttable}
 \small
 \captionsetup{font=small, justification=raggedright,singlelinecheck=false}
@@ -397,11 +373,11 @@ Table 1 reports the result of this query.\footnote{see attached python file for 
 \centering 
   \label{}
 \small 
-\begin{tabular}{@{\extracolsep{10pt}}llrrr} 
+\begin{tabular}{@{\extracolsep{8pt}}llrrr} 
 \\[-5.8ex]\hline 
 
 \toprule
-  Prim.Cat. & District &  Rank &  Tot.Crimes District &  PCT of Crimes committed in Category \\
+  Prim.Cat. & District &  Rank &  Tot.Crimes District &  PCT Crimes committed Category\\
 \midrule
          HOMICIDE &       11 &                     1 &                          211 &                   11.32\% \\
          HOMICIDE &       06 &                     2 &                          178 &                    9.55\% \\
@@ -427,9 +403,7 @@ WEAPONS VIOLATION &       06 &                     3 &                         2
 %
 \end{table}
 
-
-
-Sidenote: I personally did not expect to find something this way. 
+ 
 
 
 
@@ -437,22 +411,28 @@ Sidenote: I personally did not expect to find something this way.
 
 
 
-
-\begin{itemize}
-  \item Triangulating time, crime-type, and location which areas persists in certain crimes wrt. time?
-In order to prevent homicides; which “beats“ are the most prevalent among homicides? During which time of day (for effective allocation of policing resources)? 
-\end{itemize}
+Finally, considering district 11 from Q2 in combination with the relevant crime categories from Q1, we will examine both dimensions together to answer how to potentially counter these trends productively from a resource perspective. To this end, each category is split into when it occurs durign the day (morning, noon, evening, night).
+To gain this insight, a concise query was created that merges all approaches from question 1 and question 2 into one concise version. Based on the time of day view, four JOIN statemetns were performed, bringing the entire database together and then a window function using SUM and partitioning over primary crime category was used to calculate the proportion of crime by time of day per primary type category (see Question 3 tab).
+Figure 5 displays a stacked barplot to visoualize the distribution of crimes within each category by time of day for district 11. This plot can now be used to analyse how to actively coutner a specific crime category. One such example would be to deploy more units during evening (18-24h) to deter prostituion related crimes. It may of course be noted that a higher presence of law enforcement would lead to more arrests and more records being created of crimes. Non-recorded crimes are obviously not included in the data (simultaneous causality). As such, no claim regarding causality is being made during this assignment as only general trends are reported in form of an exploratory data analysis. Additionally, the data was randomized. However, the process in generating this insight has been noted and can be reused. The adjacent python file contains the queries and casts into dataframe in order for future researchs to continue this endeavour. 
 
 
-%\begin{itemize}
-%  \item Triangulating time, crime-type, and location which areas persists in certain crimes wrt. time?
-%In order to prevent homicides; which “beats“ are the most prevalent among homicides? During which time of day (for effective allocation of policing resources)? 
+\begin{figure}[htp]
+		\centering
+			\includegraphics[scale=.35 ]{"/home/angelo/Documents/Uni/Courses/Data Managment & Ethics/Integrated Assignment/assignemnet_project_folder/Code/q3.png"}
+         \small
+         \caption{Proportion of Crime comitted by Time of Day for District 11}
+\end{figure}
 
 
 
+\subsection{Use of Triggers and Indexes}
+\paragraph{Triggers:} Two triggers were created. 1) an insertion log trigger on the criminal case entity, which logs the IDs of new crime cases. This trigger has a practical purpose of ensuring data integrity (\textbf{CITE GDPR HERE}). I have personally used such triangulation tables to ensure that no instance was wrongfully included or is missing. The way such a log is used is that whenever any transformations are being done outside of the database, one can always verify the integrity by checking on a set of IDs (here CrimeIDs) which is the fastest way of controling for missing data after a transformation. This way, during certain analyses, missing records can be funneled back through special automated tests (\textbf{CITE TESTS HERE}). However, this goes beyond the scope of this assignment.
+2) based on the CASCADE deletion restirction on Criminal Case, it might happen that upon a deletion of a certain district (hypothetically), any criminal case related to this district is dropped as well. Assume, a district was added by mistake. You want to delete this district (which should be possible in a research DB). However, you make a mistake and delete another district, which then removes a cascade of other data in Criminal Case. By logging all deletions in the master table, these drops can be easily recoveded from a backup and inserted back into the database.
+\paragraph{Index:} In total, three indexes were created. Of these, two are of particular importance as they are continously used in Q2 and Q3. 1) index on district 11, indexing on location and on distirct 11 for demonstration purposes mostly. It was created using the CREATE INDEX command, followed by the specification of the location table and a WHERE clause on district == 11. 2) the second index on the primary category subtypes discussed in Q2 speeds up the query speed in Q2 and Q3. It was created using the CREATE INDEX command, followed by the specification of the crime type table and a WHERE clause on the primary category, containing homicide, prostituion, narcotics, and weapons violation only. Figure 6 in the appendix displays that the Q3 query actually uses the indexes (also see Index tab in SQL).  
 
 
 \subsection{Conclusion}
+All data contained in the database has been used during the analysis. 
 
 
 
@@ -464,8 +444,13 @@ In order to prevent homicides; which “beats“ are the most prevalent among ho
 
 
 
-
-
+\section{Appendix}
+\begin{figure}[htp]
+		\centering
+			\includegraphics[scale=.25 ]{"/home/angelo/Documents/Uni/Courses/Data Managment & Ethics/Integrated Assignment/assignemnet_project_folder/ERDs/IndexUsageProof.png"}
+         \small
+         \caption{Index Usage Proof; These indices are used throughout the assignment - Here idx\_district\_11 and idx\_primtype}
+\end{figure}
 
 
 

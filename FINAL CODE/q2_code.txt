@@ -1,4 +1,4 @@
-question 2
+--question 2
 
 SELECT * FROM (
 SELECT PrimaryCategory, District, DENSE_RANK() OVER (PARTITION BY PrimaryCategory ORDER BY PctCrimeTypeByDistrict DESC ) AS RankByCrimeCommitted, DistrictTotalCrimesRecorded, PctCrimeTypeByDistrict

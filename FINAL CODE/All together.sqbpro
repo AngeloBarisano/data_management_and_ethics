@@ -1,18 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/home/angelo/Documents/Uni/Courses/Data Managment &amp; Ethics/Integrated Assignment/assignemnet_project_folder/database/assignment_db_2" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="4274"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,9:mainCrimeType"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="Load Data">-- Create table 1: Location
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/home/angelo/Documents/Uni/Courses/Data Managment &amp; Ethics/Integrated Assignment/assignemnet_project_folder/database/assignment_db_2" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="4274"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,9:mainCrimeType"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="CrimeType" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="53"/><column index="2" value="274"/><column index="3" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="Create Tables">-- Create table 1: Location
 CREATE TABLE Location (
 Beat TEXT PRIMARY KEY NOT NULL UNIQUE,
 District TEXT NOT NULL);
-
-
-
-
 
 -- Create Table 2: crimetype
 CREATE TABLE CrimeType (
 IUCR TEXT PRIMARY KEY NOT NULL UNIQUE,
 PrimaryCategory TEXT,
 SecondaryCategory TEXT);
-
 
 -- create Table 3: CASE
 CREATE TABLE CriminalCase (
@@ -28,15 +23,29 @@ FOREIGN KEY (IUCR) REFERENCES CrimeType (IUCR)
 		ON DELETE CASCADE
 );
 
+</sql><sql name="Trigger Creation">-- create the master table 
+CREATE TABLE IF NOT EXISTS MasterTableLog (
+&quot;ID&quot; INTEGER PRIMARY KEY,
+&quot;DateTime&quot; TEXT,
+&quot;TransactionRep&quot; TEXT
+);
+
+-- Craete a trigger logging deletes
+CREATE TRIGGER IF NOT EXISTS DeleteFromCriminalCaseTrigger
+BEFORE DELETE ON CriminalCase
+BEGIN 
+INSERT INTO  MasterTableLog VALUES(old.CrimeID, datetime(), 'Delete');
+END;
+
+-- create a trigger loggin the information when data is put into the tables
+CREATE TRIGGER IF NOT EXISTS InsertIntoCriminalCaseTrigger
+BEFORE INSERT ON CriminalCase
+BEGIN 
+INSERT INTO  MasterTableLog VALUES(new.CrimeID, datetime(), 'Insert');
+END;
 
 
-
-
-
-
-
-
--- Data insertion into location
+ </sql><sql name="Load Data">-- Data insertion into location
 INSERT INTO Location (Beat, District) SELECT DISTINCT 
 beat, district FROM data_crime_transformed;
 
@@ -46,11 +55,12 @@ iucr, primarytype, description FROM data_crime_transformed;
 
 -- Data Insertion into Criminal Case 
 INSERT INTO CriminalCase (CrimeID, Date_Time, Arrest, Beat, IUCR) 
-SELECT DISTINCT CrimeID, &quot;date&quot;, &quot;location&quot;, arrest, beat, iucr 
+SELECT DISTINCT CrimeID, &quot;date&quot;, arrest, beat, iucr 
 FROM data_crime_transformed;
 
-
-</sql><sql name="View Tab">
+-- just a quick test
+SELECT *
+FROM MasterTableLog;</sql><sql name="View Tab">
 -- The time view
 CREATE VIEW view_convenient_time AS
 SELECT CrimeID, IUCR, year AS Year, month AS Month, day AS Day, hour as Hour,
@@ -61,7 +71,7 @@ CASE WHEN CAST(hour AS INT) &gt;= 6 and CAST(hour AS INT) &lt;= 11  then 'Mornin
 		   end TimeofDay
 FROM
 (SELECT CrimeID, IUCR, STRFTIME(&quot;%d&quot;, Date_Time) AS day, STRFTIME(&quot;%m&quot;, Date_Time) AS month, STRFTIME(&quot;%Y&quot;, Date_Time) AS year, STRFTIME(&quot;%H&quot;, Date_Time) AS hour
-FROM CriminalCase)
+FROM CriminalCase);
 
 
 
@@ -76,9 +86,35 @@ JOIN
 FROM CriminalCase AS CC JOIN CrimeType AS CT ON CC.IUCR == CT.IUCR
 WHERE CC.Arrest == 'True'
 GROUP BY PrimaryCategory) AS PrimaryCat_arr ON PrimaryCat_tot.PrimaryCategory == PrimaryCat_arr.PrimaryCategory 
-ORDER BY ProportionArrested DESC
+ORDER BY ProportionArrested DESC;
+</sql><sql name="Index Creation &amp; test">-- create an index on district 11
+CREATE INDEX IF NOT EXISTS  &quot;idx_district_11&quot; ON &quot;location&quot; ( &quot;beat&quot;,&quot;district&quot; ) WHERE district == '11';
+
+-- create an index on district 
+CREATE INDEX IF NOT EXISTS  &quot;idx_district&quot; ON &quot;location&quot; (&quot;beat&quot;, &quot;district&quot; );
+ 
+-- create an index on the categories we wanted to further analyse in Q3 and Q2
+CREATE INDEX IF NOT EXISTS  &quot;idx_primtype&quot; 
+ON &quot;CrimeType&quot; (&quot;IUCR&quot;, &quot;PrimaryCategory&quot;, &quot;SecondaryCategory&quot; ) 
+WHERE PrimaryCategory IN ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS');
+ 
+ 
+-- quick test (this is q3)
+ EXPLAIN QUERY PLAN  SELECT l.district, ct.PrimaryCategory, vct.TimeofDay, COUNT(*) AS &quot;Crimes Per TimeofDay&quot;, 
+	ROUND(CAST(COUNT(*) AS REAL) / SUM(COUNT(*)) OVER(PARTITION BY ct.PrimaryCategory) * 100, 4) AS Proportion
+FROM
+view_convenient_time as vct 
+	JOIN CrimeType as ct ON vct.IUCR == ct.IUCR 
+		JOIN CriminalCase as cc ON cc.CrimeID == vct.CrimeID 
+			JOIN Location as l ON l.beat == cc.beat
+WHERE ct.PrimaryCategory in ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS') 
+	AND l.district == '11'
+GROUP BY ct.PrimaryCategory, vct.TimeofDay;
+
+
+
 </sql><sql name="Question 1 ">-- q1 part 1 
-- -- simple way to get total per year from same query; total change
+-- simple way to get total per year from same query; total change
 SELECT Year, CrimesCommitted , 
 	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PctChangetoPrevYear
 FROM   
@@ -143,7 +179,8 @@ LIMIT 5;
 
 
 
-</sql><sql name="Question 2">-- just get intensice crimes ranked by district limiting to 3 districts
+</sql><sql name="Question 2">--question 2
+-- Another select level becuase we want to limit to 3 outputs
 SELECT * FROM (
 SELECT PrimaryCategory, District, DENSE_RANK() OVER (PARTITION BY PrimaryCategory ORDER BY PctCrimeTypeByDistrict DESC ) AS RankByCrimeCommitted, DistrictTotalCrimesRecorded, PctCrimeTypeByDistrict
 FROM 
@@ -159,22 +196,9 @@ FROM CriminalCase AS CC INNER JOIN CrimeType as CT ON CC.IUCR = CT.IUCR INNER JO
 GROUP BY PrimaryCategory) AS c_total ON c_by_district.PrimaryCategory == c_total.PrimaryCategory
 WHERE c_total.PrimaryCategory IN ('HOMICIDE', 'PROSTITUTION', 'WEAPONS VIOLATION', 'NARCOTICS')) ) AS x
 WHERE x.RankByCrimeCommitted &lt;= 3
-;
-
-
-
-
-
-
-
-
-
-
-
-
-
-</sql><sql name="Mayberightfile">-- Put all together
-SELECT l.district, ct.PrimaryCategory, vct.TimeofDay, COUNT(*) AS &quot;Crimes Per TimeofDay&quot;, ROUND(CAST(COUNT(*) AS REAL) / SUM(COUNT(*)) OVER(PARTITION BY ct.PrimaryCategory) * 100, 4) AS Proportion
+;</sql><sql name="Question3">-- Question 3
+SELECT l.district, ct.PrimaryCategory, vct.TimeofDay, COUNT(*) AS &quot;Crimes Per TimeofDay&quot;, 
+	ROUND(CAST(COUNT(*) AS REAL) / SUM(COUNT(*)) OVER(PARTITION BY ct.PrimaryCategory) * 100, 4) AS Proportion
 FROM
 view_convenient_time as vct 
 	JOIN CrimeType as ct ON vct.IUCR == ct.IUCR 
@@ -186,4 +210,4 @@ GROUP BY ct.PrimaryCategory, vct.TimeofDay
 ;
 
 
-</sql><current_tab id="4"/></tab_sql></sqlb_project>
+</sql><current_tab id="7"/></tab_sql></sqlb_project>

@@ -1,5 +1,6 @@
--- Put all together
-SELECT l.district, ct.PrimaryCategory, vct.TimeofDay, COUNT(*) AS "Crimes Per TimeofDay", ROUND(CAST(COUNT(*) AS REAL) / SUM(COUNT(*)) OVER(PARTITION BY ct.PrimaryCategory) * 100, 4) AS Proportion
+-- Question 3
+SELECT l.district, ct.PrimaryCategory, vct.TimeofDay, COUNT(*) AS "Crimes Per TimeofDay", 
+	ROUND(CAST(COUNT(*) AS REAL) / SUM(COUNT(*)) OVER(PARTITION BY ct.PrimaryCategory) * 100, 4) AS Proportion
 FROM
 view_convenient_time as vct 
 	JOIN CrimeType as ct ON vct.IUCR == ct.IUCR 

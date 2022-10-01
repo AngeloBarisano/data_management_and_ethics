@@ -1,5 +1,5 @@
 -- q1 part 1 
-- -- simple way to get total per year from same query; total change
+-- simple way to get total per year from same query; total change
 SELECT Year, CrimesCommitted , 
 	ROUND(((CrimesCommitted - LAG(CrimesCommitted) OVER (ORDER BY Year))/ CAST(LAG(CrimesCommitted) OVER (ORDER BY Year) AS REAL)), 4) * 100 AS PctChangetoPrevYear
 FROM   
